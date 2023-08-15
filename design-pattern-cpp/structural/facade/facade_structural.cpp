@@ -4,6 +4,7 @@
  */
 
 #include <iostream>
+#include<string>
 using namespace std;
 
 class Usb {
@@ -31,8 +32,8 @@ class Bluetooth {
         void authenticate() {
             cout << "Authenticating BT" << endl;
         }
-        void send(string file){
-            cout << file << " sent." << endl;
+        void send(string a){
+            cout<<a<< " sent"<<endl;
         }   
 };
 
