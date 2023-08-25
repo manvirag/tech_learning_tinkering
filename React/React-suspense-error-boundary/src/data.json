@@ -1,0 +1,74 @@
+[
+  {
+    "name": "Abyssinian",
+    "origin": "Unspecified, but somewhere in Afro-Asia likely Ethiopia",
+    "type": "Natural",
+    "bodyType": "Semi-foreign",
+    "coat": "Short",
+    "pattern": "Agouti",
+    "imgUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Gustav_chocolate.jpg/200px-Gustav_chocolate.jpg"
+  },
+  {
+    "name": "Aegean",
+    "origin": "Greece",
+    "type": "Natural",
+    "bodyType": "Moderate",
+    "coat": "Semi-long",
+    "pattern": "Multi-color",
+    "imgUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Aegean_cat.jpg/200px-Aegean_cat.jpg"
+  },
+  {
+    "name": "American Bobtail",
+    "origin": "United States",
+    "type": "Mutation",
+    "bodyType": "Cobby",
+    "coat": "Semi-long",
+    "pattern": "All",
+    "imgUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/American_bobtail_2.jpg/200px-American_bobtail_2.jpg"
+  },
+  {
+    "name": "American Curl",
+    "origin": "United States",
+    "type": "Mutation",
+    "bodyType": "Semi-foreign",
+    "coat": "Semi-long",
+    "pattern": "All",
+    "imgUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/American_curl_2.jpg/200px-American_curl_2.jpg"
+  },
+  {
+    "name": "American Shorthair",
+    "origin": "United States",
+    "type": "Natural",
+    "bodyType": "Cobby",
+    "coat": "Short",
+    "pattern": "All",
+    "imgUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/American_Shorthair.jpg/200px-American_Shorthair.jpg"
+  },
+  {
+    "name": "American Wirehair",
+    "origin": "United States",
+    "type": "Mutation",
+    "bodyType": "Normal",
+    "coat": "Rex",
+    "pattern": "All",
+    "imgUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/American_Wirehair_-_CFF_cat_show_Heinola_2008-05-04_IMG_8721.JPG/200px-American_Wirehair_-_CFF_cat_show_Heinola_2008-05-04_IMG_8721.JPG"
+  },
+  {
+    "name": "Aphrodite Giant",
+    "origin": "Cyprus",
+    "type": "Natural",
+    "bodyType": "Lean and muscular",
+    "coat": "Short",
+    "pattern": "All",
+    "imgUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Aphrodite%27s_Giant.jpg/200px-Aphrodite%27s_Giant.jpg"
+  },
+  {
+    "name": "Arabian Mau",
+    "origin": "the Arabian Peninsula",
+    "type": "Natural",
+    "bodyType": "Moderate and muscular",
+    "coat": "Short",
+    "pattern": "All",
+    "imgUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/3yoArabianMau.jpeg/200px-3yoArabianMau.jpeg"
+  }
+]
