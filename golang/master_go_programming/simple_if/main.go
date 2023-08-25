@@ -1,0 +1,30 @@
+package main
+
+import (
+	"fmt"
+	"strconv"
+)
+
+func main() {
+
+	// converting string to int:
+	i, err := strconv.Atoi("45")
+
+	// error handling
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(i)
+
+	}
+
+	// simple (short) statement ->  the same effect as the above code
+	// i and err are variables scoped to the if statement only
+	if j, err := strconv.Atoi("34"); err != nil {
+		fmt.Println("No error. j is ", j)
+	} else {
+		fmt.Println(j)
+
+	}
+	// fmt.Println(j)
+}
