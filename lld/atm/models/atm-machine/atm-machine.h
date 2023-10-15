@@ -1,7 +1,15 @@
+#include<atm-card.h>
+#include<atm-states.h>
+
 class AtmMachine
 {
-    public:
-    AtmMachine() {}
 
-    void init();
+    AtmCard insertedAtmCard;
+    AtmStates atmCurrentState;
+
+    public:
+    AtmStates GetAtmState();
+    void SetAtmState(AtmStates atmState);
+    AtmMachine();
+    void Init();
 };

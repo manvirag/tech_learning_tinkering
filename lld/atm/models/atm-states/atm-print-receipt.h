@@ -2,7 +2,7 @@
 #include"atm-states.h"
 
 
-class AtmShowScreen : public AtmStatesInterface
+class AtmPrintReceipt : public AtmStatesInterface
 {
     public:
         void processRequest(AtmMachine atmMachine);

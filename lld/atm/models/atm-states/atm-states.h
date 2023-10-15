@@ -4,6 +4,6 @@
 class AtmStatesInterface
 {
     public:
-        virtual void processRequest(ATM_MACHINE::AtmMachine atmMachine) = 0;
+        virtual void processRequest(AtmMachine atmMachine) = 0;
 
 };
