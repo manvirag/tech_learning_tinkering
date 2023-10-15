@@ -1,15 +1,19 @@
-#include<atm-card.h>
-#include<atm-states.h>
+#pragma once
+#include"../atm-card/atm-card.h"
+#include"../atm-states/atm-states.h"
+#include"../atm-states/atm-stale.h"
+
+
 
 class AtmMachine
 {
 
-    AtmCard insertedAtmCard;
-    AtmStates atmCurrentState;
+    AtmCard* insertedAtmCard;
+    AtmStatesInterface* atmCurrentState;
 
     public:
-    AtmStates GetAtmState();
-    void SetAtmState(AtmStates atmState);
-    AtmMachine();
-    void Init();
+        AtmStatesInterface* GetAtmState();
+        void SetAtmState(AtmStatesInterface* atmState);
+        void SetAtmCard(AtmCard* atmCard);
+        AtmCard* GetAtmCard();
 };

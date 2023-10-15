@@ -1,8 +1,8 @@
 #include<string>
 #include<vector>
-#include"atm-card.h"
+#include"../atm-card/atm-card.h"
 
 class AtmCardReader{
     public:
-      void ValidateFromBank(AtmCard atm); 
+      bool ValidateFromBank(AtmCard* atm); 
 };

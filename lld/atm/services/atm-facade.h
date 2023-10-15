@@ -1,7 +1,14 @@
-#include"atm-machine.h"
+#include"../models/atm-machine/atm-machine.h"
 
 class AtmFacade{
-    AtmMachine atmMachine;
+
+    AtmMachine* atmMachine;
     public:
+        AtmFacade() {
+            this->atmMachine = new AtmMachine();  
+        }
         void PowerOnTheAtm();
+        void process();
+        
+        
 };

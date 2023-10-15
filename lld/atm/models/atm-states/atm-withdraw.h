@@ -1,9 +1,15 @@
-#include"atm-machine.h"
+#include"../atm-states/atm-states.h"
 #include"atm-states.h"
+#include"../atm-printer/atm-printer.h"
 
 
 class AtmWithDraw : public AtmStatesInterface
 {
+    private:
+        Printer * atmPrinter;
     public:
-        void processRequest(AtmMachine atmMachine);
+        AtmWithDraw(){
+            this->atmPrinter = new Printer();
+        }
+        void processRequest(AtmMachine* atmMachine);
 };

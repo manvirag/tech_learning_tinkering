@@ -1,19 +1,23 @@
 #include<iostream>
 #include"atm-machine.h"
+#include"../atm-states/atm-stale.h"
 using namespace std;
 
-void AtmMachine::Init(){
-    cout<<"Okk i have created the implementation of atm machine"<<endl;
+AtmStatesInterface* AtmMachine::GetAtmState(){
+    return this->atmCurrentState;
 }
 
-AtmStates AtmMachine::GetAtmState(){
-    cout<<"Okk i have created the implementation of atm machine"<<endl;
+void AtmMachine::SetAtmState(AtmStatesInterface* atmState){
+    this->atmCurrentState = atmState;
 }
 
-void AtmMachine::SetAtmState(){
-    cout<<"Okk i have created the implementation of atm machine"<<endl;
+void AtmMachine::SetAtmCard(AtmCard* atmCard){
+    this->insertedAtmCard = atmCard;
 }
 
-AtmMachine::AtmMachine(){
-    this.
+AtmCard* AtmMachine::GetAtmCard(){
+    return this->insertedAtmCard;
 }
+ 
+
+

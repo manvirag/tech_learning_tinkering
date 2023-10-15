@@ -1,0 +1,1 @@
+g++ main.cpp ./services/atm-facade.cpp  ./models/atm-machine/atm-machine.cpp ./models/atm-card/atm-card.cpp ./models/atm-cash-dispencer/atm-cash-dispencer.cpp ./models/atm-keypad/atm-keypad.cpp ./models/atm-printer/atm-printer.cpp ./models/atm-card-reader/atm-card-reader.cpp ./models/atm-screen/atm-screen.cpp ./models/atm-states/*.cpp && ./a

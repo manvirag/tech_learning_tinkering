@@ -12,7 +12,6 @@ void AtmKeypad::ShowKeyOnScreen(){
 std::string AtmKeypad::GetSelectedKey(){
     this->ShowKeyOnScreen();
     std::string selectedKey;
-    std::cout<<"Enter the selected key: ";
     std::cin>>selectedKey;
     return selectedKey;
 }

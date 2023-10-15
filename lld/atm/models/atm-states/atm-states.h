@@ -1,9 +1,10 @@
-#include"atm-machine.h"
+#pragma once
 
+class AtmMachine;
 
 class AtmStatesInterface
 {
     public:
-        virtual void processRequest(AtmMachine atmMachine) = 0;
+        virtual void processRequest(AtmMachine* atmMachine) = 0;
 
 };
