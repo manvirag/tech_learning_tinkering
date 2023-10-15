@@ -10,10 +10,6 @@ int main(){
 
     AtmFacade * atmFacade = new AtmFacade();
     atmFacade -> PowerOnTheAtm();
-    // Stale
-    atmFacade -> process();
-    // Atm insertion
-    atmFacade -> process();
     
     return 0;
 }
