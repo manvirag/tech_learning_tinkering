@@ -39,7 +39,17 @@ it will download -> go mod + sum + cache
 cache location ->  go env GOMODCACHE
 2. Use this package in your code 
 
+**External Package Using From github published by me**
 
+commit 4
+
+1. publish simple already did
+2. go get github.com/manvirag982/tech_learning_tinkering/golang/publish_repo@latest  (to get latest) 
+3. go mod edit -replace example.com/greetings=../greetings to test module locally
+
+Remember while publish <repo_name> should be directory path in github not github link.
+for e.g. above link won't work , but if you open repo github.com/manvirag982/tech_learning_tinkering
+then go by path will work
 
 
 
