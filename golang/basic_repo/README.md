@@ -55,6 +55,8 @@ GOPROXY=direct go get github.com/manvirag982/tech_learning_tinkering/golang/publ
 
 Sometimes Go Proxy is not aware of recent commits. (Will deep dive later on, as of now did this to get latest commit from published module)
 
-
+Update: this is use  to first fetch data from proxy then go to direct if not found.
+we have add link as well in this.
+=direct no need to see proxy/cache , fetch direct
 
 
