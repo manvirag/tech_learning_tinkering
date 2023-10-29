@@ -22,5 +22,18 @@ If you plan to publish your module for others to use, the module path must be a 
 4. go run main.go
 
 
+**External Package Using From pkg.go.dev**
+
+commit 2
+
+1. Add import 
+2. go mod tidy (When you ran go mod tidy, it located and downloaded the rsc.io/quote module that contains the package you imported. By default, it downloaded the latest version)
+
+
+**External Package Using From github**
+
+commit 3
+
+
 
 
