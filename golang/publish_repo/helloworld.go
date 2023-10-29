@@ -1,4 +1,4 @@
-package publishrepo
+package publish_repo
 
 import "fmt"
 
