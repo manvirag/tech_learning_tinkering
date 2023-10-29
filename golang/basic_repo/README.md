@@ -51,5 +51,10 @@ Remember while publish <repo_name> should be directory path in github not github
 for e.g. above link won't work , but if you open repo github.com/manvirag982/tech_learning_tinkering
 then go by path will work
 
+GOPROXY=direct go get github.com/manvirag982/tech_learning_tinkering/golang/publish_repo@latest
+
+Sometimes Go Proxy is not aware of recent commits. (Will deep dive later on, as of now did this to get latest commit from published module)
+
+
 
 
