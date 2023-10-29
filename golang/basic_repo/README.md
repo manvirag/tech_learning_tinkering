@@ -34,6 +34,12 @@ commit 2
 
 commit 3
 
+1. go get <github location name (go get github.com/google/uuid)>
+it will download -> go mod + sum + cache
+cache location ->  go env GOMODCACHE
+2. Use this package in your code 
+
+
 
 
 
