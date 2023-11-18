@@ -42,6 +42,14 @@
         "xstddef": "cpp",
         "xstring": "cpp",
         "xtr1common": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "chrono": "cpp",
+        "functional": "cpp",
+        "set": "cpp",
+        "thread": "cpp",
+        "unordered_map": "cpp",
+        "xhash": "cpp",
+        "xtree": "cpp",
+        "ratio": "cpp"
     }
 }
