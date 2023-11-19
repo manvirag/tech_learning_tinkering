@@ -24,6 +24,12 @@ const _ = grpc.SupportPackageIsVersion7
 type HelloWorldClient interface {
 	// simple RPC
 	Hello(ctx context.Context, in *NoParam, opts ...grpc.CallOption) (*HelloResponse, error)
+	// server stream rpc
+	HelloServerStreaming(ctx context.Context, in *NamesList, opts ...grpc.CallOption) (HelloWorld_HelloServerStreamingClient, error)
+	// client streaming RPC
+	HelloClientStreaming(ctx context.Context, opts ...grpc.CallOption) (HelloWorld_HelloClientStreamingClient, error)
+	// bidirectional streaming RPC
+	HelloBidirectionalStreaming(ctx context.Context, opts ...grpc.CallOption) (HelloWorld_HelloBidirectionalStreamingClient, error)
 }
 
 type helloWorldClient struct {
@@ -43,12 +49,115 @@ func (c *helloWorldClient) Hello(ctx context.Context, in *NoParam, opts ...grpc.
 	return out, nil
 }
 
+func (c *helloWorldClient) HelloServerStreaming(ctx context.Context, in *NamesList, opts ...grpc.CallOption) (HelloWorld_HelloServerStreamingClient, error) {
+	stream, err := c.cc.NewStream(ctx, &HelloWorld_ServiceDesc.Streams[0], "/helloworld.HelloWorld/HelloServerStreaming", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &helloWorldHelloServerStreamingClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type HelloWorld_HelloServerStreamingClient interface {
+	Recv() (*HelloResponse, error)
+	grpc.ClientStream
+}
+
+type helloWorldHelloServerStreamingClient struct {
+	grpc.ClientStream
+}
+
+func (x *helloWorldHelloServerStreamingClient) Recv() (*HelloResponse, error) {
+	m := new(HelloResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *helloWorldClient) HelloClientStreaming(ctx context.Context, opts ...grpc.CallOption) (HelloWorld_HelloClientStreamingClient, error) {
+	stream, err := c.cc.NewStream(ctx, &HelloWorld_ServiceDesc.Streams[1], "/helloworld.HelloWorld/HelloClientStreaming", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &helloWorldHelloClientStreamingClient{stream}
+	return x, nil
+}
+
+type HelloWorld_HelloClientStreamingClient interface {
+	Send(*HelloRequest) error
+	CloseAndRecv() (*MessagesList, error)
+	grpc.ClientStream
+}
+
+type helloWorldHelloClientStreamingClient struct {
+	grpc.ClientStream
+}
+
+func (x *helloWorldHelloClientStreamingClient) Send(m *HelloRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *helloWorldHelloClientStreamingClient) CloseAndRecv() (*MessagesList, error) {
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	m := new(MessagesList)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *helloWorldClient) HelloBidirectionalStreaming(ctx context.Context, opts ...grpc.CallOption) (HelloWorld_HelloBidirectionalStreamingClient, error) {
+	stream, err := c.cc.NewStream(ctx, &HelloWorld_ServiceDesc.Streams[2], "/helloworld.HelloWorld/HelloBidirectionalStreaming", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &helloWorldHelloBidirectionalStreamingClient{stream}
+	return x, nil
+}
+
+type HelloWorld_HelloBidirectionalStreamingClient interface {
+	Send(*HelloRequest) error
+	Recv() (*HelloResponse, error)
+	grpc.ClientStream
+}
+
+type helloWorldHelloBidirectionalStreamingClient struct {
+	grpc.ClientStream
+}
+
+func (x *helloWorldHelloBidirectionalStreamingClient) Send(m *HelloRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *helloWorldHelloBidirectionalStreamingClient) Recv() (*HelloResponse, error) {
+	m := new(HelloResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // HelloWorldServer is the server API for HelloWorld service.
 // All implementations must embed UnimplementedHelloWorldServer
 // for forward compatibility
 type HelloWorldServer interface {
 	// simple RPC
 	Hello(context.Context, *NoParam) (*HelloResponse, error)
+	// server stream rpc
+	HelloServerStreaming(*NamesList, HelloWorld_HelloServerStreamingServer) error
+	// client streaming RPC
+	HelloClientStreaming(HelloWorld_HelloClientStreamingServer) error
+	// bidirectional streaming RPC
+	HelloBidirectionalStreaming(HelloWorld_HelloBidirectionalStreamingServer) error
 	mustEmbedUnimplementedHelloWorldServer()
 }
 
@@ -58,6 +167,15 @@ type UnimplementedHelloWorldServer struct {
 
 func (UnimplementedHelloWorldServer) Hello(context.Context, *NoParam) (*HelloResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Hello not implemented")
+}
+func (UnimplementedHelloWorldServer) HelloServerStreaming(*NamesList, HelloWorld_HelloServerStreamingServer) error {
+	return status.Errorf(codes.Unimplemented, "method HelloServerStreaming not implemented")
+}
+func (UnimplementedHelloWorldServer) HelloClientStreaming(HelloWorld_HelloClientStreamingServer) error {
+	return status.Errorf(codes.Unimplemented, "method HelloClientStreaming not implemented")
+}
+func (UnimplementedHelloWorldServer) HelloBidirectionalStreaming(HelloWorld_HelloBidirectionalStreamingServer) error {
+	return status.Errorf(codes.Unimplemented, "method HelloBidirectionalStreaming not implemented")
 }
 func (UnimplementedHelloWorldServer) mustEmbedUnimplementedHelloWorldServer() {}
 
@@ -90,6 +208,79 @@ func _HelloWorld_Hello_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _HelloWorld_HelloServerStreaming_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(NamesList)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(HelloWorldServer).HelloServerStreaming(m, &helloWorldHelloServerStreamingServer{stream})
+}
+
+type HelloWorld_HelloServerStreamingServer interface {
+	Send(*HelloResponse) error
+	grpc.ServerStream
+}
+
+type helloWorldHelloServerStreamingServer struct {
+	grpc.ServerStream
+}
+
+func (x *helloWorldHelloServerStreamingServer) Send(m *HelloResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _HelloWorld_HelloClientStreaming_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(HelloWorldServer).HelloClientStreaming(&helloWorldHelloClientStreamingServer{stream})
+}
+
+type HelloWorld_HelloClientStreamingServer interface {
+	SendAndClose(*MessagesList) error
+	Recv() (*HelloRequest, error)
+	grpc.ServerStream
+}
+
+type helloWorldHelloClientStreamingServer struct {
+	grpc.ServerStream
+}
+
+func (x *helloWorldHelloClientStreamingServer) SendAndClose(m *MessagesList) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *helloWorldHelloClientStreamingServer) Recv() (*HelloRequest, error) {
+	m := new(HelloRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func _HelloWorld_HelloBidirectionalStreaming_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(HelloWorldServer).HelloBidirectionalStreaming(&helloWorldHelloBidirectionalStreamingServer{stream})
+}
+
+type HelloWorld_HelloBidirectionalStreamingServer interface {
+	Send(*HelloResponse) error
+	Recv() (*HelloRequest, error)
+	grpc.ServerStream
+}
+
+type helloWorldHelloBidirectionalStreamingServer struct {
+	grpc.ServerStream
+}
+
+func (x *helloWorldHelloBidirectionalStreamingServer) Send(m *HelloResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *helloWorldHelloBidirectionalStreamingServer) Recv() (*HelloRequest, error) {
+	m := new(HelloRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // HelloWorld_ServiceDesc is the grpc.ServiceDesc for HelloWorld service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -102,6 +293,23 @@ var HelloWorld_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _HelloWorld_Hello_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "HelloServerStreaming",
+			Handler:       _HelloWorld_HelloServerStreaming_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "HelloClientStreaming",
+			Handler:       _HelloWorld_HelloClientStreaming_Handler,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "HelloBidirectionalStreaming",
+			Handler:       _HelloWorld_HelloBidirectionalStreaming_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
+		},
+	},
 	Metadata: "proto/helloworld.proto",
 }

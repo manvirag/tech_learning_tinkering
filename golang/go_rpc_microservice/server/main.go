@@ -13,6 +13,11 @@ const (
 	port = ":8080"
 )
 
+// server is used to implement helloworld.GreeterServer.
+type Server struct {
+	pb.HelloWorldServer
+}
+
 func main() {
 	//listen on the port
 	lis, err := net.Listen("tcp", port)

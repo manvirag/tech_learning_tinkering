@@ -11,6 +11,12 @@ package helloworld;
 service HelloWorld {
     // simple RPC
     rpc Hello(NoParam) returns (HelloResponse);
+    // client streaming RPC
+    rpc HelloClientStreaming(stream HelloRequest) returns (MessagesList);
+    // server stream rpc
+    rpc HelloServerStreaming(NamesList) returns (stream HelloResponse);
+    // bidirectional streaming RPC
+    rpc HelloBidirectionalStreaming(stream HelloRequest) returns (stream HelloResponse);
 
 }
 
@@ -21,4 +27,16 @@ message NoParam {};
 
 message HelloResponse {
     string message = 1;
+}
+
+message HelloRequest {
+    string name = 1;
+}
+
+message NamesList {
+    repeated string names = 1;
+}
+
+message MessagesList {
+    repeated string messages = 1;
 }
