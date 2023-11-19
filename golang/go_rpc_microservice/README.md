@@ -11,10 +11,13 @@ https://grpc.io/docs/what-is-grpc/introduction/
 5. The gRPC programming API in most languages comes in both synchronous and asynchronous flavors. You can find out more in each language’s tutorial and reference documentation
 6. RPC life cycle: (https://grpc.io/docs/what-is-grpc/core-concepts/#rpc-life-cycle): what happens when a gRPC client calls a gRPC server method.
 7. A gRPC channel provides a connection to a gRPC server on a specified host and port. It is used when creating a client stub. Clients can specify channel arguments to modify gRPC’s default behavior, such as switching message compression on or off. A channel has state, including connected and idle.
+8. For Go, the proto compiler generates a .pb.go file with a type for each message type in your file.
 
+``How to define proto for golang``
 
+Doc: https://protobuf.dev/getting-started/gotutorial/
 
-``Core Concept`` 
+### Core Concept
 
 gRPC lets you define four kinds of service method:
 
@@ -52,3 +55,64 @@ The main usage scenarios:
 * Low latency, highly scalable, distributed systems.
 * Developing mobile clients which are communicating to a cloud server.
 * Designing a new protocol that needs to be accurate, efficient and language independent.
+
+
+
+# Setting up a grpc go project
+
+1. Create a new directory for your project and cd into it
+2. mkdir basic-go-grpc
+3. cd basic-go-grpc
+4. mkdir client server proto
+5. Enable go module ( GO111MODULE=auto)
+5. Installing the gRPC Go plugin
+
+```
+    go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
+    go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
+
+```
+
+6. Initialize a Go module
+
+```
+    go mod init github.com/your_username/basic-go-grpc
+    go mod tidy
+```
+7. Create the proto file with the required services and messages in the proto directory
+8. Generate .pb.go files from the proto file
+9. depending on what path you mention in your helloworld.proto file. (install protocol buffer if already not install in system , protoc commend won't work ). 
+``
+--go_out=. and  --go-grpc_out=.  (this path is relative to what you defined in proto file go_package) `` while `` proto/helloworld.proto  (this is relative to where you are executing this command like pwd, ls)``
+
+
+
+```
+    protoc --go_out=. --go-grpc_out=. proto/helloworld.proto
+
+
+```
+
+
+10. Create the server and client directories and create the main.go files with necessary controllers and services
+
+
+# Running the Application
+
+1. Install the dependencies
+
+```
+    go mod tidy
+```
+
+2. Run the server ( go run *.go  (if more than one file of main package))
+
+```
+    go run server/main.go
+```
+
+3. Run the client
+
+```
+    go run client/main.go
+```
