@@ -4,16 +4,9 @@
   Within any unique state, the program behaves differently, and the program can be switched from one state to
    another instantaneously.  However, depending on a current state, the program may or may not switch to certain other states
 
-  can have more than one incoming edge
-  can have more than noe out going edge
-
-
-
-  in chain of responsibility
-
-  can have more than one incoming edge
-  but will have only one outgoing edge
-
+  -> don't skip any stage
+  -> don't done after particular state
+  -> if failure don't pass to next
 */
 
 
