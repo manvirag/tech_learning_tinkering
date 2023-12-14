@@ -143,10 +143,3 @@ To solve race conditions, channels provide a communication mechanism between gor
 4. **Process Data Concurrently:**
   - Goroutines listening to the channel can accept and process data concurrently.
 
-### Example: Solving the Cashier Problem with Channels
-
-In our solution, each order was picked by one goroutine in a mutually exclusive way, avoiding the need for mutex locks. This was achieved by simply reading from a channel, demonstrating the effectiveness of using channels to coordinate concurrent tasks without explicit locking mechanisms.
-
-To detect and visualize potential issues, use the `-race` flag with the `go run` command: `go run -race main.go`. This flag helps identify race conditions in your code.
-
-Channels provide a powerful and versatile tool for managing concurrent tasks in Go, offering a clean and efficient way to communicate between goroutines.
