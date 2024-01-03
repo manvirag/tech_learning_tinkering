@@ -5,12 +5,13 @@
 5. https://github.com/uber-go/ratelimit
 6. https://github.com/uber-go/cff
 7. https://github.com/uber-go/dig
+8. https://github.com/google/wire 
 8. https://github.com/tokopedia/gripmock
 9. https://github.com/sercand/kuberesolver
 10. https://github.com/piotrkowalczuk/promgrpc
 11. https://github.com/src-d/proteus
 12. https://github.com/gin-gonic/gin
-13. Docker , kubernetes , uber-go
+13. Docker , kubernetes , uber-go, google
 
 
 Went through:
