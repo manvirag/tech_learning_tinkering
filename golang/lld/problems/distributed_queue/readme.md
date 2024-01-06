@@ -1,0 +1,1 @@
+For e.g. Kafka
