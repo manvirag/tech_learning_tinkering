@@ -12,3 +12,9 @@ Requirements:
 6. Only one user can use at a time.
 7. Admin can add/remove the items in the machine.
 8. Flow -> user select the item and counts -> user put the coins -> system verify all cases -> if success -> return item and remaining money , update items -> else return all money and no item
+
+
+``Since this is not that complex not maintaining repository and usecase for item and counts. Instead -> vending machine itself having list of items and its count data. And allowing model itself implementing methods``
+
+
+Design Pattern: State
