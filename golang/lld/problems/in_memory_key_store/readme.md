@@ -1,2 +1,2 @@
-Like Redis:
+Like Redis(Not distributed):
 
