@@ -16,3 +16,6 @@ Expectations:
 2. Code should be modular and readable. Clean and professional level code.
 3. Code should be extensible and scalable. Means it should be able to accommodate new requirements with minimal changes.
 4. Code should have good OOPs design.
+
+
+Design Pattern : Stratedy 
