@@ -23,3 +23,9 @@ Design Pattern: State
 Optimisations:
 1. MVC architecture.
 2. Vending can be singleton.
+
+
+
+Design:
+
+![alt text](design.png)
