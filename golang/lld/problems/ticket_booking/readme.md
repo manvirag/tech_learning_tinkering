@@ -13,3 +13,4 @@ Requirements:
 9. A User can also explicitly close the UserBookingSession after selecting seats and before making payment. In this case, the seats selected are made AVAILABLE once again
 10. Assume there is only one theatre and multiple shows in a single show will have a single movie.
 11. This should be scalable to have different type of bookings as well as flight, show ticket etc.
+12. Assume in a single theathre , show will be unique .
