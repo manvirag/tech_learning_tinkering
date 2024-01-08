@@ -8,3 +8,7 @@ It will be same as pub-sub except:
 1. Not stratedy in subscriber.
 2. Only single notify method in subscriber usecase.
 3. Consumer will call a method with topic and subscriber id.
+
+Design:
+
+![alt_text](design.png)
