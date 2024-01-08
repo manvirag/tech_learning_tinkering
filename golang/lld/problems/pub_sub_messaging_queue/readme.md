@@ -11,3 +11,8 @@ We have to design a message queue supporting publisher-subscriber model. It shou
 5. Subscribers should be able to run in parallel. Subscribe shouldn't poll.
 6. Scalable to different subscriber endpoints types like https, email etc.
 7. Bonus concurrent.
+
+
+Design:
+
+![alt text](design.png)
