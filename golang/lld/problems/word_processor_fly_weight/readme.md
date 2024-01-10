@@ -1,0 +1,1 @@
+refer fly weight design pattern 
