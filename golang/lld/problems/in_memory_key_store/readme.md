@@ -19,3 +19,5 @@ Expectations:
 
 
 Design Pattern : Stratedy 
+
+![alt_image](./design.png)
