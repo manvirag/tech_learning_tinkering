@@ -12,18 +12,18 @@ type ICacheController interface {
 }
 
 type CacheController struct {
-	cache              domain.Cache
-	evictionPolicyRepo repository.EvictionPolicyRepo
+	Cache              domain.Cache
+	EvictionPolicyRepo repository.EvictionPolicyRepo
 }
 
 func (cc *CacheController) Put(key string, value interface{}) error {
-	return cc.evictionPolicyRepo.Put(cc.cache, key, value)
+	return cc.EvictionPolicyRepo.Put(cc.Cache, key, value)
 }
 
 func (cc *CacheController) Get(key string) (error, interface{}) {
-	return cc.evictionPolicyRepo.Get(key)
+	return cc.EvictionPolicyRepo.Get(key)
 }
 
 func (cc *CacheController) Remove(key string) error {
-	return cc.evictionPolicyRepo.Remove(key)
+	return cc.EvictionPolicyRepo.Remove(key)
 }
