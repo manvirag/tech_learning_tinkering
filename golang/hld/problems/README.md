@@ -115,3 +115,8 @@ amount of data transfer per second.
 → **High-level design (API + diagraming)** <br>
 → **Deep dive into the design and its components.** <br>
 → **Identify bottlenecks and scalability.** <br>
+
+
+
+
+
