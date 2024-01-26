@@ -2,6 +2,11 @@ Template:
 
 Decision Making | Trade-off | Which to select and why to select. | Reduce code
 
+
+![alt text](img.png)
+
+
+
 **Step:**
 
 1. **Functional Requirements**.
