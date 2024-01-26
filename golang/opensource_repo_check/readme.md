@@ -12,7 +12,9 @@
 10. https://github.com/piotrkowalczuk/promgrpc
 11. https://github.com/src-d/proteus
 12. https://github.com/gin-gonic/gin
-13. Docker , kubernetes , uber-go, google
+13. https://github.com/prometheus/prometheus
+14. https://github.com/dgraph-io/dgraph
+16. Docker , kubernetes , uber-go, google
 
 
 Went through:
