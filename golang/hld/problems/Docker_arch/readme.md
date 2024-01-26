@@ -26,3 +26,7 @@ Here the client is our computer. Docker host is docker desktop
 
 6. Docker volume.
     1. If container is deleted then that save memory is also deleted. So this is the concept  to map our pesist storage to container. So that even if it stop then data will be there.
+
+
+.............................................................
+https://hub.docker.com/repository/docker/manvirag/learning_docker/general
