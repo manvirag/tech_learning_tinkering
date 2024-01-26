@@ -128,7 +128,7 @@ amount of data transfer per second.
 
 5. **High-level design (API + diagraming)** <br>
 6. **Deep dive into the design and its components.** 
-   1. This can be its database model and database design.
+   1. This can be its data model designing and database design.
    2. This can be its api design.
    3. This can be its low level implementation.
    4. This can be any particular component.
@@ -148,6 +148,16 @@ amount of data transfer per second.
    2. Bandwidth Amount of data transfer.
    3. Storage -> for a particular year.
    4. Ram per-day ( Cache ).
-6. Design basic. [fulfilling requirement]
-7. Deep-dive particular part.
-8. Identify bottlenecks and scalability
+   5. Sample
+
+    | Type                     | Estimate          |
+    |--------------------------|-------------------|
+    | Daily active users (DAU) | 200 million       |
+    | Requests per second (RPS)| 12K/s              |
+    | Storage (per day)        | ~500 TB           |
+    | Storage (10 years)       | ~1,825 PB         |
+    | Bandwidth                | ~5.8 GB/s         |
+
+   6. Design basic. [fulfilling requirement]
+   7. Deep-dive particular part.
+   8. Identify bottlenecks and scalability
