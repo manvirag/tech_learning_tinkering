@@ -42,7 +42,17 @@ Decision Making | Trade-off | Which to select and why to select. | Reduce code
     → DNS domain name system. <br>
 
 
-3. **Data Estimations.**
+3. **Estimation and Constraints**
+
+   Estimate the scale of the system we're going to design. It is important to ask questions such as:These questions will help us scale our design later.
+
+   1. "What is the desired scale that this system will need to handle?"
+   2. "What is the read/write ratio of our system?"
+   3. "How many requests per second?"
+   4. "How much storage will be needed?"
+   
+
+4. **Data Estimations.**
 
     The back of the envelope estimation:
     
@@ -111,12 +121,24 @@ amount of data transfer per second.
 | 99.9999 | 31 seconds |
 
 
--> **Ask the interviewer about the trade-off of CAP** <br>
-→ **High-level design (API + diagraming)** <br>
-→ **Deep dive into the design and its components.** <br>
-→ **Identify bottlenecks and scalability.** <br>
+5. **High-level design (API + diagraming)** <br>
+6. **Deep dive into the design and its components.** 
+   1. This can be its database model and database design.
+   2. This can be its api design.
+   3. This can be its low level implementation.
+   4. This can be any particular component.
+7. **Identify bottlenecks and scalability.** <br>
 
 
 
 
+..............................................................................
 
+1. Understand Problem.
+2. Functional Requirements.
+3. Non-functional Requirements.
+4. Estimation and Constraints Requirements. 
+5. Estimation.
+6. Design basic. [fulfilling requirement]
+7. Deep-dive particular part.
+8. Identify bottlenecks and scalability
