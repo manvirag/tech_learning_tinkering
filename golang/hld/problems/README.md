@@ -139,6 +139,10 @@ amount of data transfer per second.
 3. Non-functional Requirements.
 4. Estimation and Constraints Requirements. 
 5. Estimation.
+   1. Traffic Read/Write requests.
+   2. Bandwidth Amount of data transfer.
+   3. Storage -> for a particular year.
+   4. Ram per-day ( Cache ).
 6. Design basic. [fulfilling requirement]
 7. Deep-dive particular part.
 8. Identify bottlenecks and scalability
