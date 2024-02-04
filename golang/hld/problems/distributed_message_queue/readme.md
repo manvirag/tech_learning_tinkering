@@ -18,9 +18,9 @@ Event streaming platform are distributed message queue with extra features like 
 5. Design deep dive. 
    1. Data storage
    2. Message data structure.
-   3. Batching 
-   4. Flow. Push/Pull Method. 
-   5. Consumer Re-balancing [ Skip ]
+   3. Batching
+   4. Push/Pull Method. 
+   5. Consumer Re-balancing [ ***Skipping*** ]
    6. State storage, metadata storage and zookeeper. 
    7. Replication and in-sync replica. 
    8. Data delivery semantics.
@@ -74,7 +74,36 @@ Let's discuss about storage and coordination service in brief.
 
 
 
-#### Deep-dive High level design
+### Deep-dive High level design
+
+
+#### 1. Data storage:
+
+Options: Sql, Nosql, Files.
+
+Let's find out traffic pattern first :-
+
+- Read and Write heave.
+- High data retention.
+- Sequential access of data.
+- No delete or update operations.
+
+
+Quoting:
+
+Database can handle the storage requirements. But they ain't ideal because it is hard to design a database that supports both write-heavy and read-heavy access patterns at a large scale.
+
+
+Used Solution:
+
+***Write Ahead Log ( WAL )*** : Its a plain file where new entries are appended to ***append-only*** log
+
+#### 2. Message structure
+
+![alt_text](./images/img_4.png)
+
+
+
 
 
 
