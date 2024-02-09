@@ -100,12 +100,34 @@ Curious Doubts:
    2. long polling ref: https://medium.com/@mhrlife/long-polling-with-golang-158f73474cbc
    3. websocket package: https://pkg.go.dev/golang.org/x/net/websocket
 2. in k8 will those multiple ws server be pod ? and how one webserver communicate with other. Or Check its implementation in golang.
-3. Also how are we maintaining order suppose old message delay by network but new not on ws server?
+   1. Not possible with pod. But yes suppose we have 2 ws servers. Then each can be k8 deployment separately. Means server1 has pods replica and server2 also have its pods replica.
+3. How are we maintaining order suppose old message delay by network but new not on ws server?
+   1. Good question . One simple solution is instead of sync ws servers connect async with the help of message queue that maintaining the orders.
+      ![alt_text](./images/img_9.png)
+   2. But it also has its own challenges. How would you handle server go down challenges ?
+   3. Its better to have previous message Id, and will maintain this data in user mobile. On conflict it will resolve on client side.
+      ![alt_text](./images/img_10.png)
 4. How are we handling bombarding on ws service by group or other.
+   1. Point 3 solution can also work here. but as discussed it has major challenges.
+   2. One way is to do buffering/batching send message in batch instead of immediately.
 5. what if both user send message and immediately go offline
+   1. I mean both side messages will go in db and when get online and send them ?   
 6. what if user b gets online before saving to message service (initially it was offline). how ws service know to hit again or not. [read-after-write]
+   1. Yes this might cause but frequency would be very very less. It will solve in retry with client side. [ below image after saving to db also made async ]
+      ![alt_text](./images/img_11.png)
 7. how do heartbeat really implemented , that helps to get about online presence different options.
+   1. As alex xu said client send request to server on a internal , if not get request then its offline. For chat server we can increase internal. Since it won't much affect it.
+   2. TBU
 8. how to implement , service manager. [ This looks general pattern like zookeeper. ]
-9. In group its fan out right ? do we have any improve on this ?
-10. what about read and write amplification ?
-11. why are you using cassandra , what is cassandra than mysql. and tell the tables details and structure.
+   1. TBU
+9. what about read and write amplification ?
+   1. Push cause write amplification and pull cause read amplification.
+   2. The problem with pushing is that it converts one external request (one message) into many internal messages. This is called Write Amplification. If the group is large and active, pushing group messages will take up a tremendous amount of bandwidth. 
+   3. The problem with pulling is that one message is read over and over again by different clients (Read Amplification). Going along with this approach will surely overwhelm the database.
+10. In group its fan out right ? do we have any improve on this ? like it can also be pull or push way like in newsfeed.
+    1. Pushing won't be good incase of large member and high active group. In this case we can use pull method, client will pull the messages. and in other case less member and less active and do pull method. .
+       ![alt_text](./images/img_12.png)
+11. why are you using cassandra not other. and tell the tables details and structure.
+    1. Information to be stored: User, user online status, user group , user message.
+    2. 
+    
