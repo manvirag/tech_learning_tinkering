@@ -107,20 +107,20 @@ like shard1: [ a, b ] and shard2: [ c, w, ,x, y]
 
 ![alt_text](./images/img_7.png)
 
-
-
-
-
-
-
-
-
-
-
- 
-
-
 #### Reference:
 
 1. System design alex xu.
 2. https://systemdesignprep.com/team
+
+
+#### Curious Doubts
+
+1. What was the reasoning to decide the database ? why only nosql not other. If its a nosql then which one are you using ?
+   1. There are 3 storage here.
+   2. Redis (Trie cache): cached data , Nosql (trie db): persist of cache , Log: this is delta with the help of this will update nosql. 
+   3. Reason is it is [``Read heavy``]. sql hard to scale and no need of acidic property here.
+2. What do you mean by analytics logs, i mean what are its internal implementation . is it file or what  ? and what is aggregated data ? is it database or live data or what  ?
+   1. These are nothing but the logs file store in s3, and these can be fetch and sample or analytic. Will see more in google-analytics system design 
+3. How can be implement in go that shard manager ?
+   1. [``TBU``] This is kinda same like zoo-keeper, master-slave, service-discovery, distributed-chat-server manager. Will implement these
+
