@@ -104,12 +104,12 @@ In the Pull Model, the news feed is generated during read tie. It is on demand.
 
 1. In practice a hybrid approach is used. For users who have many friends a pull method is used while for other users a push method is used. This distributes the load evenly.
 2. The Fanout service, first fetched the friend IDs from a graph database like neo4J. The friend info is retrieved from the user cache if available in cache or from user database. We can use Least Frequently used method for updating our cache. A cache like Reddis can be used here.
-3. The fanout service fetches data from from the message queue and stores news feed in a news feed cache like reddish. WIth <post_id, user_id> in the mapping table
+3. The fanout service fetches data from the message queue and stores news feed in a news feed cache like reddish. WIth <post_id, user_id> in the mapping table
 
 
 
 ### Final Design:
-
+         
 We have mainly three internal services :
 
 - Post Service : Publish Post
@@ -117,3 +117,20 @@ We have mainly three internal services :
 - News Feed Service : Retrieve news feed for user
 
 ![alt_text](./images/img_1.png)
+
+
+#### Curious Doubts
+
+1. How are we handling video and image ? like how do you save image and video from frontend ?  Since http doesn’t support like image etc.
+- Wow you are so smart dude.  Basics acche karo. See below about http.
+- ````HTTP, or Hypertext Transfer Protocol, is a set of rules for transferring data on the internet. With POST requests, you can send various types of data, like text, JSON (which is a way to structure data), images, videos, audio files (like mp3), and pretty much any other type of file. When a server receives a POST request, it can respond with different types of data as well. It could send back HTML for a web page, JSON for structured data, images, videos, audio files, zip files, or any other type of file. So basically, HTTP allows computers to send different types of data back and forth, like web pages, files, and structured information, using a standardized set of rules.````
+- Action Item -> Learn about protocol in computer network and different layers conceptually and its tree map with writing code in golang if possible.
+![alt_text](./images/img_2.png)
+2. How to deal with graph db in Go or know about graph db as much you know about sql ?
+- Apologies , will deep dive later on.
+
+3. Tell details about user table , post table, follower and following table or relation table, news feed table etc. and which database we are using. And also how we are saving in cache.
+- 
+4. How do we get to know when to use push/pull , implementation wise. Like from following or how at the run time. [ in short how do we implements hybrid method ]
+
+- 
