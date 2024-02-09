@@ -124,13 +124,58 @@ We have mainly three internal services :
 1. How are we handling video and image ? like how do you save image and video from frontend ?  Since http doesn’t support like image etc.
 - Wow you are so smart dude.  Basics acche karo. See below about http.
 - ````HTTP, or Hypertext Transfer Protocol, is a set of rules for transferring data on the internet. With POST requests, you can send various types of data, like text, JSON (which is a way to structure data), images, videos, audio files (like mp3), and pretty much any other type of file. When a server receives a POST request, it can respond with different types of data as well. It could send back HTML for a web page, JSON for structured data, images, videos, audio files, zip files, or any other type of file. So basically, HTTP allows computers to send different types of data back and forth, like web pages, files, and structured information, using a standardized set of rules.````
+- For keeping data we can use S3 object storage and its link in our database.
 - Action Item -> Learn about protocol in computer network and different layers conceptually and its tree map with writing code in golang if possible.
 ![alt_text](./images/img_2.png)
 2. How to deal with graph db in Go or know about graph db as much you know about sql ?
 - Apologies , will deep dive later on.
 
 3. Tell details about user table , post table, follower and following table or relation table, news feed table etc. and which database we are using. And also how we are saving in cache.
-- 
+
+#### User table: 
+
+Usecase:
+1. Save newly created user and its account information.
+2. Get the user information with userId [ bulk ]
+
+```json
+{
+   "userId": "",
+   "userName": "",
+   "name": "",
+   "profilePicUrl": "",
+   "..."
+}
+```
+
+Since we don't have to use any transaction and can have lots of user need scalability etc. Second information have high frequency.
+Maybe we can use column database cassandra. or else key store db would also work fine.
+
+
+#### Post table:
+
+ ```json
+{
+   "id": "<global unique id",
+   "postPicturesUrl": [],
+   "postDescription": "",
+   "creator" : "<userId>",
+   ...
+}
+```
+
+Have similar usecaes like user , can use same type of db here as well.
+
+#### Relation table:
+
+Usecase:
+
+1.  Find all follower id of user.
+that's it.
+
+TBU
+
+
 4. How do we get to know when to use push/pull , implementation wise. Like from following or how at the run time. [ in short how do we implements hybrid method ]
 
-- 
+- This is tough to answer its depend upon on business requirements , may be one simple solution is to have threshold of followers, with which we can take decision.
