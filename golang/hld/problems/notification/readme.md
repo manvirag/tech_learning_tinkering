@@ -127,7 +127,9 @@ Is it possible to receive a notification exactly once?
 
 The answer is no. It is not possible.
 
-The distributed nature of the entire system could result in a duplicate notification. For instance – let’s say service 1 pushed the 10 events in the queue and before committing the status it fails. Next time when it comes up, it checks the state and retries 10 events again. That way those 10 events will be duplicated. In short, duplication is not possible at the producer level. However, duplication could be minimized.
+In short, duplication is not possible at the producer level. However, duplication could be minimized.
+
+More Reading: https://bravenewgeek.com/you-cannot-have-exactly-once-delivery/
 
 For minimizing duplicates, we could implement a de-duplication mechanism before sending a notification to the customer.
 
@@ -214,3 +216,17 @@ Notification
 ![alt_text](./images/img_8.png)
 
 Today we designed a complete scalable notification system that could be used to send millions of notification across the globe.
+
+
+
+
+#### Childish Doubts
+
+1. ```In short, duplication is not possible at the producer level```. Why ?
+- bhai maan le alex xu ne bataya, else read https://bravenewgeek.com/you-cannot-have-exactly-once-delivery/
+
+- Solution: Tell me, what if ack from consumer got drop because of network failure ? Now ? One way to make different async call and call consumer to check ,but then consumer will have to maintain state. Its better to make consumer idempotent then. Bye
+
+2. Tell about almost one , at least once delivery system and how they are possible etc.
+- At least one: get ack back from consumer else retry infinitely
+- At most one: do not need ack from consumer just send and update offset.
