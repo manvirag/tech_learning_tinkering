@@ -91,3 +91,21 @@ References:
 6. https://www.codekarle.com/system-design/Whatsapp-system-design.html
 7. https://towardsdatascience.com/ace-the-system-interview-design-a-chat-application-3f34fd5b85d0
 
+
+Curious Doubts:
+
+
+1. how to implement websocket, polling , long polling golang
+   1. This can be checked at time of implementation though. 
+   2. long polling ref: https://medium.com/@mhrlife/long-polling-with-golang-158f73474cbc
+   3. websocket package: https://pkg.go.dev/golang.org/x/net/websocket
+2. in k8 will those multiple ws server be pod ? and how one webserver communicate with other. Or Check its implementation in golang.
+3. Also how are we maintaining order suppose old message delay by network but new not on ws server?
+4. How are we handling bombarding on ws service by group or other.
+5. what if both user send message and immediately go offline
+6. what if user b gets online before saving to message service (initially it was offline). how ws service know to hit again or not. [read-after-write]
+7. how do heartbeat really implemented , that helps to get about online presence different options.
+8. how to implement , service manager. [ This looks general pattern like zookeeper. ]
+9. In group its fan out right ? do we have any improve on this ?
+10. what about read and write amplification ?
+11. why are you using cassandra , what is cassandra than mysql. and tell the tables details and structure.
