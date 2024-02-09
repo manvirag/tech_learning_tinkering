@@ -16,10 +16,10 @@ Event streaming platform are distributed message queue with extra features like 
 3. Consumer Groups. ✅
 4. High level design. ✅
 5. Design deep dive. 
-   1. Data storage
-   2. Message data structure.
-   3. Batching
-   4. Push/Pull Method. 
+   1. Data storage ✅
+   2. Message data structure.✅ 
+   3. Batching ✅
+   4. Push/Pull Method.✅ 
    5. Consumer Re-balancing [ ***Skipping*** ]
    6. State storage, metadata storage and zookeeper. 
    7. Replication and in-sync replica. 
@@ -83,7 +83,7 @@ Options: Sql, Nosql, Files.
 
 Let's find out traffic pattern first :-
 
-- Read and Write heave.
+- Read and Write heavy.
 - High data retention.
 - Sequential access of data.
 - No delete or update operations.
@@ -98,21 +98,64 @@ Used Solution:
 
 ***Write Ahead Log ( WAL )*** : Its a plain file where new entries are appended to ***append-only*** log
 
+![alt_text](./images/img_5.png)
+Further Reading: 
+
+- https://www.youtube.com/watch?v=uHvR7nOu5m4
+- https://martinfowler.com/articles/patterns-of-distributed-systems/write-ahead-log.html
+- https://www.freecodecamp.org/news/design-patterns-for-distributed-systems/#write-ahead-log-pattern
+
+2. Other state and metadata can be in cache and nosql
+
+
 #### 2. Message structure
 
 ![alt_text](./images/img_4.png)
 
+Key is used to find the partition. And other field have their meaning as their name.
+
+#### 3. Batching
+
+This is way to improve the performance.
+
+Batching: -> instead of calling immediately after we get event. We try to batch and make bulk call that will improve performance.
+
+This can be improved:
+
+1. Producer level -> instead of sending message one by one send in batch.
+2. Logging level -> instead of immediately add message log write in batch. etc
+
+Cons: Its trade off between latency and performance.
+
+#### 4. Push/Pull
+
+In publish-subscribe model.
+
+We have two ways.
+
+1. Either broker itself call each consumer like SNS who are subscribed to particular topic. [ ``Push``].
+   1. Pros:
+      1. Low latency: immediate push.
+   2. Cons:
+      1. It can result in bombard if consumer has less consumption rate than events.
+2. Either consume continuously poll the events from broker. [`Pull`]
+   1. Pros:
+      1. Consumer control the rates.
+      2. Best suitable for batch processing
+   2. Cons:
+      1. Checking event where there is no messages.
+
+Mostly messaging queue implemented with pull.
+
+#### 5. State storage, metadata storage and zookeeper.
 
 
+#### 6. Replication and in-sync replica.
 
 
-
-
-
-
-
-
-
+#### 7. Data delivery semantics.
+   
+   
 
 Reference:
 1. System design alex xu.
