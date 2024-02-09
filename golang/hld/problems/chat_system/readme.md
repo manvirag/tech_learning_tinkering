@@ -129,5 +129,61 @@ Curious Doubts:
        ![alt_text](./images/img_12.png)
 11. why are you using cassandra not other. and tell the tables details and structure.
     1. Information to be stored: User, user online status, user group , user message.
-    2. 
-    
+    2. Usecases:
+       1. User Table: 
+          1. Save when new account is created or update.
+          2. Get the bulk user information with user ids. [ ``Read heavy`` ] 
+          3. For this can use key store or cassandra no sql. Since won't any issue in scalability. 
+          ```json
+              {
+                 "id": "",
+                 "userId": "",
+                 "phoneNumber": "",  
+                 "name": "",
+                 "profilePictureUrl": "",
+                 "settings": ""
+              }
+          ```
+       2. User Online status:
+          1. updated user status. [``Write heavy``]
+          2. Get the bulk user status with user ids. [ ``Read heavy`` ]
+          4. Since it is both read and write heavy. Same here nosql can be used.
+          ```json
+              {
+                 "id": "",
+                 "userId": "",
+                 "timestamp": "",  
+                 "status": ""
+              }
+          ```
+       3. User Group:
+          1. updated user group. 
+          2. Get the users in group. [ ``Read heavy`` ]
+          4. Since it is both read and write heavy. Same here nosql can be used.
+             ```json
+                 {
+                    "id": "",
+                    "userId": "",
+                    "groupId": ""
+                 }
+             ```
+       4. User Message one to one and in group:
+          1. [ ``Read heavy and write heavy`` ] two tables 
+             ```json
+                 {
+                    "groupMessageId": "",
+                    "groupId": "",
+                    "senderId": "",
+                    "timestamp": "",
+                    "message": ""
+                 }
+             ```
+            ```json
+                 {
+                    "MessageId": "",
+                    "senderId": "",
+                    "receiverId": "",
+                    "timestamp": "",
+                    "message": ""
+                 }
+             ```
