@@ -42,7 +42,6 @@ Get payment from buyer and put in our bank ( Not seller yet )
 
 #### Payment Service:
 
-
 Responsibility:
 - Check and verification of events. [ This is POST request with event in request ]
 - Save payment event in db with its status and call executer.
@@ -58,14 +57,44 @@ Sample Event [ It will be in bulk ]:
   "amount": "",
   "orderMetadata": {}, // for payIn type, will help us to know it was for what product etc ?
   "sellerDetails": {}, // for payOut that will help us to send money to seller
-   ....
+  "statue": ""
 }
 ```
 Since we don't have to scale our database much and payment service will have structural event.
 We will be using the SQL for this.
+![alt_text](./images/img_1.png)
+
+#### Payment Executor:
+
+- Will get the valid event for payment and will call external payment service provider to get it done.
+- - It has its own database will store payment details with global unique paymentId. That can be used as reference and receipt. After it got success.
+- Same, SQL can be used here.
+
+```json
+{
+  "paymentId": "",
+  "amount": "",
+  "recipantAccountInfo": "",
+  "timestamp": ""
+}
+```
+
+#### Payment Service Provider:
+
+- External, That will move money from buyer credit card to our system account ( for e.g. flipkart account ). That's it.
+- Famous PSP -> Stripe, Visa This is itself a complex system that has to be taken care separately.
+- Check out them separately. These also give the UI for taking credit card information.
+
+![alt_text](./images/img_2.png)
 
 
+#### Pay-out flow
 
+- Once the item is delivered. Instead of pay-in . We get. pay-out payment event with account information of seller.
+- We same initiate payment with pay-out PSP ( for e.g. Tipalti etc). That will transfer the amount from our bank to seller account.
+
+
+### Fault tolerant and consistent deep dive
 
 
 
