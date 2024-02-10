@@ -37,6 +37,8 @@ Design the Payment system.
 
 ### 5. Deep Dive High Level Design One By One:
 
+![alt_text](./images/img_5.png)
+
 #### Pay-In flow
 Get payment from buyer and put in our bank ( Not seller yet )
 
