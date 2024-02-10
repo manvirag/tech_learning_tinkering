@@ -175,6 +175,7 @@ Above user click and another case both will be handled in this way.
 - How to make it as a service . So that can be used at any place.
 - Login flow and consider this example and deep dive it.
 - System design if PSP.
+- Doubt section remain
 
 ### Reference:
 
