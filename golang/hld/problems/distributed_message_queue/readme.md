@@ -21,9 +21,9 @@ Event streaming platform are distributed message queue with extra features like 
    3. Batching ✅
    4. Push/Pull Method.✅ 
    5. Consumer Re-balancing [ ***Skipping*** ]
-   6. State storage, metadata storage and zookeeper. 
-   7. Replication and in-sync replica. 
-   8. Data delivery semantics.
+   6. State storage, metadata storage and zookeeper.✅
+   7. Replication and in-sync replica.✅
+   8. Data delivery semantics.✅
 
 #### Note we guarantee the order in partition level of a topic.
 
@@ -149,13 +149,77 @@ Mostly messaging queue implemented with pull.
 
 #### 5. State storage, metadata storage and zookeeper.
 
+Both state storage and metadata storage are kept in zookeeper.
+
+State Storage:
+- Consumer state information about its partition and offset.
+- Database key value store -> Zookeeper
+
+Metadata storage:
+- Topic information including no. of partitions, retention period , distribution of replicas etc.
+- Database key value store -> Zookeeper
+
+Zookeeper
+
+- hierarchical key-value store. It is commonly used to provider a distributed configuration management service.
+
+- Metadata and state storage are moved to zookeeper.
+- Broker now maintain the data storage for messages only.
+- zookeeper helps with leader election of the broker cluster.
 
 #### 6. Replication and in-sync replica.
+
+- As of now we discussed that one topic have multiple partition to have more scalability, but what about reliability ? 
+- That's why here comes replication of partitions.
+- There is a config which keep replication count.
+- For e.g. if its value is 2 . It means all the parititions of  topic will be replicated twice in different brokers
+- Among all the replication , one will be leader that will do all work and other will be in sync with leader.
+
+![alt_text](./images/img_7.png)
+
+In-sync replicas [ ISR ]:
+
+Those partition which are in sync with leader data.
+
+Support replica count is 5 and in-sync replica is 4. It means out one partition doesn't have the latest information.
+
+This is like similar problem in multi-master replication.
+
+Here's a trade off between performance and durability and that dependent on the acknowledge counts from other replica, while putting messages in leader partition.
+And different configurations have its own pros and cons.
+
+If:
+
+- ACK=all , all must be in sync for success 
+- ACK=1 , 
+- ACK=0 ,
 
 
 #### 7. Data delivery semantics.
    
    
+- At most one: No ack needed from broker and consumer. Usecases: Monitoring metrics, where small amount of loss is acceptable
+   ![alt_text](./images/img_8.png)
+
+- At least one: Infinite retry from producer to broker and broker to consumer. May have duplicate. De-duplication can be done on consumer side
+ 
+
+- Exactly one : I guess not 100% sure whether its possible or not.
+
+
+#### 8. Partition Balancing
+
+- Increase partition (Scale topic) : Old messages won't get shift. Only new messages we will consider new partition and shift the corresponding loads. ( producer has to have this information , so that can send message accordingly. This message won't go in same partition now. Producer responsibility ).  
+- Decrease partition : First will consume all the messages in this partition and destroy or after configured retention period passes. Parallely send the traffic in remaining partition only. But won't shift old messages from this partition to other.  ( Now producer will send only in remaining shards. Producer responsibility).
+
+#### 9. Broker Failure Recovery.
+
+- What if one broker down ? or scale ? 
+
+Broker Down: ( always keep buffer in nodes, not 100% utilized it . So that in case of worst we save ourself )
+- Broker controller detect and will create the another distribution plan with remaining nodes. ( every partition will have its leader)
+- The new partitions in remaining broker will act as follower and will catch with leader.
+
 
 Reference:
 1. System design alex xu.
