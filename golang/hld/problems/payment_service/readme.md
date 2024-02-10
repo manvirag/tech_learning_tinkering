@@ -75,7 +75,8 @@ We will be using the SQL for this.
   "paymentId": "",
   "amount": "",
   "recipantAccountInfo": "",
-  "timestamp": ""
+  "timestamp": "",
+  "status": ""
 }
 ```
 
@@ -90,17 +91,90 @@ We will be using the SQL for this.
 
 #### Pay-out flow
 
-- Once the item is delivered. Instead of pay-in . We get. pay-out payment event with account information of seller.
+- Once the item is delivered. Instead of pay-in . We g qet. pay-out payment event with account information of seller.
 - We same initiate payment with pay-out PSP ( for e.g. Tipalti etc). That will transfer the amount from our bank to seller account.
+- One more thing for pay-out service. We would like to add one more service which will help to update the seller information about the money which has to be transfered etc.
+- Since there can be multiple pay-in for a single receipant so it would be easy to club and sent details to recipent etc usecases.
 
+  ![alt_text](./images/img_3.png)
 
 ### Fault tolerant and consistent deep dive
+
+How to make our system consistent and handle failure. What if user click twice or what if payment fails etc.
+
+Before going in this let's understand one more service. That helps in consistency.
+
+#### Ledger
+
+- This is important part in post-payment analysis such as total revenue etc.
+- This is a important design principle in ledger system is double-entry principle ( or double-entiry bookkeeping ).
+- This principle says that sum of all transaction entries must be zero.
+
+```sql
+ Account | Debit | Credit
+ buyer   |  1 $  |
+ seller  |       | 1$          
+```
+
+More reading: https://developer.squareup.com/blog/books-an-immutable-double-entry-accounting-database-service/
+
+#### Reconciliation for consistency
+[ Doubtful , Also its very high level ]
+
+According to alex xu:
+
+- There might be inconsistency between the amounts we have in different table for example in wallet and ledger.
+- For solving this, we use reconciliation . In this PSP send the settlement file to our payment service. With the help of this file we make our system consistent.
+- Reconciliation service parse settlement file and compare with ledger. After comparing there can be three scenerios.
+- After compare if not any issue then its okk.
+- Else if either its possible to settlement by automation then -> Enginner can solve it with automation system.
+- Else finance team will check manually if not possible to settlement or possible to settlement but not by automation.
+
+
+#### Handling delay 
+
+- What if PBP taking long time to do payment.
+- This can be happened for like in case of high risk payment require human to review it. etc cases.
+- For this with the help of db we will maintain the state of payment.One we receive pending status from PSP ( Communication with them are mostly sort of asyn ). And on UI we can show async status. Means user can switch to another flow of system and can check status later on.
+- Above this will be handled by us. Once payment is success. PSP will send us a request [ Webhook ].
+- This will tell use about the payment information and same we will update on our UI.
+
+#### Handling failure and repetition idempotency
+
+- handling failure we can use retry-queue and dead-letter-queue . To make our system more resilient.
+- payment service will call if its fail then again put in retry queue if still failing then after threshold we can put in dead letter queue and check manually.
+![alt_text](./images/img_4.png)
+
+#### Exactly-Once delivery and idempotency
+
+- What if user click twice ? or if payment success but fail acknowledging payment service ?
+- As already discussed without maintaining state , its not possible to have exactly one delivery. [ Not know proof ]
+- One way to solve this problem is:
+- Infinite Retry + Idempotency with maintaining unique payment Id.
+- Retry can be done with exponential backoff of x -> 2*x -> 4*x ....
+
+Above Retry will confirm atleast one delivery.
+
+Now for exactly 
+
+- On our payment service we can have unique id from client. this will help use to already done payment. 
+- PSP contract have idempotency key. So communication between payment service and PBP will also we save.
+- Because if multiple request come on PSP with same key then it won't do thing again.
+
+Above user click and another case both will be handled in this way.
+
+
+
+
+
 
 
 
 ### Follow Up:
 
-How to make it as a service . So that can be used at any place.
+- How to make it as a service . So that can be used at any place.
+- Login flow and consider this example and deep dive it.
+- System design if PSP.
 
 ### Reference:
 
