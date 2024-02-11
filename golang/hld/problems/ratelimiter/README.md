@@ -48,6 +48,17 @@
 We can also use some database . It's a tradeoff between latency and infrastructure cost.
 
 ### Deep dive in design
+![alt_text](./images/img_4.png)
+1. How can we write rate limiting rule.
+   TBU MORE
+   1.  Store in disk as a file and get while processoing.
+2. What about throttled requests ? 
+   1. Send message to client with request headers and status code. 429 too many requests.
+   2. Also send other informations about rate-limiting threshold, rate-limit waiting time ( after that client will have to retry )
+3. What in distributed environment. when same request came to different pods. but summing up is greater than threshold.
+   1. Redis should be global and command for all pods.
+   2. Put locks on update the counts. To safe from race condition. 
+
 
 #### References
 1. Alex xu system design volume 1.
