@@ -109,7 +109,8 @@ But Kind of all sso have save flow.
 5. IDP send us decided response, with our hook api.
 6. We extract information and validate as per protocol and authenticate user.
 
-For more details about the saml protocol can refer differently
+For more details about the saml protocol can refer differently: \
+https://medium.com/@srkasthuri/demystifying-saml-misconfigurations-3874aa1097ff  or any other refercen 
 
 
 
