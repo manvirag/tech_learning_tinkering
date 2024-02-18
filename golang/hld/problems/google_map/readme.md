@@ -85,6 +85,81 @@ https://medium.com/@sidgangs99/developing-google-maps-3c3320a365d
 
 ### Deep dive in
 
+
+#### Location Service ( capture the user live location ):
+
+![alt_text](./images/img_8.png)
+
+Let's discuss the database of location service. As we discussed already database can be cassandra because of our usecase.
+
+Let's see how's user model can be. User id can be primary key. This will help to get the user live location efficiently.
+
+Now this location service will send the events in kafka , so that other service can get the live location and do their operations like traffic update service, ML service , analytics etc.
+
+![alt_text](./images/img_7.png)
+
+#### Map rendering
+(When user opens map application , to showcase + when user zoom or shift the map around at that particular zoom . We fetch new images or tiles.)
+
+Since this data is huge can't be storable in any database.
+
+For this we can use the object storage like S3 which have images of the tiles at each zoom level and also CDN  backed by this S3.
+
+There can be async job which will update this . Since after some time we might get more coordinates or updated map etc. That will eventually update the CDN tiles.
+
+Further optimization: Use vector tiles. [ Check Separately ]
+
+#### Navigation Service:
+(To get the optimal route from source to destination to the user)
+
+![alt_text](./images/img_9.png)
+
+#### Geo Coding service 
+(help to find the coordinate with address): Its database can be simple cache with supporting database ( This is static might be updated on async).
+
+Data model : (Place text) : (lat,long) in redis and db.
+
+#### Route Planer 
+
+This the service which take the source and destination coordinates and the routes between them.
+
+This eventually call the Ranker, Shortest Path and ETA service to get all these information and send back to client.
+
+#### Shortest Path Service:
+
+This is the main service , which find out the top k shorted path from source to destination without consider other factors like traffic or etc. Its tell out of all possible valid routes.
+
+It has its own database which is Routing Db.  Since this data is kind of static. This can also be cache according to the routing tile key.
+
+Since the routing tile data is not complete processed for the shortest path algorithm to works. Since we get a lot of road data sets.
+For solving this **routing tiling processing service** is used. This is run offline and put the processed tiles to object storage i.e S3.
+This also update the new data in s3.
+
+
+Overview of algorithm:
+
+1. The algorithm receives the origin and destination in lat and long , then its changes into the geohashing and run the algorithm.
+2. [Not clear much about this]Algorithm start from the origin tile and fine the shortest paths within that tile, then find fetch other routing tiles on high zoom level or around.
+
+#### ETA service:
+
+- After getting data from the shortest path service, this service is used to get the time in each path with the consideration of other factors like traffic etc.
+- This service can be used to get ML service to predict the approx. time with factor considerations.
+
+
+#### Ranker Service:
+
+- This service received the path with their ETA.
+- This service with the help of factor given the user, sort these data in top k and return to the client.
+
+
+#### ETA service optimisation for adaptive ETA and rerouting
+
+- For this to be possible , we need to get the consideration of current live user locations and traffic situation and update it .
+- That's why there is another service which will take into all these active or live situation and update the traffic db which will eventually update and tell the client.
+- Client can be in websocket connect with these.
+- [ Take this up separately how to do this.]
+
 #### References:
 
 1. Alex xu system design vol 2
