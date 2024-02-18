@@ -183,7 +183,66 @@ Trip ID (`UUID`): ID of the requested trip.
 
 Result (`boolean`): Represents whether the operation was successful or not.
 
+#### Database
+Usecase:
 
+1. get user and drive information.
+2. save the ride.
+3. get geo hash.
+
+Since our data is structured, we can use sql.
+Also nosql cassandra can also be used.
+
+#### Cache Schema
+
+***Location truth cache***
+![alt_text](./images/img_3.png)
+This cache is the source of truth when it comes to user location. Phone apps send regular updates to maintain accuracy. If a user gets disconnected, its record expires in 30 seconds.
+
+***Driver proximity cache***
+![alt_text](./images/img_4.png)
+
+The proximity cache is crucial for nearby driver search. Given a location, we can use GeoHash to compute its location key and retrieve all drivers in the grid.
+
+#### Architecture
+
+With a clearer understanding of what data to store, now it's time for service-oriented designs!
+
+***Notification Service:*** whenever the backend needs to send information to the clients, the notification service is used to deliver the messages.
+***Trip Management Service:*** When a trip is initiated, this service is needed to monitor the locations of all parties as well as plan routes
+***Ride Matching Service:*** This service handles ride requests. It finds nearby drivers and matchmakes based on driver responses (either accept or decline)
+***Location Service:*** All users must regularly update their locations via this service.
+
+
+#### Deep dive
+
+
+1. ***How to efficiently look up nearby driver (proximity service. Also learn differently)***
+   Instead of computing the distance between the rider and every driver in the database, we can use a technique called GeoHash to convert the user's location to a unique key that corresponds to one cell in figure 7 and confine the search to a few adjacent cells only.
+
+![alt_text](./images/img_1.png)
+
+Therefore, we can use the following heuristic to quickly lookup drivers:
+
+1. Given a user location, compute its GeoHash from longitude and latitude.
+2. With the GeoHash key available, it's easy to compute the keys for the 8 nearby cells. (see this post)
+3. Query the Location service with all 9 keys; retrieve drivers in those cells.
+
+The accuracy of GeoHash is determined by the key length. The longer the key is, the smaller each cell would be.
+![alt_text](./images/img_2.png)
+
+
+2. ***Location Update***
+
+There are two tables in the cache — the location truth table and the driver proximity table.
+
+The usage of the location truth table is simple. The user's mobile app sends out its location as well as the user ID to the Location service every 5 seconds. Whenever a user's accurate location is needed, the system can query this table by user ID.
+
+![alt_text](./images/img_5.png)
+
+It is hard to remove drivers from their old cells. The implication is obvious; the same driver can appear in multiple cells because of the stale data.
+
+To deal with this problem, we could introduce a timestamp to each record. With timestamps, it is easy to filter out stale location data [ Has to check more ]
 
 #### Reference:
 1. https://github.com/karanpratapsingh/system-design?tab=readme-ov-file#uber
