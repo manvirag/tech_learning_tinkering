@@ -48,8 +48,10 @@ These are based on operation did by user and other some condition. That will eve
 #### Operational Transformation [ Has to be read separately ]
 Operational transformation is a set of complex algorithms, and its correct implementation has proved challenging for real-world applications. For example, the Google Wave team took two years to implement an OT algorithm.
 ![alt_text](./images/img_3.png)
-#### Conflict-free Replicated Data Type (CRDT) [ Has to be read separately ]
-The Conflict-free Replicated Data Type (CRDT) was developed in an effort to improve OT.
+#### Conflict-free Replicated Data Type (CRDT) [ Has to be read separately ] 
+video later: https://www.youtube.com/watch?v=B5NULPSiOGw
+
+The Conflict-free Replicated Data Type (CRDT) was developed in an effort to improve OT. 
 
 CRDTs ensure strong consistency between users. Even if some users are offline, the local replicas at end users will converge when they come back online.
 
