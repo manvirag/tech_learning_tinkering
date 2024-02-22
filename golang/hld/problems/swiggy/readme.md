@@ -22,7 +22,7 @@
 ![alt_text](./images/img.png)
 ### References:
 
-1. https://scaleyourapp.com/application-architecture/
+1. https://scaleyourapp.com/application-architecture/   [ GOAT ]
 2. https://www.youtube.com/watch?v=iRhSAR3ldTw&t=130s
 3. https://medium.com/almabetter/architecture-and-design-principles-behind-the-swiggys-delivery-partners-app-58646b19f1cb
 4. https://www.linkedin.com/pulse/system-design-food-delivery-app-zomatoswiggy-saral-saxena/
