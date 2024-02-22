@@ -58,7 +58,12 @@ OAuth is a set of rules that **allow you to share your data that you hold within
 4. client ->  spotify
 
 
-[ google and spotify already have internal connection for oauth. And spotify main the config on their side to have information like client id , secret, etc. ]
+[ google and spotify already have internal connection for oauth. And spotify maintain the config on their side to have information like client id , secret, etc. ]
+
+**Flow:**
+
+**->**  : means http request.
+
 - user -> client
 - client -> sign in with google button -> client server
 - client -> call google auth(with state(random key) and oauth config , check google doc ) to get redirected url. -> google page to get permission from user
@@ -116,3 +121,11 @@ https://medium.com/@srkasthuri/demystifying-saml-misconfigurations-3874aa1097ff 
 
 ![alt_text](./images/img_5.png)
 
+
+
+### Doubts:
+
+1. In credential based do the hashing algorithm is one directional ? and idempotent ? if not uni-directional then its might be guessable right ?
+- yes you are correct its uni-directional like SHA-256. Not possible to reverse it and generate same output with same input.
+2. In JWT if people have data ( userId, email etc.) would they be able to access ? 
+- Nope, there is third string which is signed by a secret key , and if is not signed we will reject it. And only server know this secret key.
