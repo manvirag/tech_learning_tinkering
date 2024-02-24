@@ -8,3 +8,4 @@
 8. graph data base.
 9. db - disk all -> cassandra, sql .
 10. protocols first principle.
+11. about the headers and their usecase in request and response.

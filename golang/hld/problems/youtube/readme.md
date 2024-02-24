@@ -106,8 +106,17 @@ Video Transcoding Responsibilities:
 5. Encoded video:
    1. It is the final out put . video_chunk_1.mp4
 
-References:
+#### References:
 1. Alex xu volume 1
+
+#### Doubts:
+
+1. what's the protocol used for uploading video ? since it will be long process and how do we do chunking ? First flow from ui to s3.
+- https, we create the chunk of file on frontend and upload on s3 with differen paths , and these according these path we fetch at the time of stream.
+2. How are we getting the chunks of video from CDN ?
+- it depends on the path every time we send the query according to timeline and we get that chunk only from cloudfront or from s3.
+- For e.g. below is list of request for chunk. 
+![alt_text](./images/img_9.png)
 
 
 Follow up:
