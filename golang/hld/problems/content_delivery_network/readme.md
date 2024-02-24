@@ -47,7 +47,9 @@ More detail → doc
 1. aws edge lambda , router 53, api-gateway, elastic load balancer
 2. nice playlist on aws: https://www.youtube.com/watch?v=AjlUFYnScBk&list=PL6XT0grm_TfgtwtwUit305qS-HhDvb4du&index=78
 
+[ TO BE 100% VERIFIED ]
 
+![alt_text](./images/img.png)
 
 
 
