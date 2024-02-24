@@ -229,3 +229,4 @@ Reference:
 
 1. Detail about zoo-keeper ( distributed coordination service ). is it database or what ? [ https://medium.com/@sureshpodeti/distributed-coordination-service-zookeeper-309ab626097d ]
 2. In short zookeeper is a key-value store, that allow us to store the config data in the reliable way ? how ?
+3. E.g. zookeeper, etcd
