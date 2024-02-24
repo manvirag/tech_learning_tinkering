@@ -41,3 +41,13 @@ More detail → doc
 **How does It work/fit in flow, I mean when the user hits a request on the browser how does it flow, get to know about CDN, etc?** 
 
 (My guess authoritative server keep cdn IP instead of main server , then its all sorted 🤔, or may be like having multiregion service IP and those  service fetch its near cdn)
+
+
+### Follow up:
+1. aws edge lambda , router 53, api-gateway, elastic load balancer
+2. nice playlist on aws: https://www.youtube.com/watch?v=AjlUFYnScBk&list=PL6XT0grm_TfgtwtwUit305qS-HhDvb4du&index=78
+
+
+
+
+
