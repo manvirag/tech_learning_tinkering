@@ -227,4 +227,4 @@ Reference:
 
 ### Follow up:
 
-1. Detail about zoo-keeper. is it database or what ?
+1. Detail about zoo-keeper ( distributed coordination service ). is it database or what ?
