@@ -5,7 +5,7 @@ Same others similar can be done like Airbnb, flight reservation, movie ticket bo
 ### Functional Requirements
 1. Show the hotel related page.
 2. Show the hotel room-related details page.
-3. Reverse a room.
+3. Reserve a room.
 4. Admin Panel update/add/delete the hotel or room information.
 5. Support overbooking feature. ( We allow 10% overbooking,this is used in reservation system by anticipating that some people will cancel the reservations.)
 
