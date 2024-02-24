@@ -223,3 +223,8 @@ Broker Down: ( always keep buffer in nodes, not 100% utilized it . So that in ca
 
 Reference:
 1. System design alex xu.
+
+
+### Follow up:
+
+1. Detail about zoo-keeper. is it database or what ?
