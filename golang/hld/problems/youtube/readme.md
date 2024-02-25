@@ -42,7 +42,7 @@ We are more interested in video stream and uploading part.
 
 #### Video streaming:
 
-- Fetching data from s3 everytime would be much efficient , better is to keep CDN for this and that will internally connect with s3. [ Note: CDN also incur cost. ]. Streaming protocol e.g. MPEG-DASH , Adove HTTPS dynamic stream etc. ( HDS ).
+- Fetching data from s3 everytime would be much efficient , better is to keep CDN for this and that will internally connect with s3. [ Note: CDN also incur cost. ]. Streaming protocol e.g. MPEG-DASH , Adobe HTTPS dynamic stream etc. ( HDS ).
 - Fetch complete video in one go would be inefficient , its better to break into the chunk of videos. 
 
 ![alt_text](./images/img_3.png)
@@ -120,7 +120,7 @@ Video Transcoding Responsibilities:
 
 
 3. protocol for video upload and video stream ?
-- upload: simply https, steam: already mentioned hds, etc.
+- upload: simply https, steam: already mentioned hds,HTTP Live Streaming (HLS) or Dynamic Adaptive Streaming over HTTP (DASH) etc.
 
 
 Follow up:
