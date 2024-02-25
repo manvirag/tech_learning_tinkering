@@ -9,3 +9,5 @@
 9. db - disk all -> cassandra, sql .
 10. protocols first principle.
 11. about the headers and their usecase in request and response.
+12. key store(dynamodb,redis) vs coloumn(cassandra) vs document db(dynamodb, mongo) vs sql vs graph (neo4j)
+13. chrome network table etc deep dive. that helps developer.

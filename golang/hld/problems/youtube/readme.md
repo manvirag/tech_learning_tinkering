@@ -119,6 +119,10 @@ Video Transcoding Responsibilities:
 ![alt_text](./images/img_9.png)
 
 
+3. protocol for video upload and video stream ?
+- upload: simply https, steam: already mentioned hds, etc.
+
+
 Follow up:
 - Add live-streaming
 - Doubts
