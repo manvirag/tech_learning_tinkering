@@ -12,3 +12,4 @@
 12. key store(dynamodb,redis) vs coloumn(cassandra) vs document db(dynamodb, mongo) vs sql vs graph (neo4j)
 13. chrome network table etc deep dive. that helps developer.
 14. ledger service payment system
+15. short path or routing tile in map, finding distance from one place to other.
