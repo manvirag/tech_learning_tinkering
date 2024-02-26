@@ -164,3 +164,8 @@ Overview of algorithm:
 
 1. Alex xu system design vol 2
 2. https://blog.bytebytego.com/p/design-google-maps
+
+
+#### Doubts:
+1. Not able to get the routing working on routing tiles. Deep dive more on it.
+2. what data base for storing routing data ?
