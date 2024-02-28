@@ -32,6 +32,12 @@
 ![img.png](img.png)
 
 ****3. cassandra ( column ).****
+- index based on LSM tree and SSTables.
+- 
+
+#### More details
+- https://kunal14053.medium.com/about-cassandra-1423223945b3
+- https://www.youtube.com/watch?v=xynXjChKkJc
 
 
 
