@@ -19,6 +19,8 @@
 - it also uses b-tree same like the mysql
 - mongodb keep a global unique id for each document , that's how here the joins work by keeping that unique document id in first document.
 - it also has acidic transactions.
+- real time analytics.
+- aws documentdb, (aws dynamodb also provide json support), mongodb, couchbase etc.
 
 #### More
 - https://medium.com/nerd-for-tech/all-basics-of-mongodb-in-10-minutes-baddaf6b6625
@@ -31,20 +33,35 @@
 
 ![img.png](img.png)
 
-****3. cassandra ( column ).****
+****3. cassandra, cosmosdb ( column ).****
 - index based on LSM tree and SSTables.
+- Cassandra works really well if you want to write and store a large amount of data in a distributed system, don’t care much about ACID with good performance.
 - 
-
+  
+- has to see, why write heavy , this index, how does it store a particular partition in a node.
+- still have confusion its whether key value store or column store.
 #### More details
 - https://kunal14053.medium.com/about-cassandra-1423223945b3
 - https://www.youtube.com/watch?v=xynXjChKkJc
 
+****7. dynamodb, cosmosdb, Redis ( key store ), cassandra.****
 
+- Only key-value store like hashing.
+- We can query with key only to get data , not any parameter of value.
+- value can have different data types.
+- mostly use for caching.
 
 ****4. graph ( graph ).****
 
+- Niche
+
 ****5. time series.****
+
+- Niche
 
 ****6. search engine.****
 
-****7. dynamodb, cosmosdb ( key store ).****
+- Niche - searching
+- Full-text Search Complexity: Searching vast amounts of text involves considering factors like relevance, word frequency, user preferences, and handling typos, which poses significant challenges.
+- Elasticsearch Solution: Elasticsearch is a specialized database designed to efficiently handle these challenges, offering tools for indexing, querying, and scoring text data for rapid and accurate searches.
+- https://betterprogramming.pub/system-design-series-elasticsearch-architecting-for-search-5d5e61360463
