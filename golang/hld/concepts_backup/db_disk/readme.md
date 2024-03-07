@@ -20,6 +20,7 @@
 - mongodb keep a global unique id for each document , that's how here the joins work by keeping that unique document id in first document.
 - it also has acidic transactions.
 - real time analytics.
+- single leader and multiple read replica approach.
 - aws documentdb, (aws dynamodb also provide json support), mongodb, couchbase etc.
 
 #### More
@@ -30,38 +31,81 @@
 - Confused ? which to use between these -> when your priority is only scalability and flexibility. strong acidic and schema and secure go for sql.
 
 - Or in short you can also skip this db in interview , no having very high advantage. So always prefix sql here ( saying only with compare to mongodb not other nosql ). So now we will compare other db with sql directly.
+- or it is used when we have not structure data but want quality kind of similar to sql.
 
 ![img.png](img.png)
 
 ****3. cassandra, cosmosdb ( column ).****
-- index based on LSM tree and SSTables.
+- index based on LSM tree ( Log-Structured Merge-Tree ) and SSTables ( Sorted String Tables ). ( optimised for fast write )
+  - On high level it save data in tree like structure which is called memtable ( balanced binary search tree ) in memory, then flash it to immutable( no update it will be created with new value) table which is called sstable. internally it uses merge sort etc at each level , that complete architecture is called LSM tree.
+  - so write is simply write in tree then it will be flushed.
+  - but in reading it will first check in memory lsm tree, then most recent lsm tree then second most recent, that's why reading is having little more complexity.
+  - reading is optimised with bloom filter.
 - Cassandra works really well if you want to write and store a large amount of data in a distributed system, don’t care much about ACID with good performance.
-- 
-  
-- has to see, why write heavy , this index, how does it store a particular partition in a node.
-- still have confusion its whether key value store or column store.
-#### More details
-- https://kunal14053.medium.com/about-cassandra-1423223945b3
-- https://www.youtube.com/watch?v=xynXjChKkJc
+- Cassandra is an early NoSQL database with a hybrid design between a tabular and key-value store.
+- Cassandra stores data as key-value stores ( then why no use key store ? -> key store is more simpler mostly use in caching. In this it shows data in tabular form allow to have more complex query as well based on the coloum value. ). It allows you to define tables with rows and columns, but the tabular structure isn’t used in actual storage. Instead, it uses the wide column-oriented database model ( still confusion whether its key value store or coloum oriented. As of now assume its assigned towards coloum oriented ) , so each row in the table can have a different set of columns.
+- multi master apporach
+- for e.g. query: 
+```cassandraql
+SELECT * FROM Orders
+WHERE customerId = 'customer123'
+AND orderDate >= '2024-01-01' AND orderDate <= '2024-01-31';
+```
+- this db is used in system design mostly as name of nosql. ( other are also used , but as compare to mongodb ).
+- used when high write volume and high write , high availability , distributed, but no consistency.  Cassandra’s true use case, in a single word, is scale.
 
-****7. dynamodb, cosmosdb, Redis ( key store ), cassandra.****
+
+![img_1.png](img_1.png)
+#### More details
+- https://www.youtube.com/watch?v=I6jB0nM9SKU
+- https://medium.com/@qiaojialinwolf/lsm-tree-the-underlying-design-of-nosql-database-cf30218e82f3
+- https://medium.com/@qiaojialinwolf/conceptions-you-should-know-about-hard-disk-997545b316e7
+- https://aws.amazon.com/compare/the-difference-between-cassandra-and-mongodb/#:~:text=Cassandra%20stores%20data%20as%20key%2Dvalue%20stores.
+- actual coloum oriented, although it also use the lsm tree -> https://www.youtube.com/watch?v=Zt7rqtJ3uWA  ( no sure cassandra is 100% like this or not )
+- ![img_2.png](img_2.png)
+
+
+
+
+****7. cosmosdb, Redis ( key store ).****
 
 - Only key-value store like hashing.
 - We can query with key only to get data , not any parameter of value.
 - value can have different data types.
-- mostly use for caching.
+- mostly use for caching or config store with key kind of thing where no need query on basis of value field etc.
+- simple as compare to other no sql.
 
 ****4. graph ( graph ).****
 
 - Niche
+- Useful when thing is represented by graph i.e node and edges.
+```json
+(:User {id: "user1", name: "Alice"}) -[:FRIENDS_WITH]-> (:User {id: "user2", name: "Bob"})
+(:User {id: "user1", name: "Alice"}) -[:FRIENDS_WITH]-> (:User {id: "user3", name: "Charlie"})
+(:User {id: "user1", name: "Alice"}) -[:FRIENDS_WITH]-> (:User {id: "user4", name: "David"})
+(:User {id: "user2", name: "Bob"}) -[:FRIENDS_WITH]-> (:User {id: "user3", name: "Charlie"})
+(:User {id: "user3", name: "Charlie"}) -[:FRIENDS_WITH]-> (:User {id: "user4", name: "David"})
 
-****5. time series.****
+```
+- can be used in social network ?
+
+****5. time series.[Don't know internal]****
 
 - Niche
+- time-series datasets track changes to the overall system as INSERTs, not UPDATEs.
+- 
 
-****6. search engine.****
+****6. search engine.[Don't know internal]****
 
 - Niche - searching
-- Full-text Search Complexity: Searching vast amounts of text involves considering factors like relevance, word frequency, user preferences, and handling typos, which poses significant challenges.
-- Elasticsearch Solution: Elasticsearch is a specialized database designed to efficiently handle these challenges, offering tools for indexing, querying, and scoring text data for rapid and accurate searches.
+- Elasticsearch isn't a database, not in the same way that, for example, MySQL is
+- Elasticsearch is a #JSON document repository that is based on the #Apache #Lucene search engine
+- Lucene works its magic by indexing documents.
+
+- https://www.linkedin.com/pulse/why-elastic-search-quicker-than-raw-sql-commands--1e/
 - https://betterprogramming.pub/system-design-series-elasticsearch-architecting-for-search-5d5e61360463
+- https://www.reddit.com/r/rails/comments/66q413/why_is_elastic_search_faster_at_querying_compared/
+
+****7. Vector database****
+
+- Niche
