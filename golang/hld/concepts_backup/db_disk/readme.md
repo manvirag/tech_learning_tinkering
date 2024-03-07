@@ -87,13 +87,24 @@ AND orderDate >= '2024-01-01' AND orderDate <= '2024-01-31';
 (:User {id: "user3", name: "Charlie"}) -[:FRIENDS_WITH]-> (:User {id: "user4", name: "David"})
 
 ```
-- can be used in social network ?
+- can be used in social network.
+- why not relational database ? , because of time complexity and scaling. let consider below example ( log(E) + Log(N) => find all friends + find name of those friends) 
+![img_3.png](img_3.png)
+- why not existing nosql ? , ( Log(N) + duplicate data )
+![img_4.png](img_4.png)
+- In neo4j it store the address directly to can access to disk directly
+![img_5.png](img_5.png)
+
+****- More details****
+- https://www.youtube.com/watch?v=Sdw_D-Gllac&t=94s
+
 
 ****5. time series.[Don't know internal]****
 
 - Niche
 - time-series datasets track changes to the overall system as INSERTs, not UPDATEs.
-- 
+- Use column oriented storage.
+- why not sql or existing nosql ? => 
 
 ****6. search engine.[Don't know internal]****
 
@@ -109,3 +120,4 @@ AND orderDate >= '2024-01-01' AND orderDate <= '2024-01-31';
 ****7. Vector database****
 
 - Niche
+- for ml embedding, not going in deep of this currently 
