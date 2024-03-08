@@ -113,7 +113,8 @@ AND orderDate >= '2024-01-01' AND orderDate <= '2024-01-31';
 - Time series databases are specifically designed to handle time-stamped or time-series data efficiently, optimizing for high write throughput and unique query patterns based on time.
 - Use column oriented storage.
 - query, indexing on basis of timestamp.
-- LSM tree is used in this, ( though TSM tree is used which internally use LSM ). 
+- LSM tree is used in this, ( though TSM tree is used which internally use LSM ).
+- it has chunks internally and chunk have its own indexing .
 - existing nosql and rds is not much optimised for handling timeseries data workload. ( why not sure -> as of now assume that tsd are made in every step in consideration of time series data )
 ```json
 | Timestamp           | Temperature (°C) |
@@ -129,7 +130,7 @@ AND orderDate >= '2024-01-01' AND orderDate <= '2024-01-31';
 | ...                 | ...              |
 
 ```
-
+![img_9.png](img_9.png)
 - https://www.timescale.com/blog/time-series-data-why-and-how-to-use-a-relational-database-instead-of-nosql-d0cd6975e87c/  [ ek no. ]
 - https://www.youtube.com/watch?v=QVa8k36w0Ig&list=PLwrbo0b_XxA8BaxKRHuGHAQsBrmhYBsh1&index=7
 
