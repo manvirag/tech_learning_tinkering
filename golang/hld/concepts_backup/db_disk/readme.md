@@ -102,16 +102,34 @@ AND orderDate >= '2024-01-01' AND orderDate <= '2024-01-31';
 ****5. time series.[Don't know internal]****
 
 - Niche
-- time-series datasets track changes to the overall system as INSERTs, not UPDATEs.
+- Time series databases are specifically designed to handle time-stamped or time-series data efficiently, optimizing for high write throughput and unique query patterns based on time.
 - Use column oriented storage.
-- why not sql or existing nosql ? => 
+- query, indexing on basis of timestamp.
+- LSM tree is used in this, ( though TSM tree is used which internally use LSM ). 
+- existing nosql and rds is not much optimised for handling timeseries data workload. ( why not sure -> as of now assume that tsd are made in every step in consideration of time series data )
+```json
+| Timestamp           | Temperature (°C) |
+|---------------------|------------------|
+| 2024-03-01 00:00:00 | 15               |
+| 2024-03-01 01:00:00 | 14               |
+| 2024-03-01 02:00:00 | 13               |
+| ...                 | ...              |
+| 2024-03-02 00:00:00 | 14               |
+| 2024-03-02 01:00:00 | 13               |
+| ...                 | ...              |
+| 2024-03-03 00:00:00 | 16               |
+| ...                 | ...              |
 
+```
+
+- https://www.timescale.com/blog/time-series-data-why-and-how-to-use-a-relational-database-instead-of-nosql-d0cd6975e87c/  [ ek no. ]
 ****6. search engine.[Don't know internal]****
 
 - Niche - searching
 - Elasticsearch isn't a database, not in the same way that, for example, MySQL is
 - Elasticsearch is a #JSON document repository that is based on the #Apache #Lucene search engine
 - Lucene works its magic by indexing documents.
+- 
 
 - https://www.linkedin.com/pulse/why-elastic-search-quicker-than-raw-sql-commands--1e/
 - https://betterprogramming.pub/system-design-series-elasticsearch-architecting-for-search-5d5e61360463
