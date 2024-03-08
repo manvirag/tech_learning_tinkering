@@ -45,7 +45,8 @@
   - so write is simply write in tree then it will be flushed.
   - but in reading it will first check in memory lsm tree, then most recent lsm tree then second most recent, that's why reading is having little more complexity.
   - reading is optimised with bloom filter.
-  - b-tree is random access, and in disk its not considered efficient , sequential access considered efficent, lsm tree follow this.
+  - b-tree is random access, and in disk its not considered efficient , sequential access considered efficent, lsm tree follow this. while reading it has in memory indexing.
+  - compaction run in background
 - Cassandra works really well if you want to write and store a large amount of data in a distributed system, don’t care much about ACID with good performance.
 - Cassandra is an early NoSQL database with a hybrid design between a tabular and key-value store.
 - Cassandra stores data as key-value stores ( then why no use key store ? -> key store is more simpler mostly use in caching. In this it shows data in tabular form allow to have more complex query as well based on the coloum value. ). It allows you to define tables with rows and columns, but the tabular structure isn’t used in actual storage. Instead, it uses the wide column-oriented database model ( still confusion whether its key value store or coloum oriented. As of now assume its assigned towards coloum oriented ) , so each row in the table can have a different set of columns.
@@ -59,8 +60,10 @@ AND orderDate >= '2024-01-01' AND orderDate <= '2024-01-31';
 - this db is used in system design mostly as name of nosql. ( other are also used , but as compare to mongodb ).
 - used when high write volume and high write , high availability , distributed, but no consistency.  Cassandra’s true use case, in a single word, is scale.
 
-
+![img_6.png](img_6.png)
 ![img_1.png](img_1.png)
+![img_7.png](img_7.png)
+![img_8.png](img_8.png)
 #### More details
 - https://www.youtube.com/watch?v=I6jB0nM9SKU
 - https://medium.com/@qiaojialinwolf/lsm-tree-the-underlying-design-of-nosql-database-cf30218e82f3
@@ -128,13 +131,14 @@ AND orderDate >= '2024-01-01' AND orderDate <= '2024-01-31';
 ```
 
 - https://www.timescale.com/blog/time-series-data-why-and-how-to-use-a-relational-database-instead-of-nosql-d0cd6975e87c/  [ ek no. ]
+- https://www.youtube.com/watch?v=QVa8k36w0Ig&list=PLwrbo0b_XxA8BaxKRHuGHAQsBrmhYBsh1&index=7
+
 ****6. search engine.[Don't know internal]****
 
 - Niche - searching
 - Elasticsearch isn't a database, not in the same way that, for example, MySQL is
 - Elasticsearch is a #JSON document repository that is based on the #Apache #Lucene search engine
 - Lucene works its magic by indexing documents.
-- 
 
 - https://www.linkedin.com/pulse/why-elastic-search-quicker-than-raw-sql-commands--1e/
 - https://betterprogramming.pub/system-design-series-elasticsearch-architecting-for-search-5d5e61360463
