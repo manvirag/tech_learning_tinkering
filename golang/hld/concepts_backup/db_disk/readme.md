@@ -2,7 +2,7 @@
 - store data in row-wise.
 - if we don't have index, require linear time to search the rows.
 - it uses b-tree  to do indexing ( B-tree indexes are a common data structure for organizing and accessing data efficiently on disk) , each leaf node of b-tree has page of row ( 1 page have multiple rows depending upon side of page. ) [ Note sure, but can imagine like we have a file that is b-tree index , it have the address of disk where does its leaf node data exist. Now at any search it will find it and fetch it and save in ram kind of, in update it will rebalance itself  and save its file to disk and help to find the address of the block to be changed and let say other function with updated it. ]
-- b-tree make the read to log(n) for that particular field on which index is made.
+- b-tree make the read to log(n) for that particular field on which index is made. leaf node is page of it.
 - on the other hand it make write slower, since it has to rebalance the tree after insertion. So too much index is n't good for write
 - though can scale with sharding -> but with limitations since join. but vertical scale and replication there alwasy.
 - transactions is a plus point. ( very expensive in case of distributed )
@@ -10,6 +10,10 @@
 - https://vipulpachauri12.medium.com/how-mysql-stores-data-in-disk-ee51a9e81c39#:~:text=MySQL%20stores%20each%20database%20(also,the%20table%20definition%20in%20MyTable.
 - https://www.youtube.com/watch?v=DbxddGtHl70
 - https://www.lucavall.in/blog/how-databases-store-and-retrieve-data-with-b-trees
+-
+@UNKNOWNMAER
+1 year ago
+Я просто поражаюсь Вам! Очень достойная подача материала с разбором. Всех Благ!
 
 ****2. mongodb ( document ).****
 
