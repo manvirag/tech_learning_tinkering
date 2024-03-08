@@ -45,7 +45,7 @@
   - so write is simply write in tree then it will be flushed.
   - but in reading it will first check in memory lsm tree, then most recent lsm tree then second most recent, that's why reading is having little more complexity.
   - reading is optimised with bloom filter.
-  - b-tree is random access, and in disk its not considered efficient , sequential access considered efficent, lsm tree follow this. while reading it has in memory indexing.
+  - b-tree is random access, and in disk its not considered efficient , sequential access considered efficent, lsm tree follow this. while reading it has in memory indexing. [link](https://medium.com/@qiaojialinwolf/conceptions-you-should-know-about-hard-disk-997545b316e7)
   - compaction run in background
 - Cassandra works really well if you want to write and store a large amount of data in a distributed system, don’t care much about ACID with good performance.
 - Cassandra is an early NoSQL database with a hybrid design between a tabular and key-value store.
@@ -136,14 +136,25 @@ AND orderDate >= '2024-01-01' AND orderDate <= '2024-01-31';
 
 ****6. search engine.[Don't know internal]****
 
-- Niche - searching
+- Niche - searching on the text. ( Performing a full-text search would mean that any user can search for something like “java” or “learn programming,” and you need to figure out all the blog posts where these words appear within a few milliseconds )
 - Elasticsearch isn't a database, not in the same way that, for example, MySQL is
 - Elasticsearch is a #JSON document repository that is based on the #Apache #Lucene search engine
+```json
+{
+  "_id": "9a91473c-522e-4174-bf7f-f55293b8e526",
+  "post_title": "Learning about Elasticsearch",
+  "author_name": "Sanil Khurana",
+  .....
+}
+```
 - Lucene works its magic by indexing documents.
+- distributed on multiple node, parallel searching, inverted index.  The core of high speed is derived from parallel computing and inverted index.
+![img_11.png](img_11.png)
+![img_10.png](img_10.png)
 
-- https://www.linkedin.com/pulse/why-elastic-search-quicker-than-raw-sql-commands--1e/
 - https://betterprogramming.pub/system-design-series-elasticsearch-architecting-for-search-5d5e61360463
 - https://www.reddit.com/r/rails/comments/66q413/why_is_elastic_search_faster_at_querying_compared/
+- https://medium.com/analytics-vidhya/how-elasticsearch-search-so-fast-248630b70ba4
 
 ****7. Vector database****
 
