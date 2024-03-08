@@ -40,11 +40,12 @@
 ![img.png](img.png)
 
 ****3. cassandra, cosmosdb ( column ).****
-- index based on LSM tree ( Log-Structured Merge-Tree ) and SSTables ( Sorted String Tables ). ( optimised for fast write )
+- index based on LSM tree ( Log-Structured Merge-Tree [Link](https://www.youtube.com/watch?v=MbwmMCu9ltg&list=PLwrbo0b_XxA8BaxKRHuGHAQsBrmhYBsh1&index=4) ) and SSTables ( Sorted String Tables ). ( optimised for fast write )
   - On high level it save data in tree like structure which is called memtable ( balanced binary search tree ) in memory, then flash it to immutable( no update it will be created with new value) table which is called sstable. internally it uses merge sort etc at each level , that complete architecture is called LSM tree.
   - so write is simply write in tree then it will be flushed.
   - but in reading it will first check in memory lsm tree, then most recent lsm tree then second most recent, that's why reading is having little more complexity.
   - reading is optimised with bloom filter.
+  - b-tree is random access, and in disk its not considered efficient , sequential access considered efficent, lsm tree follow this.
 - Cassandra works really well if you want to write and store a large amount of data in a distributed system, don’t care much about ACID with good performance.
 - Cassandra is an early NoSQL database with a hybrid design between a tabular and key-value store.
 - Cassandra stores data as key-value stores ( then why no use key store ? -> key store is more simpler mostly use in caching. In this it shows data in tabular form allow to have more complex query as well based on the coloum value. ). It allows you to define tables with rows and columns, but the tabular structure isn’t used in actual storage. Instead, it uses the wide column-oriented database model ( still confusion whether its key value store or coloum oriented. As of now assume its assigned towards coloum oriented ) , so each row in the table can have a different set of columns.
