@@ -7,9 +7,10 @@
 
 - https://3ev.medium.com/election-algorithm-a-case-study-7f51a4b059e9#:~:text=the%20Bully%20Algorithm.-,Bully%20Algorithm,from%20a%20set%20of%20processes.
 
-#### Zookeeper
+#### Zookeeper 
 
 - ZooKeeper is a distributed, open-source coordination service for distributed applications.
+- Used in master-slave.
 - This is the guy who responsible for selecting leader with some leader selection algorithms and other duties.[ Configuration management, Locks in distributed systems,  Maintain and detect if any server leaves or joins a cluster and store other complex information of a cluster]
 - Zookeeper internally use tree like structure like file system, and node is called znode.
 - Znodes in ZooKeeper offer the ability to store data and have children, maintain metadata like version and transaction ID, support Access Control Lists (ACL) for permissions, including username/password authentication, and provide notification for any changes.
@@ -21,7 +22,14 @@
 - https://stackoverflow.com/questions/31460901/whats-the-difference-between-zookeeper-and-any-distributed-key-value-stores
 
 #### Raft
-- 
 - This is consensus algorithm [ what ? -> [Link](https://www.notion.so/Distributed-consensus-63b85ade896c4e49ade80ac361690953) ]
+- Used in multi-master , master-master.
+- 
+- https://medium.com/coccoc-engineering-blog/raft-consensus-algorithms-b48bb88afb17
+
+
 
 #### Paxos
+
+- Used in multi-master , master-master.
+- 
