@@ -36,8 +36,10 @@
 #### Raft
 - This is consensus algorithm [ what ? -> [Link](https://www.notion.so/Distributed-consensus-63b85ade896c4e49ade80ac361690953) ]
 - Used in multi-master , master-master.
+- It internally uses leader and follower kind of concept,On a high level: when ever write request comes it first send to leader , then it send to follow . once get the ack , leader commit and tells follower to commit as well.
 - 
 - https://medium.com/coccoc-engineering-blog/raft-consensus-algorithms-b48bb88afb17
+- https://www.notion.so/Raft-dae2c0b7a18440a29523dd4507929bd9
 
 
 
