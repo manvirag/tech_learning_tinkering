@@ -31,6 +31,7 @@
 - https://www.youtube.com/watch?v=0auBXKcMyUs&t=1659s
 - https://bikas-katwal.medium.com/zookeeper-introduction-designing-a-distributed-system-using-zookeeper-and-java-7f1b108e236e
 - https://stackoverflow.com/questions/31460901/whats-the-difference-between-zookeeper-and-any-distributed-key-value-stores
+- https://preparingforcodinginterview.wordpress.com/2019/08/25/zookeeper-vs-redis/
 
 #### Raft
 - This is consensus algorithm [ what ? -> [Link](https://www.notion.so/Distributed-consensus-63b85ade896c4e49ade80ac361690953) ]
@@ -44,3 +45,10 @@
 
 - Used in multi-master , master-master.
 - 
+
+#### Heart beat detection in distributed system
+
+-  If there is a central server, all servers periodically send a heartbeat message to it. If there is no central server, all servers randomly choose a set of servers and send them a heartbeat message every few seconds. This way, if no heartbeat message is received from a server for a while, the system can suspect that the server might have crashed. If there is no heartbeat within a configured timeout period, the system can conclude that the server is not alive anymore and stop sending requests to it and start working on its replacement
+- https://medium.com/geekculture/system-design-tutorial-3-must-know-distributed-systems-concepts-279d4e9718e8#:~:text=Heartbeating%20is%20one%20of%20the,heartbeat%20message%20every%20few%20seconds.
+
+
