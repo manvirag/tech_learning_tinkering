@@ -17,7 +17,8 @@
 - this is also have cluster with replication , to avoid SPOF of this service.
 - inside cluster it also has leader ( based on voting ) and follower.
 - client can connect to leader or follower for delete/write/read. if it comes to follower, it will tell to leader and will broadcast to all follower.
--  
+- zookeeper is not meant to store for much data, and definitely not a cache.Instead, it's for managing heartbeats/knowing what servers are online, storing/updating configuration etc.
+- Its very simple can't store different type of data structure, also it doesn't store much data, also it replicated the data to nodes provide consistency.
 - zookeeper vs normal key-store. ( why kafka used this instead of any other key-value store) [ to be honest don't know ]
 - quote: "You're comparing the high-level data model of ZooKeeper to other key value stores, but that's not what makes it unique. From a distributed systems standpoint, ZooKeeper is different than many other key value stores (especially Redis) because it is strongly consistent and can tolerate failures while a majority of the cluster is connected. Additionally, while data is held in memory, it's synchronously replicated to a majority of the cluster and backed by disk, so once a write succeeds, it guarantees that write will not be lost (barring a missile strike). This makes ZooKeeper very useful for storing small amounts of mission critical state like configurations."
 - 
