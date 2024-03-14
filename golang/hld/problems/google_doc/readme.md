@@ -8,7 +8,7 @@
 
 ### High level design
 ![alt_text](./images/img.png)
-
+![alt_text](./images/img_4.png)
 #### Data stores
 1. Relational database — for saving users’ information and document-related information for imposing privilege restrictions
 2. NOSQL — for storing user comments for quicker access.
@@ -36,6 +36,7 @@ A document is a composition of characters in a specific order. Each character ha
 
 ![alt_text](./images/img_2.png)
 
+
 #### Concurrency
 
 Collaboration on the same document by different users can lead to concurrency issues. Conflicts may arise whenever multiple users edit the same portion of a document.
@@ -46,8 +47,14 @@ To solving this google doc uses operation transform and CRDTs. Since locking mec
 These are based on operation did by user and other some condition. That will eventually generated same output and that is replicated to each user client.
 
 #### Operational Transformation [ Has to be read separately ]
-Operational transformation is a set of complex algorithms, and its correct implementation has proved challenging for real-world applications. For example, the Google Wave team took two years to implement an OT algorithm.
+
+- Operational Transformation (OT) is a key algorithm used in collaborative editing systems like Google Docs to enable real-time, concurrent editing of shared documents by multiple users while maintaining consistency.
+- The primary goal of OT is to ensure that edits made by different users in different orders result in the same final document state.
+- 
+
 ![alt_text](./images/img_3.png)
+
+
 #### Conflict-free Replicated Data Type (CRDT) [ Has to be read separately ] 
 video later: https://www.youtube.com/watch?v=B5NULPSiOGw
 
@@ -63,3 +70,4 @@ In fact, with CRDTs, it’s possible to implement a serverless peer-to-peer coll
 
 1. https://medium.com/@sureshpodeti/system-design-google-docs-93e12133a979
 2. https://vvsevolodovich.dev/system-design-example-google-docs/
+3. https://www.youtube.com/watch?v=-C_PHg9bxho&ab_channel=ArunTyagi  [ ek no. ]
