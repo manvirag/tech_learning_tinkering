@@ -50,19 +50,22 @@ These are based on operation did by user and other some condition. That will eve
 
 - Operational Transformation (OT) is a key algorithm used in collaborative editing systems like Google Docs to enable real-time, concurrent editing of shared documents by multiple users while maintaining consistency.
 - The primary goal of OT is to ensure that edits made by different users in different orders result in the same final document state.
-- 
+- This is kind of black box which take the conflicting operations and out a common operation by combining all and put to frontend.
 
 ![alt_text](./images/img_3.png)
+![alt_text](./images/img_5.png)
 
 
 #### Conflict-free Replicated Data Type (CRDT) [ Has to be read separately ] 
+
+- The Conflict-free Replicated Data Type (CRDT) was developed in an effort to improve OT.
+- CRDTs ensure strong consistency between users. Even if some users are offline, the local replicas at end users will converge when they come back online.
+- In fact, with CRDTs, it’s possible to implement a serverless peer-to-peer collaborative document editing service.
+- It is an data structure
+
+
 video later: https://www.youtube.com/watch?v=B5NULPSiOGw
 
-The Conflict-free Replicated Data Type (CRDT) was developed in an effort to improve OT. 
-
-CRDTs ensure strong consistency between users. Even if some users are offline, the local replicas at end users will converge when they come back online.
-
-In fact, with CRDTs, it’s possible to implement a serverless peer-to-peer collaborative document editing service.
 
 
 
@@ -71,3 +74,4 @@ In fact, with CRDTs, it’s possible to implement a serverless peer-to-peer coll
 1. https://medium.com/@sureshpodeti/system-design-google-docs-93e12133a979
 2. https://vvsevolodovich.dev/system-design-example-google-docs/
 3. https://www.youtube.com/watch?v=-C_PHg9bxho&ab_channel=ArunTyagi  [ ek no. ]
+4. https://srijancse.medium.com/how-real-time-collaborative-editing-work-operational-transformation-ac4902d75682
