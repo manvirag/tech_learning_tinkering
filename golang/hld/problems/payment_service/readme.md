@@ -111,14 +111,18 @@ Before going in this let's understand one more service. That helps in consistenc
 - This is important part in post-payment analysis such as total revenue etc.
 - This is a important design principle in ledger system is double-entry principle ( or double-entiry bookkeeping ).
 - This principle says that sum of all transaction entries must be zero.
+- It uses ledger database inside of it. with this database, you could utilize a ledger database to find the current value of a business bank account, as well as the historical value and transaction history for the same account.
 
+
+- Below table is called double-entry accounting
 ```sql
  Account | Debit | Credit
  buyer   |  1 $  |
  seller  |       | 1$          
 ```
-
+![img.png](img.png)
 More reading: https://developer.squareup.com/blog/books-an-immutable-double-entry-accounting-database-service/
+- https://www.moderntreasury.com/learn/ledger-database
 
 #### Reconciliation for consistency
 [ Doubtful , Also its very high level ]
