@@ -117,3 +117,4 @@ The system described involves streaming events from multiple cameras and audio d
 1. https://www.100ms.live/blog/webrtc-turn-server
 2. https://www.codekarle.com/system-design/Zoom-system-design.html
 3. https://medium.com/@anto.christo.20/understanding-web-real-time-communication-webrtc-d4cec5a43f2f
+4. https://eytanmanor.medium.com/an-architectural-overview-for-web-rtc-a-protocol-for-implementing-video-conferencing-e2a914628d0e [ unread ]
