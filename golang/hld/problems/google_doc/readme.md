@@ -1,6 +1,6 @@
 ### Functional Requirement
-1. Document collaboration: Multiple users should be able to edit a document simultaneously ( assume it is text based only).
-2. Conflict resolution: The system should push the edits done by one user to all the other collaborators. The system should also resolve conflicts between users if they’re editing the same portion of the document.
+1. Document collaboration: Multiple users should be able to edit a document simultaneously ( assume it is text based only). Written of one user should be seen dy other user immediately.
+2. Conflict resolution: The system should push the edits done by one user to all the other collaborators. The system should also resolve conflicts between users if they’re editing the same portion of the document. So at the end user should be able to see same data.
 
 ### Non-functional Requirement
 1. Concurrency: A lot of people are working on the same document 
@@ -8,7 +8,9 @@
 
 ### High level design
 ![alt_text](./images/img.png)
-![alt_text](./images/img_4.png)
+
+
+
 #### Data stores
 1. Relational database — for saving users’ information and document-related information for imposing privilege restrictions
 2. NOSQL — for storing user comments for quicker access.
@@ -51,7 +53,7 @@ These are based on operation did by user and other some condition. That will eve
 - Operational Transformation (OT) is a key algorithm used in collaborative editing systems like Google Docs to enable real-time, concurrent editing of shared documents by multiple users while maintaining consistency.
 - The primary goal of OT is to ensure that edits made by different users in different orders result in the same final document state.
 - This is kind of black box which take the conflicting operations and out a common operation by combining all and put to frontend.
-
+  ![alt_text](./images/img_4.png)
 ![alt_text](./images/img_3.png)
 ![alt_text](./images/img_5.png)
 
@@ -61,9 +63,9 @@ These are based on operation did by user and other some condition. That will eve
 - The Conflict-free Replicated Data Type (CRDT) was developed in an effort to improve OT.
 - CRDTs ensure strong consistency between users. Even if some users are offline, the local replicas at end users will converge when they come back online.
 - In fact, with CRDTs, it’s possible to implement a serverless peer-to-peer collaborative document editing service.
-- It is an data structure
+- It is a data structure for distributed system.
 
-
+![alt_text](./images/img_6.png)
 video later: https://www.youtube.com/watch?v=B5NULPSiOGw
 
 
@@ -75,3 +77,4 @@ video later: https://www.youtube.com/watch?v=B5NULPSiOGw
 2. https://vvsevolodovich.dev/system-design-example-google-docs/
 3. https://www.youtube.com/watch?v=-C_PHg9bxho&ab_channel=ArunTyagi  [ ek no. ]
 4. https://srijancse.medium.com/how-real-time-collaborative-editing-work-operational-transformation-ac4902d75682
+5. https://www.youtube.com/watch?v=M8-WFTjZoA0&ab_channel=TL%3BDR%2F%2FJavaScriptcodecastsforworkingdevs
