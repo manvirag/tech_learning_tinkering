@@ -1,7 +1,7 @@
 1. zookeeper.
 2. leader selection algorithm.
 3. heart beat detection. 
-4. raft and paxos.
+4. raft and paxos( paxos nahi kar rah headache, raft karenge).
 5. what is distributed locking system ?
 6. write ahead log.
 7. search engine elastic search. 
@@ -14,3 +14,4 @@
 14. ledger service payment system
 15. short path or routing tile in map, finding distance from one place to other.
 16. google doc pura, webrtc video call.
+17. version vector -> help in conflict resolving in distributed system.

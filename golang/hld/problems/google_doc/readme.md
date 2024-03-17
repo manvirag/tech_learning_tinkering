@@ -87,7 +87,7 @@ These are based on operation did by user and other some condition. That will eve
   - what if two user insert character with same address (though it has less probability) -> Yes this is case is tough to handle in this case , the operations will be interleaved. 
   - what if user click twice or what about idempotency 
     - UUID: -> overhead on client each operation/character has to maintain its unique id.
-    - version vector:  ? tired take this up separately
+    - version vector:  ? tired take this up separately [link](https://readmedium.com/en/https:/distributedsystemsmadeeasy.medium.com/version-vectors-a9a69e4c34f0)
 - Flow: nodes maintain its crdt and similarly client, nodes received operation concurrently then do operations and broadcast to all client and all nodes do this ( also persist in db ) and nodes asyncly update them self with gossip protocol.  
   ![alt_text](./images/img_16.png)
 ![alt_text](./images/img_14.png)
