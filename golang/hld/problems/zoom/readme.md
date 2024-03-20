@@ -113,6 +113,9 @@ The system described involves streaming events from multiple cameras and audio d
 
 #### Doubts:
 - is this webrtc concept or what protocol ? like do we need to create stun, turn , signaling service or it comes inside of it ?
+  - this is an api doc : https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API
+  - it provide the interface and we have to fill that
+  - you can assume it like it need a stun ,turn and signalling server and once we provider this and its implementation to ti then its start working. More can be deep dive once start developing.
 - if so how we are doing group call ?
 
 ### Reference
