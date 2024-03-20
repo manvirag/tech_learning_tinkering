@@ -16,3 +16,4 @@
 16. google doc pura, webrtc video call.
 17. version vector -> help in conflict resolving in distributed system.
 18. spark streaming, Hadoop, hdfs, big data
+19. olap big query
