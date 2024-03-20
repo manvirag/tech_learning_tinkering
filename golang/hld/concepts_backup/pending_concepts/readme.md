@@ -15,3 +15,4 @@
 15. short path or routing tile in map, finding distance from one place to other.
 16. google doc pura, webrtc video call.
 17. version vector -> help in conflict resolving in distributed system.
+18. spark streaming, Hadoop, hdfs, big data
