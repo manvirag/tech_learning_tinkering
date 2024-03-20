@@ -45,9 +45,7 @@ The STUN server is only involved during the process of finding the public IP. On
 - Peer A receives the answer from peer B and stores it as it’s Remote Description.
 - With this, both the peers have the connection information of each other and can successfully start communicating via WebRTC !
 
-
-
-
+![alt_text](./images/img_5.png)
 
 
 #### Group Video Call
@@ -112,9 +110,15 @@ Exactly what operations can the client perform independently? Going back to the 
 
 The system described involves streaming events from multiple cameras and audio devices, with an input manager determining the sources for streaming. The video data is then sent to a call server for wider distribution. The call server sends the stream to transcoding servers to convert it into various formats suitable for different devices and network conditions. If hardware permits, real-time transcoding is possible. Transcoded streams are then forwarded to a second layer of call servers, which distribute specific format outputs to a third layer of call servers. These servers are globally distributed to minimize latency and serve users with the desired format. The architecture is inspired by Netflix's setup, aiming to efficiently broadcast live events to millions of viewers.
 
+
+#### Doubts:
+- is this webrtc concept or what protocol ? like do we need to create stun, turn , signaling service or it comes inside of it ?
+- if so how we are doing group call ?
+
 ### Reference
 
 1. https://www.100ms.live/blog/webrtc-turn-server
 2. https://www.codekarle.com/system-design/Zoom-system-design.htm
 3. https://medium.com/@anto.christo.20/understanding-web-real-time-communication-webrtc-d4cec5a43f2f
 4. https://eytanmanor.medium.com/an-architectural-overview-for-web-rtc-a-protocol-for-implementing-video-conferencing-e2a914628d0e [ unread ]
+5. https://github.com/junaidrahim/webrtc-session
