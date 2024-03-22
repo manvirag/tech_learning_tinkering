@@ -12,9 +12,6 @@
 - https://www.youtube.com/watch?v=DbxddGtHl70
 - https://www.lucavall.in/blog/how-databases-store-and-retrieve-data-with-b-trees
 -
-@UNKNOWNMAER
-1 year ago
-Я просто поражаюсь Вам! Очень достойная подача материала с разбором. Всех Благ!
 
 ****2. mongodb ( document ).****
 
@@ -76,13 +73,14 @@ AND orderDate >= '2024-01-01' AND orderDate <= '2024-01-31';
 
 
 
-****7. cosmosdb, Redis ( key store ).****
+****7. cosmosdb, Redis, dynamodb ( key store ).****
 
 - Only key-value store like hashing.
 - We can query with key only to get data , not any parameter of value.
 - value can have different data types.
 - mostly use for caching or config store with key kind of thing where no need query on basis of value field etc.
 - simple as compare to other no sql.
+- it also used multi master replication. [ alex xu key value -> cassandra and dynamo] 
 
 ****4. graph ( graph ).****
 
@@ -150,6 +148,7 @@ AND orderDate >= '2024-01-01' AND orderDate <= '2024-01-31';
 ```
 - Lucene works its magic by indexing documents.
 - distributed on multiple node, parallel searching, inverted index.  The core of high speed is derived from parallel computing and inverted index.
+- inverted index: An inverted index lists every unique word that appears in any document and identifies all of the documents each word occurs in.
 ![img_11.png](img_11.png)
 ![img_10.png](img_10.png)
 
