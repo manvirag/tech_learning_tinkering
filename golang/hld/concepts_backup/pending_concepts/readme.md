@@ -17,3 +17,5 @@
 17. version vector -> help in conflict resolving in distributed system.
 18. spark streaming, Hadoop, hdfs, big data
 19. aws etl , olap big query
+20. batch processing vs stream processing.
+21. service mesh, istio

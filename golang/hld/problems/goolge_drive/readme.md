@@ -58,7 +58,11 @@ References:
 
 Curious Doubts [ WIP ]:
 
-1. What does chunking file means ? 
+1. What does chunking file means ?
+- With chunk upload, the file is divided into smaller parts that can be uploaded in parallel or sequentially.
+- Receiver might concatenate, else it can also store in chunks, at the time of fetch again we can fetch these chunks paralley or sequencially.
+- Sample golang code: https://github.com/threeaccents/go-large-file-upload-example/blob/master/chunk-upload.go
+- Everything internally is a binary. no going deepdive in this, mostly will be a libraray to do so.
 
 
 
