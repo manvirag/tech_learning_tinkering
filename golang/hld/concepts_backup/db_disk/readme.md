@@ -1,4 +1,5 @@
 ****1. mysql.****
+- SQL is also very scalable if you don’t care about relations or foreign key constraints
 - store data in row-wise.
 - if we don't have index, require linear time to search the rows.
 - it uses b-tree  to do indexing ( B-tree indexes are a common data structure for organizing and accessing data efficiently on disk) , each leaf node of b-tree has page of row ( 1 page have multiple rows depending upon side of page. ) [ Note sure, but can imagine like we have a file that is b-tree index , it have the address of disk where does its leaf node data exist. Now at any search it will find it and fetch it and save in ram kind of, in update it will rebalance itself  and save its file to disk and help to find the address of the block to be changed and let say other function with updated it. ]
@@ -159,4 +160,11 @@ AND orderDate >= '2024-01-01' AND orderDate <= '2024-01-31';
 ****7. Vector database****
 
 - Niche
-- for ml embedding, not going in deep of this currently 
+- for ml embedding, not going in deep of this currently
+
+
+
+#### Reference:
+
+- https://www.youtube.com/watch?v=cODCpXtPHbQ&t=38s
+- 

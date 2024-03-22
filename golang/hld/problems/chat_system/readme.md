@@ -133,7 +133,7 @@ Curious Doubts:
        1. User Table: 
           1. Save when new account is created or update.
           2. Get the bulk user information with user ids. [ ``Read heavy`` ] 
-          3. For this can use key store or cassandra no sql. Since won't any issue in scalability. 
+          3. Since data is structured , we will be using the RDMS for this.  
           ```json
               {
                  "id": "",
@@ -145,9 +145,9 @@ Curious Doubts:
               }
           ```
        2. User Online status:
-          1. updated user status. [``Write heavy``]
-          2. Get the bulk user status with user ids. [ ``Read heavy`` ]
-          4. Since it is both read and write heavy. Same here nosql can be used.
+          1. updated user status. 
+          2. Get the bulk user status with user ids. 
+          4. Can use any database here , since no complex join , can use sql or key value store. 
           ```json
               {
                  "id": "",
@@ -158,8 +158,8 @@ Curious Doubts:
           ```
        3. User Group:
           1. updated user group. 
-          2. Get the users in group. [ ``Read heavy`` ]
-          4. Since it is both read and write heavy. Same here nosql can be used.
+          2. Get the users in group. 
+          3. read heavy can use sql here as well.
              ```json
                  {
                     "id": "",
@@ -167,8 +167,8 @@ Curious Doubts:
                     "groupId": ""
                  }
              ```
-       4. User Message one to one and in group:
-          1. [ ``Read heavy and write heavy`` ] two tables 
+       4. User Message one to one and in group: k
+          1. two tables. kind of read heavy here as well, can use sql here as well. ( but most of the teacher uses cassandra in whatsapp in these message and last seem , since discord uses this.) 
              ```json
                  {
                     "groupMessageId": "",
