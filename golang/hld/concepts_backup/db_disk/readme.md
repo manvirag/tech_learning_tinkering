@@ -167,4 +167,8 @@ AND orderDate >= '2024-01-01' AND orderDate <= '2024-01-31';
 #### Reference:
 
 - https://www.youtube.com/watch?v=cODCpXtPHbQ&t=38s
-- 
+- https://www.codekarle.com/system-design/Database-system-design.html
+- if its structure and not need acid can use any.
+- when data is not structure its json also need query , then can use document db like mongodb , couchbase.
+- and if you don't have much complex query 
+![alt_text](./img_12.png)
