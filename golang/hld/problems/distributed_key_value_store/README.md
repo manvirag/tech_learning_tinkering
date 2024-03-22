@@ -32,7 +32,8 @@ Minimum votes/number to win
 
 How to deal and resolve inconsistency (In the available model about consistency dynamo cassandra chose to eventual consistency and it might cause inconsistency and below method to detail wit it )
 
-1. what is Versioning and vector clock? → book.
+1. what is Versioning and vector clock? → book.  
+2. ( https://stackoverflow.com/questions/47329936/dynamodb-conflict-resolution-strategy ), dynamodb use last write win stratedy,  DynamoDB makes a best effort to determine the last writer. With this conflict resolution mechanism, all of the replicas will agree on the latest update, and converge toward a state in which they all have identical data.
 2. How do we resolve conflict with the help of a vector clock? once we know about the conflict.
     
     

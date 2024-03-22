@@ -80,7 +80,7 @@ AND orderDate >= '2024-01-01' AND orderDate <= '2024-01-31';
 - value can have different data types.
 - mostly use for caching or config store with key kind of thing where no need query on basis of value field etc.
 - simple as compare to other no sql.
-- it also used multi master replication. [ alex xu key value -> cassandra and dynamo] 
+- it also used multi master replication. ( specifically for dynamodb not sure for other) [ alex xu key value -> cassandra and dynamo] 
 
 ****4. graph ( graph ).****
 

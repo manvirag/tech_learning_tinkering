@@ -14,7 +14,7 @@
 14. ledger service payment system
 15. short path or routing tile in map, finding distance from one place to other.
 16. google doc pura, webrtc video call.
-17. version vector -> help in conflict resolving in distributed system.
+17. version vector  and vector clock ( [server, version] pair ) -> help in conflict resolving in distributed system.
 18. spark streaming, Hadoop, hdfs, big data
 19. aws etl , olap big query
 20. batch processing vs stream processing.
