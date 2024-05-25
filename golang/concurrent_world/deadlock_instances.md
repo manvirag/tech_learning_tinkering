@@ -4,5 +4,7 @@
 
 **As per documentation**: If any goroutine calls Lock while the lock is already held by one or more readers, concurrent calls to RLock will block until the writer has acquired (and released) the lock, to ensure that the lock eventually becomes available to the writer. Note that this prohibits recursive read-locking.
 
-More detail: https://jarv.org/posts/go-deadlock/#:~:text=Connect%20your%20browser%20to%20http,RLock()%20and%20Lock()%20.
-Documentation: https://pkg.go.dev/sync#RWMutex
+- More detail: https://jarv.org/posts/go-deadlock/#:~:text=Connect%20your%20browser%20to%20http,RLock()%20and%20Lock()%20.
+
+- Documentation: https://pkg.go.dev/sync#RWMutex
+- Conference: https://www.youtube.com/watch?v=9j0oQkqzhAE&ab_channel=GopherConUK
