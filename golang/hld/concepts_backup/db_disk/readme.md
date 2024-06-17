@@ -39,6 +39,7 @@
 
 ****3. cassandra, cosmosdb ( column ).****
 - index based on LSM tree ( Log-Structured Merge-Tree [Link](https://www.youtube.com/watch?v=MbwmMCu9ltg&list=PLwrbo0b_XxA8BaxKRHuGHAQsBrmhYBsh1&index=4) ) and SSTables ( Sorted String Tables ). ( optimised for fast write )
+- This is not real colomn oriented ( DDIA ).
   - On high level it save data in tree like structure which is called memtable ( balanced binary search tree ) in memory, then flash it to immutable( no update it will be created with new value) table which is called sstable. internally it uses merge sort etc at each level , that complete architecture is called LSM tree.
   - so write is simply write in tree then it will be flushed.
   - but in reading it will first check in memory lsm tree, then most recent lsm tree then second most recent, that's why reading is having little more complexity.

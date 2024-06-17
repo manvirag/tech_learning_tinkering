@@ -1,3 +1,5 @@
+ gRPC is an RPC implementation using Protocol Buffers (DDIA)
+
 ``Documentation`` 
 https://grpc.io/docs/what-is-grpc/introduction/
 ![Alt text](images/grpc.JPG)
