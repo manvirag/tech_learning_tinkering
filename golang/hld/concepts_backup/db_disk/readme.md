@@ -39,7 +39,8 @@
 
 ****3. cassandra, cosmosdb ( column ).****
 - index based on LSM tree ( Log-Structured Merge-Tree [Link](https://www.youtube.com/watch?v=MbwmMCu9ltg&list=PLwrbo0b_XxA8BaxKRHuGHAQsBrmhYBsh1&index=4) ) and SSTables ( Sorted String Tables ). ( optimised for fast write )
-- This is not real colomn oriented ( DDIA ). Yes its true. It is wide-colum oriented. https://discuss.educative.io/t/is-cassandra-really-a-column-based-database/39536
+- This is not real colomn oriented ( DDIA ). Yes its true. It is wide-colum store and colmn store is different form this. https://discuss.educative.io/t/is-cassandra-really-a-column-based-database/39536
+- Quote: "Wide-column stores such as Bigtable and Apache Cassandra are not column stores in the original sense of the term, since their two-level structures do not use a columnar data layout. In genuine column stores, a columnar data layout is adopted such that each column is stored separately on disk. Wide-column stores do often support the notion of column families that are stored separately. However, each such column family typically contains multiple columns that are used together, similar to traditional relational database tables. Within a given column family, all data is stored in a row-by-row fashion, such that the columns for a given row are stored together, rather than each column being stored separately."
   - On high level it save data in tree like structure which is called memtable ( balanced binary search tree ) in memory, then flash it to immutable( no update it will be created with new value) table which is called sstable. internally it uses merge sort etc at each level , that complete architecture is called LSM tree.
   - so write is simply write in tree then it will be flushed.
   - but in reading it will first check in memory lsm tree, then most recent lsm tree then second most recent, that's why reading is having little more complexity.
