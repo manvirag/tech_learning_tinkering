@@ -23,3 +23,12 @@ model -> types only -> {variables}
 usecase(business logic) -> methods  -> (repositories)
 repository(no business logic get data from db/client return to usecase)  -> db/client 
 ```
+
+
+
+Above would work if no code , but when need running code.
+
+1. controller -> usecases -> repository -> types
+2. No need to create controller , write all these in main.go
+3. write usecases and repository.
+4. type is optional , else create type + interface.
