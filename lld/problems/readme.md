@@ -23,3 +23,10 @@ model -> types only -> {variables}
 usecase(business logic) -> methods  -> (repositories)
 repository(no business logic get data from db/client return to usecase)  -> db/client 
 ```
+
+
+
+Above would work if no code , but when need running code.
+
+1. controller ( write in main.go and say will go in controller ) -> usecases -> models + modelsrepo in single file. In actual model will contain repo and repo will be different directory .
+2. No need to create controller , write all these in main.go
