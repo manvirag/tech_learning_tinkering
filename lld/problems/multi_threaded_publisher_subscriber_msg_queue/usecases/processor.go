@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"main/models"
+	"sync"
 )
 
 type ProcessorInterface interface {
@@ -17,6 +18,8 @@ type Processor struct {
 	TopicName   string
 	KafkaRepo   *models.KafkaStore
 	Subscribers map[models.Consumer]int32
+	sync.RWMutex
+	sync.WaitGroup
 }
 
 func NewProcessor(topicName string, kafkaRepo *models.KafkaStore) *Processor {
@@ -32,6 +35,8 @@ func (p *Processor) SubscribeTopic(consumer models.Consumer) error {
 	if err != nil {
 		return err
 	}
+	defer p.Unlock()
+	p.Lock()
 
 	if _, ok := p.Subscribers[consumer]; ok {
 
@@ -53,9 +58,11 @@ func (p *Processor) PutRecords(messages []models.Message) error {
 	if err != nil {
 		return err
 	}
+	defer p.Wait()
 
 	for _, message := range messages {
-		p.KafkaRepo.PutRecord(message, p.TopicName)
+		p.Add(1)
+		go p.KafkaRepo.PutRecord(message, p.TopicName, &p.WaitGroup)
 	}
 
 	return nil
@@ -63,7 +70,7 @@ func (p *Processor) PutRecords(messages []models.Message) error {
 
 func (p *Processor) GetRecords(consumerGroupId string, count int32) ([]models.Message, error) {
 	messages, err := p.KafkaRepo.GetRecords(consumerGroupId, count, p.TopicName)
-  
+
 	if err != nil {
 		return nil, err
 	}
