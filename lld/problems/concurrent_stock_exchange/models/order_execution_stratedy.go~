@@ -21,5 +21,3 @@ func (soe *SimpleOrderExecution) SellStock(stock Stock, account Account, quantit
   // fmt.Printf("User %s , selling stocks: %s, with price %.2f \n", account.User.UserName , stock.StockName, stock.StockPrice )
   return nil
 }
-
-

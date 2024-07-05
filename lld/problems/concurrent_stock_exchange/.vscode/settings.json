@@ -1,0 +1,6 @@
+{
+    "go.toolsEnvVars": {
+        "GO111MODULE": "on",
+        "GOPATH": "C:\\Users\\ADITI\\Desktop\\learningTech\\Tech_Learning_Tinkering\\lld\\problems\\concurrent_stock_exchange"
+    }
+}
