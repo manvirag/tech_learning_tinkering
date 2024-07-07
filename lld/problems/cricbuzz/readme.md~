@@ -1,4 +1,4 @@
-
+<<<<<<< HEAD
 - Requirements
   - The Cricinfo system should provide information about cricket matches, teams, players, and live scores.
     - In Scope
@@ -22,6 +22,8 @@
   - The system should be extensible to accommodate new features and enhancements in the future.
     - ok
 
+=======
+>>>>>>> 58208b7309a118b960c6fdd03d54a1ff9fdc338f
 
 - models
   - Team -> country name -> interface -> different games -> CricketTeam.
