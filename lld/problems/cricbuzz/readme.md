@@ -1,25 +1,49 @@
-Like Jira: Detail about app
+- Requirements
+  - The Cricinfo system should provide information about cricket matches, teams, players, and live scores.
+    - In Scope
+      - Cricket Matches
+      - Extensible to teams / player 
+  - Users should be able to view the schedule of upcoming matches and the results of completed matches.
+    - schedule of matches.
+    - result of completed matches.
+    - Live matches
+  - The system should allow users to search for specific matches, teams, or players.
+    - Search for cricket matches / extensible to teams , players
+  - Users should be able to view detailed information about a particular match, including the scorecard, commentary, and statistics.
+    - Details about a single match
+    - Handle scorcard as of now -> extensible to commentary and statics
+  - The system should support real-time updates of live scores and match information.
+    - concurrent live updated in db
+  - The system should handle concurrent access to match data and ensure data consistency.
+    - ok
+  - The system should be scalable and able to handle a large volume of user requests.
+    - ok
+  - The system should be extensible to accommodate new features and enhancements in the future.
+    - ok
 
-(
-The app contains multiple boards to signify different projects
-Each board contains different lists to signify sub-project
-Each list contain different cards signifying smaller tasks
-Each card can be assigned to a user or may remain unassigned
-)
 
-Requirements:
-
-1. User: Each user should have a userId, name, email.
-2. Board: Each board should have a id, name, privacy (PUBLIC/PRIVATE), url, members, lists
-3. List: Each list should have a id, name and cards
-4. Card: Each card should have a id, name, description, assigned user
-5. We should be able to create/delete boards, add/remove people from the members list and modify attributes. Deleting a board should delete all lists inside it.
-6. We should be able to create/delete lists and modify attributes. Deleting a list should delete all cards inside it.
-7. We should be able to create/delete cards, assign/unassign a member to the card and modify attributes
-8. We should also be able to move cards across lists in the same board
-9. Ability to show all boards, a single board, a single list and a single card
-10. Default privacy should be public
-11. Cards should be unassigned by default
-12. Ids should be auto-generated for board/list/card
-13. URLs should get created based on the id
-
+- models
+  - Team -> country name -> interface -> different games -> CricketTeam.
+    - name
+    - players
+  - Matches (type)-> interface -> CricketMatch
+    - team a vs team b
+    - scorea , scoreb 
+    - wicketa ,wicketb
+    - status -> Schedule , Live, Past
+  - Status interaface -> Schedule, Live ,Past
+    - type
+    - other metadata
+  - CricbuzzRepo -> database
+    - list matches
+    - Search -> provide team a and team b , type -> match
+    - 
+- usecase
+  - Cricbuzz
+    - Service layer
+      - Cricbuzz Repo
+      - Methods
+- controller
+  - main.go -> mixture -> eventual -> different controller
+    - Will create dummy data before starting
+    - will call usecase -> 
