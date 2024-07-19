@@ -1,1 +1,0 @@
-refer mediator design pattern
