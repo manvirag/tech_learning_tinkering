@@ -1,8 +1,6 @@
 //* Ever incoming request is passed to the chain and each of the handler:
 //1. Processes the request or skips the processing.
 //2. Decides whether to pass the request to the next handler in the chain or not.
-// this is different from state , this can be differnt application , in state it talk about a single system. here they can be different
-// state is like a system which have different state, it is like different system connected by chain.
 
 package main
 
