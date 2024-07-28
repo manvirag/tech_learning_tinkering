@@ -125,7 +125,7 @@ amount of data transfer per second.
 | 99.9999 | 31 seconds |
 
 
-5. **High-level design (API + diagraming)** <br>
+5. **High-level design (API + diagraming. Some people say before drawing box , make api design)** <br>
 6. **Deep dive into the design and its components.** 
    1. This can be its data model designing and database design.
    2. This can be its api design.
