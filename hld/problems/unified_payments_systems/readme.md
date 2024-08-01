@@ -21,7 +21,7 @@ Its kind of understanding UPI current system working.
 
 1.   Create the unique address 
 	1. /post -> /create/vpa/v1 
-2. 
+2.   get bank information with VPS
 ## Database design
 
 1. NPCI will be using the RDMS for having high consistency , if require we can have index on the key and later on shard it . Since write compare to read will be very less. 
