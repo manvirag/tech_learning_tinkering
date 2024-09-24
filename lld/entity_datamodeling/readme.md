@@ -12,4 +12,6 @@ can simply able to create tables in database.
 
 Learning of one interview.
 
+### Create Class diagram and check how will you change these to database tables.
+
 ![alt text](image.png)
