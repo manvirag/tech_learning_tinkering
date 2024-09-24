@@ -21,7 +21,7 @@ Its kind of understanding UPI current system working.
 
 1.   Create the unique address 
 	1. /post -> /create/vpa/v1 
-2. 
+2.   get bank information with VPS
 ## Database design
 
 1. NPCI will be using the RDMS for having high consistency , if require we can have index on the key and later on shard it . Since write compare to read will be very less. 
@@ -46,9 +46,9 @@ Its kind of understanding UPI current system working.
 	3. alice will enter bob VPA and phone verify it with its bank and NPCI
 	4. after that alice will enter the amount start for processoing.
 	5. after this alice will have to enter the MPIN.
-	6. phone forward this to NPCI. ( Not sure -> but it will encrypt request with this pin.)
+	6. phone forward this to NPCI. 
 	7. npci 
-		1. forward the deduction request  ( encrypted with mpin ) to  alice bank for transfer by resolving bob bank details,
+		1. forward the deduction request to  alice bank for transfer by resolving bob bank details,
 		2. once alice bank verify , it will send money to bob account and send response to NPCI.
 		3. now NPCI send credit request to bob account and once it verify 
 		4. npci once get response from both side it will send to both respective PSP.
