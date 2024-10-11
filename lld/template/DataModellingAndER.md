@@ -11,6 +11,7 @@ Before going in this, let's first understand what does data modelling and ER dia
 - Assuming single database and mysql for simplicity.
 - This include 
     - Defining different entities or table.
+    - Define some entity which come after combination of two or more entity, relation like student course
     - What will be fields in it or column.
     - What will be its primary key .
     - What will be its foreign key .
@@ -28,7 +29,7 @@ Before going in this, let's first understand what does data modelling and ER dia
 #### Relation Modelling: (Every data base have its differnt modelling , mostly interviewer ask for object oriented data modelling or object oriented design or Relational Data modelling)
 - [Prerequisite]Understand the RDMS constaints -> foreign key , primary key, contraints, relationship(1:m ,m:1 ,m:n).
 - Figure out the entities ( or table which you want to create)
-- Figure out relation between entities and write it.
+- Figure out relation between entities and write it. ( in case of 1:m, m:1, m:m) -> we usually keep id of second into first , but what if it can be zero, then that column space will be unused -> in this case we can have different table mapping both.
 - Define the table and their fields. 
 - Write the type of fields
 - Write primary and foreign key.
@@ -85,9 +86,11 @@ It is nothing but like this, can ignore this
 
 ```
 
-
-
+https://akhileshmj.medium.com/lld-3-schema-design-df7925322982
+https://akhileshmj.medium.com/lld-3-schema-design-case-study-20aa6fbd124d
 
 
 
 ### Remember mostly interview ask of oops design , so ask them first and relational in system design.
+
+#### Next step is to go each lld problem and draw their relational diagram
