@@ -16,14 +16,6 @@
     - In this you don't get much time to draw diagram etc. just decide the entity at different layer and start coding.
     - Here you don't need to tell too much about you oops class etc -> have to but not that as compare to one with happen with less coding more discussion and class diagram.
 
-
-    - Template:
-        - Write down some thinkable type (golang) and method-> in model -> then its repo and usecase -> optimise it with design patterns and solid principles.
-        - controller ( write in main.go and say will go in controller ) -> usecases -> models + modelsrepo in single file. In actual model will contain repo and repo will be different directory .
-        - No need to create controller , write all these in main.go
-        - Code up and run layer by layer -> like first complete -> user + usermodel +userrepo + userusecase + its main -> then other layers.
-        - You can see the code in problem section -> they are mainly focussed in consideration with machine round
-
 - Low Level Design:
     - This is kind of bit undefined, it means we actually want to discuss the implementation details of a , let say a backend service and assuming we have the database connected to it.
     - It can have different part like
@@ -49,3 +41,7 @@
         - when we say oops -> its all about the type which are in usecase layer -> 
         - repository have data with respect to database -> convert to for usecase layer
         - that is what we usually discuss in oops ( usecase layer type ).
+
+
+
+Check Template directory to follow template 
