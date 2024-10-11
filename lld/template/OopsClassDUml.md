@@ -28,6 +28,8 @@ Template
     - Find the cardinality relation
     - 1:m, m:1, 1:1, m:m
     ![alt text](image-1.png)
+    - Combine all and draw class diagram
+    ![alt text](image-9.png)
     - put these classes in model directory.
     - create repo directory, usecase, controller.
     - controller -> usecase -> usecase/repo 
