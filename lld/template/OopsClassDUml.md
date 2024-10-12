@@ -12,14 +12,14 @@ Template
     - ![alt text](image.png) 
     - Extend => different types (interface), includes one functionality calling other for completion.
     - Figure out Entities -> Can use top down approach. (Make this in consideration with relational as well , mean feasible in database and efficient as well)
-    - Make class diagram with attribute and function.
+    - Make class diagram with attribute and function(most this will be getter and setter). Make this part inconsideration with schema design ( in term of golang these are models, don't have much methods , repo and usecase layer talke in this)
     ![alt text](image-2.png)
     ![alt text](image-3.png)
     ![alt text](image-4.png)
     ![alt text](image-5.png)
     ![alt text](image-6.png)
     - Make interface (two heading, once has name interface in <<>>) and abstract class (only ittalic)
-    - figure our relation
+    - figure our relation and update those class diagram
     - is a relation => inheritance.
     ![alt text](image-7.png)
     - has a relation -> Association 
@@ -32,8 +32,10 @@ Template
     - Combine all and draw class diagram
     ![alt text](image-9.png)
     - put these classes in model directory.
-    - create repo directory, usecase, controller.
+    - Now for the methods part ( like book hotel etc ) -> create the below classes ( i do follow -> controller /(dto) usecase /(model) repo)
+    - create repo directory, usecase, controller and use different design pattern here, in interivew you can combine some layer into 1 or 2, but tell in real life they are separated
     - controller -> usecase -> usecase/repo 
+    - draw the complete class for one flow like its controller, usecase, repo and if have time then others.
     - repo fetch data from db and convert into models and return those model to usecase. Kind of object betweem usecase and repo.
     - usecase do business logic etc -> return that model to controller.
     - controller change that structure to dto and return to client.
