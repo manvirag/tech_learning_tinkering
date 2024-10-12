@@ -1,5 +1,6 @@
 Once we have relational modeling. We can take hint with it and draw the object oriented design.
 
+https://ujjwalbhardwaj.me/post/low-level-design-design-an-atm-system/
 Template
 - All class will map to that relational model.
 - Those which we are pointing as foreign key , instead of that we will have its object.
