@@ -116,3 +116,9 @@ User can also have on p2p connection ,but that won't work for so high QPS
     - this technique can also be used in Uber.
     ![alt text](image-9.png)
     ![alt text](image-10.png)
+
+
+
+    Rough:
+
+    ![alt text](image-11.png)
