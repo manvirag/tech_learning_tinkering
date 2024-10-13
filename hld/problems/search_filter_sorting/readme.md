@@ -49,3 +49,7 @@ Database Schema:
 References:
 - https://www.hellointerview.com/learn/system-design/deep-dives/elasticsearch
 
+
+When lots of data:
+
+![alt text](<(pending)fuzzy search or netfix_twitter_etc feed search.png>)
