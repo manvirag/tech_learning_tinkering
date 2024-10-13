@@ -135,11 +135,12 @@ AND orderDate >= '2024-01-01' AND orderDate <= '2024-01-31';
 - https://www.timescale.com/blog/time-series-data-why-and-how-to-use-a-relational-database-instead-of-nosql-d0cd6975e87c/  [ ek no. ]
 - https://www.youtube.com/watch?v=QVa8k36w0Ig&list=PLwrbo0b_XxA8BaxKRHuGHAQsBrmhYBsh1&index=7
 
-****6. search engine.[Don't know internal]****
+****6. search engine.****
 
 - Niche - searching on the text. ( Performing a full-text search would mean that any user can search for something like “java” or “learn programming,” and you need to figure out all the blog posts where these words appear within a few milliseconds )
-- Elasticsearch isn't a database, not in the same way that, for example, MySQL is
+- Elasticsearch isn't a database, not in the same way that, for example, MySQL is. (but data can be read ,write, update in this for searching . )
 - Elasticsearch is a #JSON document repository that is based on the #Apache #Lucene search engine
+- Or in simpler language, Lucene is libraray which is used to do all these operations, but that is single node functionality , so elastic search is only the orchestrator , which advantage it to distributed and multiple nodes, but internally use the lucene itself. 
 ```json
 {
   "_id": "9a91473c-522e-4174-bf7f-f55293b8e526",
@@ -154,9 +155,97 @@ AND orderDate >= '2024-01-01' AND orderDate <= '2024-01-31';
 ![img_11.png](img_11.png)
 ![img_10.png](img_10.png)
 
+
+
+- Deep Dive: 
+![alt text](image.png)
+  - The important concepts of Elasticsearch from a client perspective are documents, indices, mappings, and fields.
+  - Documents are the individual units of data that you're searching over.
+  Book Doc:
+  ```
+    {
+      "id": "XYZ123",
+      "title": "The Great Gatsby",
+      "author": "F. Scott Fitzgerald",
+      "price": 10.99,
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    }
+  ```
+  - Index -> An index is a collection of documents. Each document is associated with a unique ID and a set of fields.
+  -  a mapping is the schema of the index. It defines the fields that the index will have, the data type of each field, and any other properties like how the field is processed and indexed. You can put whatever data you want in the document, but the mapping determines which fields are searchable and what type of data they contain. So in sort document can have a lot field you want to search on some field you add them only with their type (so that can do some operation according to them , later).
+  - Below is sample index of book
+  ```
+      // PUT /books/_mapping
+            {
+              "properties": {
+                "title": { "type": "text" },
+                "author": { "type": "keyword" },
+                "description": { "type": "text" },
+                "price": { "type": "float" },
+                "publish_date": { "type": "date" },
+                "categories": { "type": "keyword" },
+                "reviews": {
+                  "type": "nested",
+                  "properties": {
+                    "user": { "type": "keyword" },
+                    "rating": { "type": "integer" },
+                    "comment": { "type": "text" }
+                  }
+                }
+              }
+            }
+  ```
+  - We can now add the documents in these index and update, delete etc.
+  ```
+      // POST /books/_doc
+          {
+            "title": "The Great Gatsby",
+            "author": "F. Scott Fitzgerald",
+            "description": "A novel about the American Dream in the Jazz Age",
+            "price": 9.99,
+            "publish_date": "1925-04-10",
+            "categories": ["Classic", "Fiction"],
+            "reviews": [
+              {
+                "user": "reader1",
+                "rating": 5,
+                "comment": "A masterpiece!"
+              },
+              {
+                "user": "reader2",
+                "rating": 4,
+                "comment": "Beautifully written, but a bit sad."
+              }
+            ]
+          }
+  ```
+  - Now query time.
+  - ES provide a lots of different type of query on that index. 
+  - Like Range, Match , Not match ,fussy, semantic, sort etc.
+  - For our usecase (search_filter_sorting problem). 
+  - We can use match query in filter fields, fussy search in name , sorting with rating etc.
+  - This can return data in pagination form and can fetch any page see doc for syntax.
+
+
+- Internals
+
+  - On high level lucene works on inverted index, and it provide a lot function with overlapping on it.
+  - We specially interested in elastic search internal working. ( or how it scale lucene or make it distributed system )
+  - now that you have a basic understanding of how you might use Elasticsearch as a client. Elasticsearch can be thought of as a high-level orchestration framework for Apache Lucene.
+  - Elasticsearch handles the distributed systems aspects: cluster coordination, APIs, aggregations, and real-time capabilities while the "heart" of the search functionality is handled by Lucene.
+  - Elasticsearch is a distributed search engine. When you spin up an Elasticsearch cluster, you're actually spinning up multiple nodes. Nodes can be of 5 types which are specified when the instance is started.
+  - Master Node is responsible for coordinating the cluster.It's the only node that can perform cluster-level operations like adding or removing nodes, and creating or deleting indices. Think of it like the "admin".
+  - Data Node is responsible for storing the data. It's where your data is actually stored. You'll have lots of these in a big cluster.
+  - Coordinating Node is responsible for coordinating the search requests across the cluster. It's the node that receives the search request from the client and sends it to the appropriate nodes. This is the frontend for your cluster.
+  - Ingest Node is responsible for data ingestion. It's where your data is transformed and prepared for indexing.
+  - Machine Learning Node is responsible for machine learning tasks.
+  ![alt text](image-1.png)
+  
+
 - https://betterprogramming.pub/system-design-series-elasticsearch-architecting-for-search-5d5e61360463
 - https://www.reddit.com/r/rails/comments/66q413/why_is_elastic_search_faster_at_querying_compared/
 - https://medium.com/analytics-vidhya/how-elasticsearch-search-so-fast-248630b70ba4
+- https://www.hellointerview.com/learn/system-design/deep-dives/elasticsearch
 
 ****7. Vector database****
 
