@@ -38,6 +38,7 @@ High Level Design:
 
 - Content extractor
     - this extract the html , that can have either content or the url again. for content we maintain the content storage and also check if this is repeted , then skip it.
+    - for checking contain we can encode and compare them.
 
 - Url extractor:
     - For the url part , we have url extractor and this will also check the url is already searched or not. Else it will send this url to URL frontier.
