@@ -54,6 +54,7 @@ Hadoop More Details: → hdfs + mapreduce + processing ( Batch processing )
 
 - Hadoop:
     - orchestrator type → uses hdfs and mapreducer → to store and processing data.
+    - What actually is ? is it like kubernetes ? 
 
 ![alt text](image-1.png)
 
@@ -122,7 +123,7 @@ Before directly jumping to this let first understand two data processing paradig
 
 ![alt text](image-5.png)
 
-1. Batch: 
+1. Batch(offline): 
 - Suppose we need to find out the some thing on last one day data on regularly basis. Like on x date  , we need to find about the x-1 day.
 - Means we will have to store this data.
 - That's why batch is important, we will store the data on some storage.
@@ -130,15 +131,40 @@ Before directly jumping to this let first understand two data processing paradig
 - and will put the extracted information in some database.
 
 Without Ready made tools Architecture: 
-
+- We will have source ( s3 ).
+- We will have data partitioner. (2)
+- We will have another queue.(3)
+- We will have parallel processor , may be map reduce jobs.(4)
+- Put this data in some s3 or database.
+![alt text](image-11.png)
+- 2,3 and 4 will be encapsulated as modern tools like spark/hadoop.
 
 Ready mate tools and implementation and arch:
+- Tools are hadoop and spark. They both kind of similar internal component are different. Apache Hadoop was created to delegate data processing to several servers instead of running the workload on a single machine.
+
+- Meanwhile, Apache Spark is a newer data processing system that overcomes key limitations of Hadoop. Despite its ability to process large datasets, Hadoop only does so in batches and with substantial delay.
+![alt text](image-12.png)
+![alt text](image-9.png)
+Hands on information:
+Aws EMR
 
 
-2. Stream:
+2. Stream(live):
 - Suppose we need to find the some analytics on live cricket match or hotstar live event, this can't be done with batch processing, we will have to do processing before storing.
 - Storage may be optional , but can do for reliability.
 - Here instead of storing and processing, we will have to do the processing as soon as we get the data and send this event to client.
+
+Without Ready made tools Architecture: 
+- input can be kafka stream , live data.
+- may be aws lambda processing one by one and mataining the local data structure and flush to database.
+- out can be kafka or database
+
+Ready mate tools and implementation and arch:
+- Flink, aws flink
+
+![alt text](image-13.png)
+![alt text](image-10.png)
+
 
 3. Lambda
 - This is called micro batching:
@@ -147,6 +173,7 @@ Ready mate tools and implementation and arch:
 - This model simplifies the traditional Lambda Architecture by using a single stream processing system to handle both real-time and historical data analysis, reducing complexity and increasing efficiency.
 ![alt text](image-7.png)
 
-Reference:
+Let's not go into much of lambda and kappa if need below article, we are more focussed on concept of stream and batch and its architecture:
 - https://www.kai-waehner.de/blog/2021/09/23/real-time-kappa-architecture-mainstream-replacing-batch-lambda/
+- 
 
