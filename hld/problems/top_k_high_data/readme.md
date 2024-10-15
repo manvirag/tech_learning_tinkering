@@ -164,8 +164,27 @@ Data Retrieval:
 
 #### Problems with this
 
-- add click event aggregations top k.
-- last x min , alert and monitoring system.
+### add click event aggregations top k.
+- ![alt text](image-20.png)
+Data Model:
+![alt text](image-21.png)
+Database: timeseries or cassandra
+![alt text](image-22.png)
+![alt text](image-24.png)
+Aggregation: is like DAG -> map/aggregate/reduce
+![alt text](image-30.png)
+![alt text](image-26.png)
+![alt text](image-25.png)
+![alt text](image-27.png)
+We will follow the kappa architecture
+![alt text](image-28.png)
+![alt text](image-29.png)
+Time: event time or processing time: Since we need precious better to use event time. What if some event come with delay, then our 1 min window won't work,
+![alt text](image-32.png)
+![alt text](image-31.png)
+Gaurantee: to have processing gaurantee, do transaction , only update offset once receive ack
+![alt text](image-33.png)
+### last x min , alert and monitoring system.
 ![alt text](image-12.png)
 ![alt text](image-13.png)
 ![alt text](image-14.png)
@@ -179,11 +198,11 @@ Storage
 - So we can do the data encoding and compression on database and move to cold storage. or put in database with later timestamp like last 1 hour -> last 1 day -> last 30 days ....
 ![alt text](image-18.png)
 ![alt text](image-19.png)
-- top k songs.
-- stock price real time shower
-- top trending item
-- most viewed video
-- top tweeted tweets.
+### top k songs.
+### stock price real time shower
+### top trending item
+### most viewed video
+### top tweeted tweets.
 
 References: 
 - Khatarnaak: https://www.youtube.com/watch?v=kx-XDoPjoHw&ab_channel=SystemDesignInterview
