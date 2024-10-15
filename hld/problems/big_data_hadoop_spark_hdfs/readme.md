@@ -106,14 +106,47 @@ About Hadoop , HDFS and map reduce and batch processing.
 
 
 #### Doubts:
-
+***
 - I know hdfs, s3.
 - I know aws lambda.
 - I know map reduce concept.
 - I know kafka
 
 
-I want to know the comparision of architecture with these and without using these explicity ( not sure, use hadoop, spark, flink )
+1. I want to know the comparision of architecture with these and without using these explicity ( not sure, use hadoop, spark, flink, kinesis data analytic processing, kinesis firehose )
+2. How to implement on aws.
+
+***
+
+Before directly jumping to this let first understand two data processing paradigm
+
+![alt text](image-5.png)
+
+1. Batch: 
+- Suppose we need to find out the some thing on last one day data on regularly basis. Like on x date  , we need to find about the x-1 day.
+- Means we will have to store this data.
+- That's why batch is important, we will store the data on some storage.
+- we will have processing which will fetch last one day data and do processing.
+- and will put the extracted information in some database.
+
+Without Ready made tools Architecture: 
 
 
+Ready mate tools and implementation and arch:
+
+
+2. Stream:
+- Suppose we need to find the some analytics on live cricket match or hotstar live event, this can't be done with batch processing, we will have to do processing before storing.
+- Storage may be optional , but can do for reliability.
+- Here instead of storing and processing, we will have to do the processing as soon as we get the data and send this event to client.
+
+3. Lambda
+- This is called micro batching:
+![alt text](image-8.png)
+4. Kappa:
+- This model simplifies the traditional Lambda Architecture by using a single stream processing system to handle both real-time and historical data analysis, reducing complexity and increasing efficiency.
+![alt text](image-7.png)
+
+Reference:
+- https://www.kai-waehner.de/blog/2021/09/23/real-time-kappa-architecture-mainstream-replacing-batch-lambda/
 

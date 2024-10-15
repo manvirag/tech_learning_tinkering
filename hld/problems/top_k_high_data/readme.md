@@ -166,6 +166,19 @@ Data Retrieval:
 
 - add click event aggregations top k.
 - last x min , alert and monitoring system.
+![alt text](image-12.png)
+![alt text](image-13.png)
+![alt text](image-14.png)
+    - metric source to consumer is similar to top k architecture
+![alt text](image-15.png)
+Pull vs Push (this is no correct answer):
+![alt text](image-16.png)
+![alt text](image-17.png)
+Storage
+- As per research 85% query of last 26 hours case.
+- So we can do the data encoding and compression on database and move to cold storage. or put in database with later timestamp like last 1 hour -> last 1 day -> last 30 days ....
+![alt text](image-18.png)
+![alt text](image-19.png)
 - top k songs.
 - stock price real time shower
 - top trending item
