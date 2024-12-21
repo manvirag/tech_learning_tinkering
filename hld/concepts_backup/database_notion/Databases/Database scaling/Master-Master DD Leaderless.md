@@ -1,6 +1,6 @@
 # Master-Master DD / Leaderless
 
-![Untitled](Master-Master/Untitled.png)
+![Untitled](Master-Master%20DD%20Leaderless/Untitled.png)
 
 Upon write, the client broadcasts the request to all replicas and waits for a certain number of ACKs. 
 
@@ -14,7 +14,7 @@ Let denote the read number as *r*, the write number as *w*, and the total repl
 
 why? 
 
-![Untitled](Master-Master/Untitled%201.png)
+![Untitled](Master-Master%20DD%20Leaderless/Untitled%201.png)
 
 **Conflict Resolution:**
 
