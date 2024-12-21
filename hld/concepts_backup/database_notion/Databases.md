@@ -18,7 +18,7 @@ Before Going deep dive, keep this algorithm in mind:
 
 The **CAP Theorem** says that any distributed database can only satisfy two of the three features.
 
-![Untitled](Databases%20d6bd866cf1cf49f79f783b7332fbb152/Untitled.png)
+![Untitled](Databases/Untitled.png)
 
 - **Consistency**: every node has the same data.
 - **Availability**: the ability of the system to respond to the user at all times.
@@ -30,11 +30,11 @@ Now network partition happens.
 Now we prioritise consistency
 No deposit and withdrawal until it is fixed.
 
-![Untitled](Databases%20d6bd866cf1cf49f79f783b7332fbb152/Untitled%201.png)
+![Untitled](Databases/Untitled%201.png)
 
 if we prioritize availability
 
-![Untitled](Databases%20d6bd866cf1cf49f79f783b7332fbb152/Untitled%202.png)
+![Untitled](Databases/Untitled%202.png)
 
 It will be inconsistent people will withdraw from both atm and it will become negative after fixing of network tolerance. Though it is not useful in the current case but can be useful in other cases. Like posting on Instagram by a user and it won’t matter much if other person can read it or not for some time.
 
@@ -79,7 +79,7 @@ First Let’s understand what are the different types of databases we have (and 
 
 [https://www.youtube.com/watch?v=6GebEqt6Ynk&list=PLjTveVh7FakKjb4UYzUazqBNNF-WGurXp&index=52](https://www.youtube.com/watch?v=6GebEqt6Ynk&list=PLjTveVh7FakKjb4UYzUazqBNNF-WGurXp&index=52)
 
-![Untitled](Databases%20d6bd866cf1cf49f79f783b7332fbb152/Untitled%203.png)
+![Untitled](Databases/Untitled%203.png)
 
 **RELATIONAL DATABASES**
 
@@ -88,7 +88,7 @@ First Let’s understand what are the different types of databases we have (and 
 Store structure data in tables.
 ****
 
-![Untitled](Databases%20d6bd866cf1cf49f79f783b7332fbb152/Untitled%204.png)
+![Untitled](Databases/Untitled%204.png)
 
 1. **Able to keep our use-case data properly.**
     1. It only helps when we can figure out how to structure our data in fixed columns. Every row denotes new data with information on those fixed columns.
@@ -121,7 +121,7 @@ Store structure data in tables.
 
 **NON-RELATIONAL DATABASES:**
 
-![Untitled](Databases%20d6bd866cf1cf49f79f783b7332fbb152/Untitled%205.png)
+![Untitled](Databases/Untitled%205.png)
 
 No predefined schema, No need for data to be structured
 
@@ -153,11 +153,11 @@ No predefined schema, No need for data to be structured
     
     **Collection:** Documents are grouped into collections, which are similar to tables in relational databases. However, collections in document databases do not enforce a strict schema, allowing each document within a collection to have different fields.
     
-    ![Untitled](Databases%20d6bd866cf1cf49f79f783b7332fbb152/Untitled%206.png)
+    ![Untitled](Databases/Untitled%206.png)
     
     (**MongoDB, couchbase)**
     
-    ![Untitled](Databases%20d6bd866cf1cf49f79f783b7332fbb152/Untitled%207.png)
+    ![Untitled](Databases/Untitled%207.png)
     
     1. Able to keep our use-case data properly.
         1. It's JSON data. Not strict to have to fix no. of fields like relational.
@@ -187,39 +187,39 @@ Who is using this, tell some examples.
 
 Let’s learn this by example:
 
-![Untitled](Databases%20d6bd866cf1cf49f79f783b7332fbb152/Untitled%208.png)
+![Untitled](Databases/Untitled%208.png)
 
 This is how row-oriented (SQL) databases save data in disk.
 
-![Untitled](Databases%20d6bd866cf1cf49f79f783b7332fbb152/Untitled%209.png)
+![Untitled](Databases/Untitled%209.png)
 
 Above while the box is like a block that db fetches from disk to memory in one go to check its having data or not which we want.
 
-![Untitled](Databases%20d6bd866cf1cf49f79f783b7332fbb152/Untitled%2010.png)
+![Untitled](Databases/Untitled%2010.png)
 
-![Untitled](Databases%20d6bd866cf1cf49f79f783b7332fbb152/Untitled%2011.png)
+![Untitled](Databases/Untitled%2011.png)
 
-![Untitled](Databases%20d6bd866cf1cf49f79f783b7332fbb152/Untitled%2012.png)
+![Untitled](Databases/Untitled%2012.png)
 
 We will see these 3 examples in columnar db, to understand its pros and cons.
 
 Columnar
 
-![Untitled](Databases%20d6bd866cf1cf49f79f783b7332fbb152/Untitled%2013.png)
+![Untitled](Databases/Untitled%2013.png)
 
-![Untitled](Databases%20d6bd866cf1cf49f79f783b7332fbb152/Untitled%2014.png)
+![Untitled](Databases/Untitled%2014.png)
 
-![Untitled](Databases%20d6bd866cf1cf49f79f783b7332fbb152/Untitled%2015.png)
+![Untitled](Databases/Untitled%2015.png)
 
-![Untitled](Databases%20d6bd866cf1cf49f79f783b7332fbb152/Untitled%2016.png)
+![Untitled](Databases/Untitled%2016.png)
 
-![Untitled](Databases%20d6bd866cf1cf49f79f783b7332fbb152/Untitled%2017.png)
+![Untitled](Databases/Untitled%2017.png)
 
 This also does compression let say more than one-row id (1001 1002 ..) have the same salary then it will save it as a comma, it will indicate it has the same data between those commas
 
 Pros and Cons
 
-![Untitled](Databases%20d6bd866cf1cf49f79f783b7332fbb152/Untitled%2018.png)
+![Untitled](Databases/Untitled%2018.png)
 
 (PS: I don’t know what OLTP and OLAP 🤭)
 
@@ -250,7 +250,7 @@ Pros and Cons
     
     **(cosmos DB, neo4j, Amazon Neptune,** [TAO — Facebook’s Distributed database for Social Graph using sql](https://www.linkedin.com/pulse/facebooks-graph-database-tao-amit-kumar/)**, Dgraph (opensource Go use Graphql))**
     
-    ![Untitled](Databases%20d6bd866cf1cf49f79f783b7332fbb152/Untitled%2019.png)
+    ![Untitled](Databases/Untitled%2019.png)
     
     1. **Nodes**: Nodes represent entities that can be anything like Person, Student, Teacher, User, or any other object. They are similar to the row entry in the relational database.
     2. **Edges:** Edges represent the relationship that a node has with other nodes in the database. 
@@ -293,7 +293,7 @@ Pros and Cons
     
     (**Prometheus, influxdb, amazon timestream)**
     
-    ![Untitled](Databases%20d6bd866cf1cf49f79f783b7332fbb152/Untitled%2020.png)
+    ![Untitled](Databases/Untitled%2020.png)
     
     ### **What is time-series data?**
     
@@ -332,7 +332,7 @@ why not existing SQL and NoSQL?
     
     [ efficiency in implementing "similarity search.” ]
     
-    ![Untitled](Databases%20d6bd866cf1cf49f79f783b7332fbb152/Untitled%2021.png)
+    ![Untitled](Databases/Untitled%2021.png)
     
 
 **A vector database is a type of database that indexes and stores vector embeddings for fast retrieval and similarity search, with capabilities like CRUD operations, metadata filtering, and horizontal scaling.**
@@ -351,7 +351,7 @@ For instance, with a vector database, you can:
 
 How does it work? 
 
-![Untitled](Databases%20d6bd866cf1cf49f79f783b7332fbb152/Untitled%2022.png)
+![Untitled](Databases/Untitled%2022.png)
 
 Traditional databases store simple data like words and numbers in a table format. Vector databases, however, work with complex data called vectors and use unique methods for searching.
 
@@ -371,11 +371,11 @@ Essentially, embeddings serve as a bridge, converting non-numeric data into a fo
 
 *Embeddings uses a deep learning model to convert unstructured data into vectors*
 
-![Untitled](Databases%20d6bd866cf1cf49f79f783b7332fbb152/Untitled%2023.png)
+![Untitled](Databases/Untitled%2023.png)
 
-![Untitled](Databases%20d6bd866cf1cf49f79f783b7332fbb152/Untitled%2024.png)
+![Untitled](Databases/Untitled%2024.png)
 
-![Untitled](Databases%20d6bd866cf1cf49f79f783b7332fbb152/Untitled%2025.png)
+![Untitled](Databases/Untitled%2025.png)
 
 ### How to choose the SQL or NoSQL. Summary:  → [https://jepsen.io/analyses](https://jepsen.io/analyses) → each database property
 
@@ -415,7 +415,7 @@ Or How SQL transaction is ACID**
 
 a **transaction** is any operation that is treated as a single unit of work, which either completes fully or does not complete at all, and leaves the storage system in a consistent state
 
-![Untitled](Databases%20d6bd866cf1cf49f79f783b7332fbb152/Untitled%2026.png)
+![Untitled](Databases/Untitled%2026.png)
 
 **Atomicity →** 
 
@@ -486,4 +486,4 @@ so after distribution, they will have to take from both servers separately and c
     **there is a saying → most SQL databases were designed with consistency in mind while most NoSQL databases were designed to accommodate scaling. (no SQL has redundant data and requires more space )**
     
 
-[Database scaling](Databases%20d6bd866cf1cf49f79f783b7332fbb152/Database%20scaling%202ada7bf2d8ec42b78217e9da9d39c5ff.md)
+[Database scaling](Databases/Database%20scaling%202ada7bf2d8ec42b78217e9da9d39c5ff.md)

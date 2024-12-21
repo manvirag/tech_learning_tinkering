@@ -35,7 +35,7 @@ Each type of database can have the same replication. But each might have a diffe
 
 Hierarchal Sharding
 
-![Untitled](Database%20distribution%20(Sharding)%202726f45792794d0abb1e87aa818bb995/Untitled.png)
+![Untitled](Database%20distribution%20(Sharding)/Untitled.png)
 
 ## **Difference between Horizontal Partitioning and Sharding**
 

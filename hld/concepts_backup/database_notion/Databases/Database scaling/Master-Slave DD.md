@@ -2,7 +2,7 @@
 
 Databases are usually read-heavy, having a read-to-write ratio of approximately 90:10.
 
-![Untitled](Master-Slave%20DD%20e22a3ba5ccd5477192b05bcdab051673/Untitled.png)
+![Untitled](Master-Slave%20DD/Untitled.png)
 
 Or it can be like, we have a single load balancer(consistent hashing) that’s handling about write and reads by automatically writing to master and reading from any of slave.
 
@@ -55,13 +55,13 @@ Challenges → Failure handling. How do we do this and consistency?
 
  
 
-![Untitled](Master-Slave%20DD%20e22a3ba5ccd5477192b05bcdab051673/Untitled%201.png)
+![Untitled](Master-Slave%20DD/Untitled%201.png)
 
 **Semi-synchronous Replication:** 
 
 In Semi-synchronous Replication, which sits right between the Synchronous and Asynchronous Replication strategies, once the Master node updates its copy of the data, it synchronously replicates the data to a subset of Replicas and asynchronously to others.
 
-![Untitled](Master-Slave%20DD%20e22a3ba5ccd5477192b05bcdab051673/Untitled%202.png)
+![Untitled](Master-Slave%20DD/Untitled%202.png)
 
 Challenges → 
 

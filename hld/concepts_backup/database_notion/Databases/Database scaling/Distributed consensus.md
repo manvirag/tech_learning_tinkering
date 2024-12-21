@@ -7,11 +7,11 @@ Learn Pending:
 2.  Heartbeat detection algorithm in distributed.
 3.  Paxos and raft algorithm in consensus
 
-![Untitled](Distributed%20consensus%2063b85ade896c4e49ade80ac361690953/Untitled.png)
+![Untitled](Distributed%20consensus/Untitled.png)
 
 ### **What is Consensus in a Distributed System?**
 
-![Untitled](Distributed%20consensus%2063b85ade896c4e49ade80ac361690953/Untitled%201.png)
+![Untitled](Distributed%20consensus/Untitled%201.png)
 
 In a distributed system, multiple computers (known as **nodes**) are mutually connected with each other and collaborate with each other through message passing. Now, during computation, they need to agree upon a common value to coordinate among multiple processes. This phenomenon is known as **Distributed Consensus**.
 
@@ -33,7 +33,7 @@ A distributed system can face mainly two types of failure
 1. Crash failure → node isn’t responding. (This is a very common issue in distributed systems and it can be handled easily by simply ignoring the node’s existence.)
 2. Byzantine failure → responding but malfunction/ abnormal (Handling this kind of situation is complicated in the distributed system.)
 
-![Untitled](Distributed%20consensus%2063b85ade896c4e49ade80ac361690953/Untitled%202.png)
+![Untitled](Distributed%20consensus/Untitled%202.png)
 
 [ Now we know what consensus is and what are the challenges, Now how can we solve this? ]
 

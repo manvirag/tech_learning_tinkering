@@ -12,9 +12,9 @@ Same problem to understand this.:
 
 here store and delivery are the two different service and having their own database.
 
-![Untitled](Distributed%20transaction%204ca6d956b01246b1b05b9580f6978669/Untitled.png)
+![Untitled](Distributed%20transaction/Untitled.png)
 
-![Untitled](Distributed%20transaction%204ca6d956b01246b1b05b9580f6978669/Untitled%201.png)
+![Untitled](Distributed%20transaction/Untitled%201.png)
 
 Some Solution:
 
@@ -22,11 +22,11 @@ Some Solution:
 
 [https://drive.google.com/file/d/1FJa0DQPOxVJP2kXdyZDSttdMDI4Q2fUx/view](https://drive.google.com/file/d/1FJa0DQPOxVJP2kXdyZDSttdMDI4Q2fUx/view)
 
-![Untitled](Distributed%20transaction%204ca6d956b01246b1b05b9580f6978669/Untitled%202.png)
+![Untitled](Distributed%20transaction/Untitled%202.png)
 
-![Untitled](Distributed%20transaction%204ca6d956b01246b1b05b9580f6978669/Untitled%203.png)
+![Untitled](Distributed%20transaction/Untitled%203.png)
 
-![Untitled](Distributed%20transaction%204ca6d956b01246b1b05b9580f6978669/Untitled%204.png)
+![Untitled](Distributed%20transaction/Untitled%204.png)
 
 https://www.linkedin.com/pulse/implementing-distributed-transactions-golang-arpit-bhayani/
 

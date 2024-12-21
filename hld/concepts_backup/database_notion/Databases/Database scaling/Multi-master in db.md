@@ -1,6 +1,6 @@
 # Multi-master in db
 
-![Untitled](Multi-master%20in%20db%2045b369e7f7044abda9cdd9161604b74e/Untitled.png)
+![Untitled](Multi-master%20in%20db/Untitled.png)
 
 So in Multi-Leader replication, **we are going to have one leader in each of my data centers** and each data center’s leader replicates its changes to the leaders in other data centers **asynchronously**. ***Each Leader also act as a Follower to other Leaders***
 
@@ -12,7 +12,7 @@ High Fault Tolerance as each data center can continue operating independently of
 
 Issues (**Write Conflicts**.):
 
-![Untitled](Multi-master%20in%20db%2045b369e7f7044abda9cdd9161604b74e/Untitled%201.png)
+![Untitled](Multi-master%20in%20db/Untitled%201.png)
 
 if you have previously worked with **GIT** as a **Version Control System** then you can also connect this scenario similar to **merge conflicts**
 
@@ -46,4 +46,4 @@ We might want to use it even though we are not connected to the internet (storin
 
 This is similar to the Multi-Leader replication scheme where each device acts as a Leader since it accepts the reads and writes made by its clients. There is an asynchronous multi-leader replication scheme between the replicas of our calendar present in all of our devices.
 
-![Untitled](Multi-master%20in%20db%2045b369e7f7044abda9cdd9161604b74e/Untitled%202.png)
+![Untitled](Multi-master%20in%20db/Untitled%202.png)
