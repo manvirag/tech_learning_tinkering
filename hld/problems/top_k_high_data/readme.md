@@ -1,3 +1,6 @@
+
+https://www.uber.com/en-IN/blog/real-time-exactly-once-ad-event-processing/ ( using tools )
+
 - Before going design of this, let's understand what's the different between real time leader board and this problem.
 - In real time leader board design, we had a leader board that users were playing different games and they updating the leader board.
 - In that case we had very less scoring events.
