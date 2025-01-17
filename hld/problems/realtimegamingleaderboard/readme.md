@@ -1,3 +1,5 @@
+
+[Note this is less detailed blog as compare to book, not talk much about redis command]
 Functional Requirements:
 - Display top 10 players on leaderboard
 - Show user’s specific rank.
