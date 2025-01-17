@@ -46,7 +46,7 @@ Cache:
 ![alt text](image-3.png)
 
 
-- For find the user whose have high and lower score than particular user, that still will have to find with query.
+- For find the user whose have high and lower score than particular user, that still will have to find with query. i guessss rank can be found with redis -> https://redis.io/docs/latest/commands/zrank/#:~:text=Returns%20the%20rank%20of%20member,score%20of%20the%20element%20returned.. but the bonus point won't able to cover with this.
 
 How to scale redis ? 
 
