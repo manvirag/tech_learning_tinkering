@@ -38,7 +38,7 @@ how to implement pre phase ?
 
 Code:
 
-```json
+```
 package main
 
 import (
