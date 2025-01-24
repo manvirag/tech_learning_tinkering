@@ -152,3 +152,43 @@ There is better solution
 3PC → it has pre commit phase → so that to make more sure , that transaction doesn’t fail in commit phase. 
 
 Martin-Fowler: [https://martinfowler.com/articles/patterns-of-distributed-systems/two-phase-commit.html](https://martinfowler.com/articles/patterns-of-distributed-systems/two-phase-commit.html)
+
+................................................................
+
+
+Re-visit:
+
+We know here, what actually is distributed transaction is right ? 
+
+Now we will discuss the few methods( that i read ), which help to implement the distributed transaction in real life.
+
+1. Two Phase Commit. 
+
+- Resource: -> Martin Ji DDIA wale.
+- [Yt Link](https://www.youtube.com/watch?v=-_rdWB9hN1c&list=PLeKd45zvjcDFUEv_ohr_HdUFe97RItdiB&index=19&ab_channel=MartinKleppmann) , notes in book section
+
+- So in this as mentioned in preious visit, all information are correct about implementation.
+- Will Add few points, related to cons or general.
+	- It has two phase Prepare and commit.
+	- Prepare phase -> all db send yes , they make the local transaction and check validate and send yes , and they also ready to receive the commit from coordinator, here its serious that they are ready for commit like promising some human being and suppose if db not get the abort/commit back they will stuck infinitely , until coordination recover. This is problematic 1.
+	- Its very less probable that after prepare, node failed to commit, but possible ( just clarifying phase nothing but begin and exec command without command as mentioned in above golang code). 
+	- Failure cases:
+		- Fail in middle of prepare -> abort all . --> consistent. ( via node )
+		- Fail in middle of commit ( via node ) -> will require to maintain the status of all commit and rollback them and make it consistent state. ( that's why it is important , that our system is fault tolerance to this failure, shouldn't be disacter in consistency , it should work well -> like in case of digital wallet , we remove money first from account A and commit , event after that it fail, that is very disacter at as of now , once we get to know about failure -> we will validate and increase the amount of A)
+		- Failure via coordinator crash -> in middle of prepare -> very risky -> all node will be stuck until the coordinator recover and locking those row for other -> disaster. => how to solve this ??
+			- There are some solution -> mentioned in the above notes as fault tolerant two phase commit -> high level all nodes including coordinate will be in consensus algorithm and share their heartbeat to other node, and if any node crash , we abort the transactions.
+			- Some other solution -> TC/C, Saga, they have their own pros and cons
+		- Failure via coordinater -> in middle of commit -> same , after recover with help of status rollback things.
+
+2. TC/C
+3. Saga
+
+
+
+
+
+
+
+
+
+
