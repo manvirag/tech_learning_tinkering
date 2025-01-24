@@ -174,14 +174,204 @@ Now we will discuss the few methods( that i read ), which help to implement the 
 	- Its very less probable that after prepare, node failed to commit, but possible ( just clarifying phase nothing but begin and exec command without command as mentioned in above golang code). 
 	- Failure cases:
 		- Fail in middle of prepare -> abort all . --> consistent. ( via node )
-		- Fail in middle of commit ( via node ) -> will require to maintain the status of all commit and rollback them and make it consistent state. ( that's why it is important , that our system is fault tolerance to this failure, shouldn't be disacter in consistency , it should work well -> like in case of digital wallet , we remove money first from account A and commit , event after that it fail, that is very disacter at as of now , once we get to know about failure -> we will validate and increase the amount of A)
+		- Fail in middle of commit ( via node ) -> will require to maintain the status of all commit and rollback them and make it consistent state. ( that's why it is important , that our system is fault tolerance to this failure, shouldn't be disacter in consistency , it should work well -> like in case of digital wallet , we remove money first from account A and commit , event after that it fail, that is very disacter at as of now , once we get to know about failure -> we will validate and increase the amount of A), that's why sometime it called blocking protol.
 		- Failure via coordinator crash -> in middle of prepare -> very risky -> all node will be stuck until the coordinator recover and locking those row for other -> disaster. => how to solve this ??
 			- There are some solution -> mentioned in the above notes as fault tolerant two phase commit -> high level all nodes including coordinate will be in consensus algorithm and share their heartbeat to other node, and if any node crash , we abort the transactions.
 			- Some other solution -> TC/C, Saga, they have their own pros and cons
 		- Failure via coordinater -> in middle of commit -> same , after recover with help of status rollback things.
 
-2. TC/C
-3. Saga
+2. TC/C ( Try Confirm/Cancel)
+	- Its a compensating transaction as mentioned by ALEX xu, what that mean ?  -> tx which can do undo of failed transaction i.e. rollback
+	- On high level it has two phase try -> confirm/cancel.
+	- both phases have their commit, not like 2 phase.
+	- in first phase we send the tnx for commit to one node and other as NOF ( no operation ) once both commit -> then either confirm second commit or cancle the first commited.( rollback ). [ Just a very high level . Need Revisit and proper understand as of now , let it me like this. ] 
+	- Its kind of same as SAGA, but can do parallel execution ( alex xu )
+
+3. 3 Phase commit -> Non-Blocking
+	- High level
+	- commit phase is divided in two part
+	- TBU
+4. Saga
+	- Its nothing but the linear transaction, first do transaction in one db and then in other db with maintaining the state of transaction in durable store.
+	- if first fail then fine, if fail in middle rollback one by one all previous commited transactions.
+	- This is also a general pattern in distributed systems.
+	- This can be implemented either by async way -> called choreography. like queue wise by subscribing other events. [ complexity increases]
+	- or by coordinator -> called orchestration. 
+	- Not deep diving. Revisit if needed.
+	- via chat gpt 
+	- 
+	
+```
+package main
+
+import (
+	"database/sql"
+	"fmt"
+	"log"
+
+	_ "github.com/lib/pq" // PostgreSQL driver
+)
+
+// Saga Coordinator
+type SagaStep struct {
+	Action     func() error
+	Compensate func() error
+}
+
+type Saga struct {
+	steps []SagaStep
+}
+
+func NewSaga() *Saga {
+	return &Saga{}
+}
+
+func (s *Saga) AddStep(action, compensate func() error) {
+	s.steps = append(s.steps, SagaStep{Action: action, Compensate: compensate})
+}
+
+func (s *Saga) Execute() error {
+	for i, step := range s.steps {
+		if err := step.Action(); err != nil {
+			log.Printf("Error in step %d: %v. Rolling back...", i, err)
+			for j := i - 1; j >= 0; j-- {
+				if err := s.steps[j].Compensate(); err != nil {
+					log.Printf("Failed to compensate step %d: %v", j, err)
+				}
+			}
+			return err
+		}
+	}
+	return nil
+}
+
+// Database Connection
+func Connect(connString string) (*sql.DB, error) {
+	db, err := sql.Open("postgres", connString)
+	if err != nil {
+		return nil, fmt.Errorf("failed to connect to database: %w", err)
+	}
+	if err = db.Ping(); err != nil {
+		return nil, fmt.Errorf("database connection error: %w", err)
+	}
+	return db, nil
+}
+
+// Order Repository
+type OrderRepository struct {
+	db *sql.DB
+}
+
+func NewOrderRepository(db *sql.DB) *OrderRepository {
+	return &OrderRepository{db: db}
+}
+
+func (r *OrderRepository) CreateOrder(orderID, userID string, amount float64) error {
+	_, err := r.db.Exec("INSERT INTO orders (id, user_id, amount, status) VALUES ($1, $2, $3, 'PENDING')", orderID, userID, amount)
+	return err
+}
+
+func (r *OrderRepository) RollbackOrder(orderID string) error {
+	_, err := r.db.Exec("DELETE FROM orders WHERE id = $1", orderID)
+	return err
+}
+
+// Payment Repository
+type PaymentRepository struct {
+	db *sql.DB
+}
+
+func NewPaymentRepository(db *sql.DB) *PaymentRepository {
+	return &PaymentRepository{db: db}
+}
+
+func (r *PaymentRepository) ProcessPayment(paymentID, userID string, amount float64) error {
+	_, err := r.db.Exec("INSERT INTO payments (id, user_id, amount, status) VALUES ($1, $2, $3, 'COMPLETED')", paymentID, userID, amount)
+	return err
+}
+
+func (r *PaymentRepository) RollbackPayment(paymentID string) error {
+	_, err := r.db.Exec("DELETE FROM payments WHERE id = $1", paymentID)
+	return err
+}
+
+// Order Service
+type OrderService struct {
+	repo *OrderRepository
+}
+
+func NewOrderService(repo *OrderRepository) *OrderService {
+	return &OrderService{repo: repo}
+}
+
+func (s *OrderService) CreateOrder(orderID, userID string, amount float64) error {
+	return s.repo.CreateOrder(orderID, userID, amount)
+}
+
+func (s *OrderService) RollbackOrder(orderID string) error {
+	return s.repo.RollbackOrder(orderID)
+}
+
+// Payment Service
+type PaymentService struct {
+	repo *PaymentRepository
+}
+
+func NewPaymentService(repo *PaymentRepository) *PaymentService {
+	return &PaymentService{repo: repo}
+}
+
+func (s *PaymentService) ProcessPayment(paymentID, userID string, amount float64) error {
+	return s.repo.ProcessPayment(paymentID, userID, amount)
+}
+
+func (s *PaymentService) RollbackPayment(paymentID string) error {
+	return s.repo.RollbackPayment(paymentID)
+}
+
+// Main Function
+func main() {
+	orderDB, err := Connect("postgres://user:password@localhost:5432/orderdb?sslmode=disable")
+	if err != nil {
+		log.Fatalf("Failed to connect to order DB: %v", err)
+	}
+	defer orderDB.Close()
+
+	paymentDB, err := Connect("postgres://user:password@localhost:5432/paymentdb?sslmode=disable")
+	if err != nil {
+		log.Fatalf("Failed to connect to payment DB: %v", err)
+	}
+	defer paymentDB.Close()
+
+	orderRepo := NewOrderRepository(orderDB)
+	orderSvc := NewOrderService(orderRepo)
+
+	paymentRepo := NewPaymentRepository(paymentDB)
+	paymentSvc := NewPaymentService(paymentRepo)
+
+	// Saga Orchestration
+	orderID := "order123"
+	userID := "user123"
+	amount := 100.0
+
+	s := NewSaga()
+	s.AddStep(
+		func() error { return orderSvc.CreateOrder(orderID, userID, amount) },
+		func() error { return orderSvc.RollbackOrder(orderID) },
+	)
+	s.AddStep(
+		func() error { return paymentSvc.ProcessPayment(orderID, userID, amount) },
+		func() error { return paymentSvc.RollbackPayment(orderID) },
+	)
+
+	if err := s.Execute(); err != nil {
+		log.Fatalf("Saga failed: %v", err)
+	} else {
+		log.Println("Transaction completed successfully")
+	} }
+```
+ 
+
 
 
 
