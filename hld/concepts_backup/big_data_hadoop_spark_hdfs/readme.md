@@ -183,3 +183,5 @@ Ready mate tools and implementation and arch:
 ![alt text](image-14.png)
 
 Real World Kappa Example: https://www.uber.com/en-IN/blog/kafka-tiered-storage/
+here also:
+https://readmedium.com/kappa-architecture-is-mainstream-replacing-lambda-8b3abc93d718
