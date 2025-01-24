@@ -167,13 +167,19 @@ Ready mate tools and implementation and arch:
 
 
 3. Lambda
-- This is called micro batching:
+- This is basically doing the real time as well as batch processing with different tech.
+- In batch we first store and do processing.
+- simple , but have to do duplicate processing of events.
 ![alt text](image-8.png)
 4. Kappa:
-- This model simplifies the traditional Lambda Architecture by using a single stream processing system to handle both real-time and historical data analysis, reducing complexity and increasing efficiency.
+- This model simplifies the traditional Lambda Architecture by using a single stream processing system to handle both real-time and historical data analysis, reducing complexity and increasing efficiency. But How ? let say in one view we want per minute data and second view we want per day data ? 
+- We will read the stream and do the permin with help of streamer of flink and we will store this info in db for real time view. 
+- for batch flink will maintain the storage and state for per day and then send the batch result, it will not process the same data again.
+- Regarding the failure cases will be handled by flink.
+- Let's discuss about flink and its architecture in some other lecture.
 ![alt text](image-7.png)
 
-Let's not go into much of lambda and kappa if need below article, we are more focussed on concept of stream and batch and its architecture:
-- https://www.kai-waehner.de/blog/2021/09/23/real-time-kappa-architecture-mainstream-replacing-batch-lambda/
-- 
 
+![alt text](image-14.png)
+
+Real World Kappa Example: https://www.uber.com/en-IN/blog/kafka-tiered-storage/
