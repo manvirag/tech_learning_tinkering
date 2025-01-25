@@ -41,7 +41,53 @@
     - Memory-mapped files allow an application to map a file or a portion of a file directly into its memory space. This means that instead of reading data from the file on disk every time it needs to access it, the application can access it as if it were in memory. This results in faster data access and lower latency.
     - But who do this, how to do this ? There are some commands of linux, which help to do this kind of crud types. and application code do this.
     - How to implement ? -> there is very simple [library](https://cs.opensource.google/go/x/exp/+/master:mmap/) in golang => https://ghvsted.com/blog/exploring-mmap-in-go/
-    - Also can refer -> 
-    - what is internal architecture of mmap ? 
-8. Event sourcing with MMAP ( stock exchange, digital wallet):
-    - 
+    - Also can refer -> golang -> mmap_golang directory.
+    - what is internal architecture of mmap or how it work ? 
+    - Its basically the memory management concept of OS -> demand paging, virtual memory -> when we use system call mmap , it internally do all these
+```
++-------------------+
+| Application Calls  |
+|      mmap()        |
++-------------------+
+           |
+           v
++-------------------+
+| OS Creates Page    |
+| Based Mapping      |
++-------------------+
+           |
+           v
++-------------------+
+| Access Page       |
+| (Demand Paging)   |
++-------------------+
+           |
+           v
++-------------------+
+| Page Fault?       |<---------------------+
+|  Yes / No         |                      |
++-------------------+                      |
+           |                                 |
+           v                                 |
+  +-------------------+                       |
+  | Load Page from    |                       |
+  | Disk to RAM       |                       |
+  +-------------------+                       |
+           |                                 |
+           v                                 |
+  +-------------------+                       |
+  | Update Page Table |                       |
+  +-------------------+                       |
+           |                                 |
+           v                                 |
++-------------------+                       |
+| Application Access |<--------------------+
+| File Data Directly | 
++-------------------+
+
+```
+8. Event sourcing with MMAP ( stock exchange, digital wallet , Alex xu 2):
+    - Now using the disk file as the source of event for communication ( like command and events in arch in kafka ) instead remote like kafka.
+    - help in reduce latency 
+    - that golang code is nothing but CRUD of event with mmap
+    - for maintain state ( event store ) also we can use the disk database like rocksdb ,sqlite. ( instead like remote db) and can take snapshot etc for relibility etc scaling.
