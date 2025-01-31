@@ -1,4 +1,10 @@
+Note: Slicing in array and slice is constant time , since it only change header.  Copy create copy always. Rule of Thumb => append() reallocates a new underlying array only if the slice’s capacity is exceeded. Otherwise, it modifies the original array in-place.
+
+<img width="606" alt="image" src="https://github.com/user-attachments/assets/9296a915-d515-4c8a-b323-723c8df523f2" />
+
+
 1. Channel Cheat sheet for error outing: https://blog.devtrovert.com/p/go-channels-explained-more-than-just
+
 2. Hands On cheat sheet for golang: https://devhints.io/go
 
 3. ![image](https://github.com/manvirag982/tech_learning_tinkering/assets/54881553/5cb9775d-3604-46b5-8666-fbb579b5689e)
@@ -30,3 +36,24 @@
 8. Cheat Sheet
  
 ![image](https://github.com/user-attachments/assets/8fb5d984-02bd-4d86-b643-24370ee96d08)
+
+<br/>
+<br/>
+
+9. STL
+
+<img width="601" alt="image" src="https://github.com/user-attachments/assets/a636e0c2-bf0e-4836-bf6b-dd41fd3d2124" />
+
+<img width="601" alt="image" src="https://github.com/user-attachments/assets/9505241d-e9cb-44dd-9652-0c63f71d5aaa" />
+
+<img width="601" alt="image" src="https://github.com/user-attachments/assets/c27ee1d1-aa99-4341-9126-a042532ec004" />
+
+<img width="601" alt="image" src="https://github.com/user-attachments/assets/82f3858b-24df-4fd6-bbd2-0209e2bfcbb2" />
+
+<img width="601" alt="image" src="https://github.com/user-attachments/assets/742d25d8-f3bf-409e-b646-7d01b3f37c3f" />
+
+<img width="601" alt="image" src="https://github.com/user-attachments/assets/916a9c28-8d6d-42d6-a85a-6e9d7fe085cf" />
+
+
+
+
