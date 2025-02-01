@@ -33,14 +33,19 @@ Note: Slicing in array and slice is constant time , since it only change header.
 <br/>
 <br/>
 
-8. Cheat Sheet
+8. ![image](https://github.com/user-attachments/assets/1c01b363-5e95-448f-b1f1-3adcb5e95a21)
+
+<br/>
+<br/>
+
+9. Cheat Sheet
  
 ![image](https://github.com/user-attachments/assets/8fb5d984-02bd-4d86-b643-24370ee96d08)
 
 <br/>
 <br/>
 
-9. STL
+10. STL
 
 <img width="601" alt="image" src="https://github.com/user-attachments/assets/a636e0c2-bf0e-4836-bf6b-dd41fd3d2124" />
 
