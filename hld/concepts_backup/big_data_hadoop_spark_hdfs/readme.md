@@ -185,3 +185,7 @@ Ready mate tools and implementation and arch:
 Real World Kappa Example: https://www.uber.com/en-IN/blog/kafka-tiered-storage/
 here also:
 https://readmedium.com/kappa-architecture-is-mainstream-replacing-lambda-8b3abc93d718
+
+
+
+Blog: Selecting Streaming Processing Framework: https://medium.com/@chandanbaranwal/spark-streaming-vs-flink-vs-storm-vs-kafka-streams-vs-samza-choose-your-stream-processing-91ea3f04675b
