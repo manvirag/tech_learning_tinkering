@@ -79,3 +79,18 @@ a distributed cache can grow beyond the memory limits of a single computer by li
 
 ![Untitled](Untitled%206.png)
 
+
+**Nice blog for practical usecase:**
+https://www.hellointerview.com/learn/system-design/deep-dives/redis
+- Cache -> cluster -> key is distributer -> make sure no hot partition.
+- Rate limiter.
+- Powerful DS ->
+  - hash , key value pair,
+  - stream -> kind of very fast kafka
+![image](https://github.com/user-attachments/assets/da264c35-4640-4cdf-8e24-3b65a9a6335f)
+
+
+  - pub-sub ( whatsapp )
+  - sorted set ( leaderboard ) 
+  - geospatial ( proximity )
+
