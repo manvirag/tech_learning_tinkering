@@ -1,4 +1,4 @@
-# tech_learning_tinkering
+# Tech_learning_tinkering
 
 
 ## Aim of this Repo:
