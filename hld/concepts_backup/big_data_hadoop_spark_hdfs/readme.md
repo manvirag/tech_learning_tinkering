@@ -30,7 +30,7 @@
     
     ![alt text](image-3.png)
     
-
+3. what is apache iceberg learn about this -> i guess create sql type table , but in s3.
 
 Hadoop More Details: → hdfs + mapreduce + processing ( Batch processing )
 
