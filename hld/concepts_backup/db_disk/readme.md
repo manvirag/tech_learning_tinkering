@@ -12,6 +12,7 @@
 - https://www.youtube.com/watch?v=DbxddGtHl70
 - https://www.lucavall.in/blog/how-databases-store-and-retrieve-data-with-b-trees
 -
+	**** Learn about the cockroachdb distributed sql (TBU)
 
 ****2. mongodb ( document ).****
 
