@@ -10,7 +10,7 @@
 	#### Batch Processing with Unix Tools 
 	- **Simple Log Analysis**
 	    - Surprisingly many data analyses can be done in a few minutes using some combination of **awk, sed, grep, sort, uniq, and xargs**, and they perform surprisingly well.
-	      ![[Pasted image 20250301183429.png]]
+	      ![](img3.png)
 	    - **Chain of commands ( above one -> ex. of batch processing ) vs. Custom program**:
 	        - Instead of the chain of Unix commands, you could write a simple program to do the same thing.  (e.g. Ruby, Python) , command one is very performance , that you'll notice once you do this for large files.
 	        - limitation work on single machine.

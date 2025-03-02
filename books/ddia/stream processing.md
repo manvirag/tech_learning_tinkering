@@ -48,7 +48,7 @@ CHAPTER 11: STREAM PROCESSING:
         - **Fan-out**: Each message is sent to all consumers/worker;  exchange bindings in AMQP) 
     - Two patterns could be combined.  => consumer group -> Kafka
 	- **Acknowledgments and redelivery**:
-		- ![[Pasted image 20250302171220.png]]
+		- ![](img1.png)
 		  
 	    - Consumer may crash at any time, imp to send ack to broker, but its also possible to get processed but failed to send ack. Handling this case requires an atomic commit protocol (“Distributed Transactions in Practice” on page 360).
 	    - message m3 resend -> order changed -> to maintain order -> consumer for each queue.
@@ -123,7 +123,7 @@ CHAPTER 11: STREAM PROCESSING:
 		- in which case we use this ? 
 			- audit logs, ledger, git commit version
 		  	
-		  ![[Pasted image 20250302191350.png]]
+		  ![](img2.png)
 - **State, Streams, and Immutability**:
 	- **Immutability** is also what makes event sourcing and change data capture powerful.
 	- Whenever you have a state that changes, that state is the result of the events that mutated it over time.
