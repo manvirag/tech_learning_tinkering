@@ -120,7 +120,7 @@ About Hadoop , HDFS and map reduce and batch processing.
 ***
 
 Before directly jumping to this let first understand two data processing paradigm
-
+![[Pasted image 20250302143000.png]]
 ![alt text](image-5.png)
 
 1. Batch(offline): 
@@ -143,6 +143,7 @@ Ready mate tools and implementation and arch:
 - Tools are hadoop and spark. They both kind of similar internal component are different. Apache Hadoop was created to delegate data processing to several servers instead of running the workload on a single machine.
 
 - Meanwhile, Apache Spark is a newer data processing system that overcomes key limitations of Hadoop. Despite its ability to process large datasets, Hadoop only does so in batches and with substantial delay.
+![[Pasted image 20250302143000.png]]
 ![alt text](image-12.png)
 ![alt text](image-9.png)
 Hands on information:
