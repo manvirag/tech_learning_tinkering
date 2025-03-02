@@ -65,31 +65,31 @@
 	- 
 		![](https://lh4.googleusercontent.com/Ah4fzlrSOWx-I8wL3rjp-8ENf-AWkcvJtpTS_DC8tsS6YOf8q41aYbUbSyAvvvLFUD5HflSJrqhcNdm03Hwlqh-KEXkcg2gVD4EcGpYpKSs_47GRmQMOOJGlGlmrpifcD0UIJtOd)
 	- **The Output of Batch Workflows**:
-		    - Where does batch processing fit in? 
-		        - It is not transaction processing, nor is it analytics. It is **closer to analytics**, in that a batch process typically scans over large portions of an input dataset.
-		    - The output of a batch process is often not a report, but some other kind of structure.
-		    - **Building search indexes**: (documents in, indexes out.)
-		        - Google’s original use of MapReduce was to build indexes for its search engine, which was implemented as a workflow of 5 to 10 MapReduce jobs.  (e.g. still used today by **Lucene/Solr**)
-		        - Recall **full-text search index**: it is a file (the term dictionary) in which you can efficiently look up a particular keyword and find the list of all the document IDs containing that keyword (inverted index). 
-		    - **Philosophy of batch process outputs**:
-		        - In the process, the **input is left unchanged**, any previous **output is completely replaced** with the new output, and there are no other side effects.
+		- Where does batch processing fit in? 
+			- It is not transaction processing, nor is it analytics. It is **closer to analytics**, in that a batch process typically scans over large portions of an input dataset.
+		- The output of a batch process is often not a report, but some other kind of structure.
+		- **Building search indexes**: (documents in, indexes out.)
+			- Google’s original use of MapReduce was to build indexes for its search engine, which was implemented as a workflow of 5 to 10 MapReduce jobs.  (e.g. still used today by **Lucene/Solr**)
+			- Recall **full-text search index**: it is a file (the term dictionary) in which you can efficiently look up a particular keyword and find the list of all the document IDs containing that keyword (inverted index). 
+		- **Philosophy of batch process outputs**:
+			- In the process, the **input is left unchanged**, any previous **output is completely replaced** with the new output, and there are no other side effects.
 	- **Comparing Hadoop to Distributed Databases**:
-		    - **Hadoop** is somewhat like a distributed version of Unix, where **HDFS** is the filesystem and MapReduce is a quirky implementation of a Unix process(which happens to always run the sort utility between the map phase and the reduce phase). 
-		    - **MapReduce** and a **Distributed Filesystem** provides something much more like a general-purpose operating system that can run arbitrary programs.
-		    - **Diversity of storage**:
-		        - **Databases require you to structure** data according to a particular model (e.g., relational or documents), 
-		            - whereas files in a distributed filesystem are just byte sequences, which can be written using any data model and encoding. 
-		        - Collecting data in its raw form, and worrying about schema design later, allows the data collection to be speeded up (a concept sometimes known as a “**data lake**” or “**enterprise data hub**” ). 
-		            - Aka. **sushi principle**: “**raw (data) is better**” 
-		        - Indiscriminate data dumping shifts the burden of interpreting the data 
-		        - Data modeling still happens, but it is in a separate step, decoupled from the data collection. 
-		            - This decoupling is possible because a distributed filesystem supports data encoded in any format.
-		    - **Designing for frequent faults**:
-		        - When comparing MapReduce to MPP(massively parallel processing) databases, two more differences in design approach stand out: **the handling of faults** and **the use of memory and disk**.
-		            - **MPP** databases prefer to keep as much data as possible in memory (e.g., using hash joins) to avoid the cost of reading from disk.
-		            - **MapReduce** is very eager to write data to disk, partly for fault tolerance, and partly on the assumption that the dataset will be too big to fit in memory anyway.
-		        - It’s not because the hardware is particularly unreliable, it’s because the freedom to arbitrarily terminate processes enables better resource utilization in a computing cluster. ( google used to use the node which could have imp task , that will stop these map reduce job, so made this fault tolerant)
-		            - Among open source cluster schedulers, preemption is less widely used. (e.g. YARN’s CapacityScheduler)
+		- **Hadoop** is somewhat like a distributed version of Unix, where **HDFS** is the filesystem and MapReduce is a quirky implementation of a Unix process(which happens to always run the sort utility between the map phase and the reduce phase). 
+		- **MapReduce** and a **Distributed Filesystem** provides something much more like a general-purpose operating system that can run arbitrary programs.
+		- **Diversity of storage**:
+			- **Databases require you to structure** data according to a particular model (e.g., relational or documents), 
+				- whereas files in a distributed filesystem are just byte sequences, which can be written using any data model and encoding. 
+			- Collecting data in its raw form, and worrying about schema design later, allows the data collection to be speeded up (a concept sometimes known as a “**data lake**” or “**enterprise data hub**” ). 
+				- Aka. **sushi principle**: “**raw (data) is better**” 
+			- Indiscriminate data dumping shifts the burden of interpreting the data 
+			- Data modeling still happens, but it is in a separate step, decoupled from the data collection. 
+				- This decoupling is possible because a distributed filesystem supports data encoded in any format.
+		- **Designing for frequent faults**:
+			- When comparing MapReduce to MPP(massively parallel processing) databases, two more differences in design approach stand out: **the handling of faults** and **the use of memory and disk**.
+				- **MPP** databases prefer to keep as much data as possible in memory (e.g., using hash joins) to avoid the cost of reading from disk.
+				- **MapReduce** is very eager to write data to disk, partly for fault tolerance, and partly on the assumption that the dataset will be too big to fit in memory anyway.
+			- It’s not because the hardware is particularly unreliable, it’s because the freedom to arbitrarily terminate processes enables better resource utilization in a computing cluster. ( google used to use the node which could have imp task , that will stop these map reduce job, so made this fault tolerant)
+				- Among open source cluster schedulers, preemption is less widely used. (e.g. YARN’s CapacityScheduler)
 		
 	#### Beyond MapReduce
 	
