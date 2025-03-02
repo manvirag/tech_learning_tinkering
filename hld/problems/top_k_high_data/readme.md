@@ -192,7 +192,7 @@ Gaurantee: to have processing gaurantee, do transaction , only update offset onc
 ![alt text](image-13.png)
 ![alt text](image-14.png)
     - metric source to consumer is similar to top k architecture
-![alt text](image-15.png)
+![alt text](hld/problems/top_k_high_data/image-15.png)
 Pull vs Push (this is no correct answer):
 ![alt text](image-16.png)
 ![alt text](image-17.png)
