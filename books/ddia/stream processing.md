@@ -166,60 +166,103 @@ CHAPTER 11: STREAM PROCESSING:
 			- Derived data systems can be treated as maintaining materialized views. 
 		- **Search on streams**:
 			- The percolator feature of Elasticsearch is one option for implementing this kind of stream search.
-- **Reasoning About Time**
-	- Time “window” 
-	- Using the timestamps in the events allows the processing to be **deterministic**. 
-	- **Event time versus processing time**: 
-		- Processing may be delayed. 
-		- Confusing event time and processing time leads to bad data.
+- **Reasoning About Time** ( check alex xu vol 2 )
+	- Time “window” ( we need the timing window in case of aggregation like last. )
+	- Using the timestamps in the events allows the processing to be **deterministic**. running the same process again on the same input yields the same result.
+	- many stream processing frameworks use the local system clock on the processing machine (the processing time) to determine windowing, but it can be problematic in case of delay of events. 
+	- **Event time( the time where event actually happended, 9:00 am) versus processing time(the time at which our streamer is processing. 10:00am)**: 
+		- if you restart stream (event accumutated)-> then it will give feeling that at that processing time there were huge events. but its not true.
 	- ![](https://lh4.googleusercontent.com/ZhGu2_uf1KuNRRGTeh2LjALbRhhqgIvpYvPb3JjlrdT_qAR058dV6hGy_nPZHU3YUaaIgiSQXyD8MMhpu4jqKFY3FA3Av5yMRa6x93s9qnxmfO_8NBq1HmSRuCSW-59s9SKc99AB)
-	- **Knowing when you’re ready**:
-		- need to be able to handle such **straggler** events that arrive after the window has already been declared complete.
-			- 1, Ignore the straggler events;
-			- 2, Publish a correction; 
+	- **Knowing when you’re ready**: 
+		- need to be able to handle such **straggler** events that arrive after the window has already been declared complete. you have 2 options: 
+			- 1, Ignore the straggler events; (if its not in current window)
+			- 2, Publish a correction; for this requrie to have previous state, -> overhead
 	- **Whose clock are you using, anyway**?
-		- Need address Incorrect device clocks, log three timestamps:
+		- To adjust for incorrect device clocks, log three timestamps:
 			- The time at which the event occurred, according to the device clock
 			- The time at which the event was sent to the server, according to the device clock
 			- The time at which the event was received by the server, according to the server clock
+		- By subtracting the second timestamp from the third, you can estimate the offset between the device clock and the server clock (assuming the network delay is negligible compared to the required timestamp accuracy). You can then apply that offset to the event timestamp and thus estimate the true time at which the event actually occurred (assuming the device clock offset did not change between the time the event occurred and the time it was sent to the server).
 	- **Types of windows**:
-		- Tumbling window: fixed length, and every event belongs to exactly one window.
-		- Hopping window: fixed length, but allows windows to overlap in order to provide some smoothing.
-		- Sliding window: contains all the events that occur within some interval of each other.
-		- Session window: has no fixed duration. But, grouping together all events relative to the same user that occur closely together in time. (e.g. website analytics) 
+		- Tumbling window: fixed length, and every event belongs to exactly one window.For example, if you have a 1-minute tumbling window, all the events with timestamps between 10:03:00 and 10:03:59 are grouped into one window, events between 10:04:00 and 10:04:59 into the next window, and so on. You could implement a 1-minute tumbling window by taking each event timestamp and rounding it down to the nearest minute to determine the window that it belongs to.
+		  ![](img4.png)
+		- Hopping window: fixed length, but allows windows to overlap in order to provide some smoothing. For example, a 5-minute window with a hop size of 1 minute would contain the events between 10:03:00 and 10:07:59, then the next window would cover events between 10:04:00 and 10:08:59, and so on. You can implement this hopping window by first calculating 1-minute tumbling windows, and then aggregating over several adjacent windows. usecase -> to calculate "moving averages"
+		  ![](img5.png)
+		- Sliding window: contains all the events that occur within some interval of each other. For example, a 5-minute sliding window would cover events at 10:03:39 and 10:08:12, because they are less than 5 minutes apart (note that tumbling and hopping 5-minute windows would not have put these two events in the same window, as they use fixed boundaries). A sliding window can be implemented by keeping a buffer of events sorted by time and removing old events when they expire from the window.
+		- Session window: has no fixed duration. But, grouping together all events relative to the same user that occur closely together in time. (e.g. website analytics) and the window ends when the user has been inactive for some time (for example, if there have been no events for 30 minutes). Sessionization is a common requirement for website analytics
+		  ![](img6.png)
 - **Stream Joins**
-	- Similar to batch jobs; However, since new events can appear anytime on a stream makes joins on streams more challenging than in batch jobs.
-	- three different types of joins: **stream-stream joins**, **stream-table joins**, and **table-table joins**.
+	- Similar to batch jobs; However, since new events can appear anytime on a stream makes joins on streams more challenging than in batch jobs. To understand the situation better, let’s distinguish three different types of joins
+	- **stream-stream joins**, **stream-table joins**, and **table-table joins**.
 	- **Stream-stream join (window join)**:
-		- a stream processor needs to maintain state. 
+		- What it is: Matching two event streams (e.g., searches and clicks) to track relationships, like click-through rates. ou need to bring together the events for the search action and the click action, which are connected by having the same session ID. Similar analyses are needed in advertising systems. Since clicks may come much later or not at all. Due to variable network delays, the click event may even arrive before the search event . we use a time window (e.g., 1 hour) to decide which events to join.
+		- How to implement:
+			- Store recent search and click events, indexed by session ID.
+			- When a new event arrives, check if a matching event exists in the stored data.
+			- Whenever a search event or click event occurs, it is added to the appropriate index, and the stream processor also checks the other index to see if another event for the same ses‐ sion ID has already arrived. If there is a matching event, you emit an event saying which search result was clicked. If the search event expires without you seeing a matching click event, you emit an event saying which search results were not clicked.
+			- Use stream processing frameworks like Apache Flink, Apache Kafka Streams, or Spark Structured Streaming with windowing functions to handle timing issues.
 	- **Stream-table join (stream enrichment)**:
-		- Enriching the activity events with information from the database.
+		- Enriching the activity events with information from the database. (e.g., adding user profile info to activity logs). 
 		- Instead of performing remote SQL queries, we can cache up a copy of DB. (In Memory hashtable or local disk index) 
 			- Need CDC to ensure the stream data is up-to-date; 
-		- A stream-table join is actually very similar to a stream-stream join, but in this case we have “table changelog stream” involved. 
+		- When a profile is created or modified, the stream processor updates its local copy. Thus, we obtain a join between two streams: the activity events and the profile updates.
+		- Use **Flink’s broadcast join, Kafka Streams' GlobalKTable, or in-memory caching** to avoid slow remote database queries.
 	- **Table-table join (materialized view maintenance)**: (e.g. Tweets)
-		- it maintains a materialized view for a query that joins two tables. 
+		- **What it is:** Continuously updating a derived table (e.g., Twitter timelines) based on changes in two related tables (e.g., tweets and follows).
+		- **How to implement:**
+			- Maintain **two stateful streams**: one for tweet events and another for follow/unfollow events.
+			- When a user tweets, add the tweet to the timelines of all followers.
+			- When a follow/unfollow event occurs, update timelines accordingly.
+			- Use **Kafka Streams KTables, Flink stateful processing, or materialized views in databases** like Rockset or Materialize.
+			- Another way of looking at this stream process is that it maintains a materialized view for a query that joins two tables (tweets and follows), something like the following:
+			- SELECT follows.follower_id AS timeline_id, array_agg(tweets.* ORDER BY tweets.timestamp DESC) FROM tweets  JOIN follows ON follows.followee_id = tweets.sender_id GROUP BY follows.follower_id
 	- **Time-dependence of joins**:
-	- **Common**: they all require the stream processor to maintain some state based on one join input, and query that state on messages from the other join input.
-		- If the state changes over time, and you join with some state, what point in time do you use for the join ? (e.g. sales Tax calculation) 
-		- If the ordering of events across streams is undetermined, the join becomes nondeterministic;
-	- **slowly changing dimension (SCD)**:  addressed by using a unique identifier for a particular version of the joined record. (but this approach made log compaction impossible, because we need retain all version of the records) 
+		- **What it is:**
+			- When joining data, **timing matters**. For example:
+			- If a user updates their profile, some events should use the old profile (before the update), and others should use the new one.
+			- If you calculate sales tax, you must apply the **correct tax rate at the time of purchase**, not the latest tax rate.
+			- it matters whether you first follow and then unfollow, or the other way round, but there is typically no ordering guarantee across different streams or partitions.
+			- If events from different streams arrive out of order, **joins can become inconsistent** and **non-deterministic** (meaning rerunning the same job may give different results). which means you cannot rerun the same job on the same input and necessarily get the same result: the events on the input streams may be interleaved in a different way when you run the job again.
+		- In a data warehouse, a **dimension** is a dataset that contains descriptive attributes (e.g., customer information, product details, tax rates). A **slowly changing dimension (SCD)** refers to a dataset where values change **gradually over time** rather than frequently.
+		- **The Problem with Joining Changing Data**
+			- When joining a **fact table** (e.g., invoices) with a **dimension table** (e.g., tax rates), there is a challenge:
+			- If the tax rate table always contains **only the latest rates**, historical invoices will reflect **incorrect** values when tax rates change.
+			- If we reprocess old invoices today, they might get **joined with the wrong tax rate** because the latest tax rate has replaced the old one.
+		 - **Solution: Assigning Unique Identifiers to Versions**
+			 - To solve this, every time the tax rate changes, we:
+			 - **Create a new record in the table instead of overwriting the old one**
+			 - **Assign a unique identifier** (e.g., `tax_rate_id_2024`) to the new rate.
+			 - **Store this identifier in the invoice** at the time of sale.
+		- **Downside: No Log Compaction**: Log compaction is a technique used in streaming systems (like Kafka) to remove older records and keep only the latest version. However, because we need to retain **all historical versions** of tax rates for accurate joins, **log compaction cannot be used**—we cannot just delete old rates.
+
 - **Fault Tolerance** 
-	- You can’t wait until a stream is finished to validate its output/result, since all the stream is unbounded and will never really finish/complete. 
-	- **Microbatching and checkpointing**:
-	- **Microbatching**: break the stream into small blocks, and treat each block like a miniature batch process.  (e.g. **Spark** Streaming)  usually one second interval.
-		- Smaller the batches size the greater overhead. 
-		- Larger batches size means longer delay of results. 
-		- implicitly provides a tumbling window equal to the batch size
-	- **Checkpointing**: triggered by barriers in the message stream, similar to the boundaries between microbatches, but without forcing a particular window size.  (e.g. Apache **Flink**) 
-	- Both approaches won’t prevent external side effects after the results have been written into External Systems. 
-	- **Atomic commit revisited**:
-	- Achieve “Exactly-Once” processing without transactions across heterogeneous technologies. 
-	- **Idempotence**:
-		- Distributed transactions are one way of achieving that goal, but another way is to rely on **idempotence**.
-		- if an operation is not naturally idempotent, it can often be made idempotent with a bit of extra metadata. (e.g. Kafka with some offset value) 
-	- **Rebuilding state after a failure**:
-		- keep state local to the stream processor, and replicate it periodically.
-		- sometimes the state can be rebuilt from the input streams. 
+	- You can’t wait until a stream is finished to validate its output/result, since all the stream is unbounded and will never really finish/complete.  Stream processing systems need **fault tolerance** to handle failures while ensuring **accurate and consistent results**. Unlike batch processing, where failed tasks can simply be restarted without affecting the final output, stream processing faces additional challenges because the data flow is **continuous and unbounded**.
+	- ### **Techniques for Fault Tolerance in Stream Processing**
+		- **Microbatching and checkpointing**:
+			- **Microbatching**: break the stream into small blocks, and treat each block like a miniature batch process.  (e.g. **Spark** Streaming)  usually one second interval.
+			- Smaller the batches size the greater overhead. 
+			- Larger batches size means longer delay of results. 
+			- implicitly provides a tumbling window equal to the batch size
+			- Easy to retry when batch get failed -> aws lambda with kafka with batch size.
+		- **Checkpointing**: (Used in Apache Flink)
+			- Periodically **save the current processing state** to durable storage.
+			- If a failure occurs, restart from the latest checkpoint instead of reprocessing everything.
+			- **More efficient than microbatching** but requires careful state management.
+			- The checkpoints are triggered by bar‐ riers in the message stream, similar to the boundaries between microbatches, but without forcing a particular window size.
+		- **Atomic commit revisited**:
+			- When sending results to **external systems** (e.g., databases, message queues), failures can lead to **duplicate or lost data**.
+			- **Solution:** Ensure **all effects of a task happen atomically**—either everything succeeds, or nothing happens.
+			- Similar to **distributed transactions** (but optimized for stream processing).
+			- Used in **Google Cloud Dataflow, VoltDB, and planned for Apache Kafka**
+		- **Idempotence**:
+			- Distributed transactions are one way of achieving that goal, but another way is to rely on **idempotence**.
+			- if an operation is not naturally idempotent, it can often be made idempotent with a bit of extra metadata. (e.g. Kafka with some offset value) . For example, when consuming messages from Kafka, every message has a persistent, monotonically increasing offset. When writing a value to an external database, you can include the offset of the message that triggered the last write with the value. Thus, you can tell whether an update has already been applied, and avoid performing the same update again.
+		- **Rebuilding state after a failure**:
+			- Any stream process that requires state—for example, any windowed aggregations (such as counters, averages, and histograms) and any tables and indexes used for joins—must ensure that this state can be recovered after a failure.
+			- One option is to keep the state in a remote datastore and replicate it, although having to query a remote database for each individual message can be slow.
+			- keep state local to the stream processor, and replicate it periodically.
+			- For example, Flink periodically captures snapshots of operator state and writes them to durable storage such as HDFS [92, 93]; Samza and Kafka Streams replicate state changes by sending them to a dedicated Kafka topic with log compaction, similar to change data capture
+			- In some cases, it may not even be necessary to replicate the state, because it can be rebuilt from the input streams. For example, if the state consists of aggregations over a fairly short window, it may be fast enough to simply replay the input events corre‐ sponding to that window
+			- However, all of these trade-offs depend on the performance characteristics of the underlying infrastructure:
 	
 	
