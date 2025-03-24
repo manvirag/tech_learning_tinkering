@@ -9,7 +9,7 @@
 ### 1.2 Non functional requirements:
   - Discuss about non functional requirements. ( latency, availability, scalability, consistency,etc.).
   - Ask if they have any specific non functional requirements. 
-### Estimations: (ask -> let me know if you are not interested in this part, may be later on or at time of design we can come on this. ) 
+### 1.3 Estimations: (ask -> let me know if you are not interested in this part, may be later on or at time of design we can come on this. ) 
   - Come on to esitmations. 
   - ask about the DAU. 
   - find the read qps.
@@ -26,7 +26,7 @@
   - redis -> micro second, sql -> single digit read, double digit write , cassandra -> read sql/s , write -> sql read.
   - transaction limit assume 1-10k at max.
 
-## 2. System Design (10-15 minutes) ( sum -> 15 - 20)
+## 2. System Design (10-15 minutes) ( sum -> 15 - 20) (20mins at max -> so total at max 25mins -> red red flag.)
 
 ### 2.1 High-Level Architecture
 
@@ -75,7 +75,7 @@
 - Telling the things below in order do them one by one , deep dive one and move to other. 
 - Think about any end to end flow,  which you think important , then Do the dfs. Let say you have select some flow. Then go to client add details there , go the next component of flow add details there .... to end. Details are the below order wise.
 
-### Order wide details -> could be possible for some component couldn't be possible for other. 
+### 3.1 Order wide details -> could be possible for some component couldn't be possible for other. 
 
 - What is this component. 
 
