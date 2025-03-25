@@ -112,6 +112,7 @@
     
 
 - [Gate way](https://www.hellointerview.com/learn/system-design/deep-dives/api-gateway) -> let talk about this -> this is kind of statting point like app-gatekeeper. 
+    - use it when you have a microservices architecture and don't use it when you have a simple client-server architecture.
     - tell particular route will get hit -> for e.g. /graphql , or may be direct api. 
     - it will send this route to particular server. 
     - say k8s can be used here -> like gate pay or load balancer high to the ingress of k8s then it will send to particular requests. 
@@ -119,10 +120,9 @@
     - now this will call the backend server either via grpc or api.
     - also tell here like industry wide use k8s cluster so this need not to go to again via load balancer
     - scale graphql horizontally -> can tell -> k8s pods , replica count, hpa , service for load balancing etc can be used here
-    - make secure by rate limiting
+    - make secure by rate limiting, authentication (middle ware work)
     - request/response transformation -> header manipulation, payload modification
-    
-
+![gateway](./apigateway.png)
 
 - For any general purpose server. ( sync called, stateless ):
     - as your self what's the usecase of this. 
