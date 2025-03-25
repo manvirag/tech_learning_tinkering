@@ -66,7 +66,7 @@
         - 502: Bad Gateway -> This happens when one server, acting as a gateway or proxy, receives a faulty response from an upstream server.
         - 503: server unavaible -> not able to take request may be undeploy or down. 
         - 101: switching protocol.
-    - **request meta , token, jwt token, saml**  -> for **authentication** , **header**  ( DIFF )
+    - **request meta , token, jwt token, saml**  -> for **authentication** , **header**  ( DIFF ), for websocket -> headers upgrade , key and version etc. -> res 101 switching protocol etc.
     ![api_design](./apidesign.png)
 
 - write the db schema of that 
@@ -108,10 +108,10 @@
     - these are static pages -> via s3 or server -> CDN if high static caching backed by s3 or having multip customer.
     - say this will call to graphql. Not need to add much details. 
     - some time client do some work that can tell like file upload to s3 and send link to server etc.
-
+![client](./client.png)
     
 
-- Gate way -> let talk about this -> this is kind of statting point like app-gatekeeper. 
+- [Gate way](https://www.hellointerview.com/learn/system-design/deep-dives/api-gateway) -> let talk about this -> this is kind of statting point like app-gatekeeper. 
     - tell particular route will get hit -> for e.g. /graphql , or may be direct api. 
     - it will send this route to particular server. 
     - say k8s can be used here -> like gate pay or load balancer high to the ingress of k8s then it will send to particular requests. 
@@ -122,6 +122,8 @@
     - make secure by rate limiting
     - request/response transformation -> header manipulation, payload modification
     
+
+
 - For any general purpose server. ( sync called, stateless ):
     - as your self what's the usecase of this. 
     - do we have any existing thing can be used here ? 
