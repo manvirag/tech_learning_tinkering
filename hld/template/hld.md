@@ -12,7 +12,7 @@
   - Discuss about non functional requirements. ( latency, availability, scalability, consistency,etc.).
   - Ask if they have any specific non functional requirements. 
   - Cap theorem in distributed system. 
-### 1.3 Estimations: (ask -> let me know if you are not interested in this part, may be later on or at time of design we can come on this. ) 
+### 1.3 Estimations: (ask -> let me know if you are not interested in this part, may be later on or at time of design we can come on this. Even they say not much invest time in calculations . ) 
   - Come on to esitmations. 
   - ask about the DAU. 
   - find the read qps.
@@ -34,7 +34,7 @@
 
 ### 2.1 High-Level Architecture
 
-- Ask interview -> i usually draw boxes and do the api and db design. and then later on go into nfr like scaling, other details, let me know if any want to do have some other way. -> some can say first do api design and db design. then hld but mostly don't say any thing so continue. 
+- Ask interview -> i usually draw boxes and do the api and db design. and then later on go into nfr like scaling, other details, let me know if any want to do have some other way. -> some can say first do api design and db design. then hld but mostly don't say any thing so continue. **Mostly prefer to have entities and  then most suitable api first then other things later on like hld db schema deep dive.** 
 - Think about the solutions with past problem , Draw the boxes of different components, something new just draw boxes with some responsibility and later figure out in deep dive. 
 - they can be different servers, gateway, database, kafka, elastic search, s3, graphql, client, CDN, redis, aws lambda, consumer, stream, batch ( only if multi country expensive)  etc just black boxes like database can be box as of now. b
 - Draw the arrows -> to have high level idea of arrows. tell the flow one by one and make the arrow. 
@@ -50,7 +50,8 @@
     - if GET write in query, POST write its json, 
     - write the request and response.
     - if require to have pagination add that.
-    - if require to have cursor add that. 
+    - if require to have cursor add that. ( always better to use cursor. )
+    - talk about headers ( sone pe suhata.) -> token, jwt, saml , authid come there.
     - client -> graphql
     - server to server -> grpc
     - talk about different status codes -> 
@@ -65,9 +66,11 @@
         - 502: Bad Gateway -> This happens when one server, acting as a gateway or proxy, receives a faulty response from an upstream server.
         - 503: server unavaible -> not able to take request may be undeploy or down. 
         - 101: switching protocol.
+    - **request meta , token, jwt token, saml**  -> for **authentication** , **header**  ( DIFF )
+    ![api_design](./apidesign.png)
 
-- write the db schema of that
-    - in mind think about the db, may be you can tell to interview thinking about this -> a/c to read heavy ( mysql , kv pair) or write heavy ( cassandra) with these questions -> what is data access pattern, what is query pattern , or simply key value getting, or m:m relation graph, olap ( cassandra, snowflake datalake), vector db for embeddings, 
+- write the db schema of that 
+    - in mind think about the db, may be you can tell to interview thinking about this -> a/c to read heavy ( mysql , kv pair) or write heavy ( cassandra) with these questions -> what is data access pattern, what is query pattern, btree, lsm sst, columnar etc. -> more in db type deep dive. , or simply key value getting, or m:m relation graph, olap ( cassandra, snowflake datalake), vector db for embeddings, 
     - figure out the entities and write schema as per db.
     - write the structure, fields -> default -> id, createdtime, updatedtime. createdby, updatedby, globalcontextid , foreignId etc. 
     - write the type as well , but write the primary key and foreign key detail. 
@@ -84,6 +87,7 @@
         - if yes-no -> just tell about the apis on high level or via text and db type and why. 
         - else move to next part. 
     - check the time don't invest more than ( 20mins at max -> so total at max 25mins -> red red flag.)
+    ![alt_image](./dbschema.png)
 
 ## 3. Deep Dive (15-20 minutes) (20-40) -> no limit until interviewer wants. ( 40mins-45 mins)
 
@@ -95,6 +99,7 @@
 
 ### 3.1 Order wide details -> could be possible for some component couldn't be possible for other. 
 
+- When deep diving into any component, follow this systematic approach:
 
 - Remeber these words -> Scalability, bottlenecks, Availability(after crash), Reliability(no loss), SPOF, Retry , error handling, consistency, concurrency, race condition, transaction, distributed complexity, backups, reconsilation, idempotency
 
@@ -103,6 +108,8 @@
     - these are static pages -> via s3 or server -> CDN if high static caching backed by s3 or having multip customer.
     - say this will call to graphql. Not need to add much details. 
     - some time client do some work that can tell like file upload to s3 and send link to server etc.
+
+    
 
 - Gate way -> let talk about this -> this is kind of statting point like app-gatekeeper. 
     - tell particular route will get hit -> for e.g. /graphql , or may be direct api. 
@@ -113,7 +120,8 @@
     - also tell here like industry wide use k8s cluster so this need not to go to again via load balancer
     - scale graphql horizontally -> can tell -> k8s pods , replica count, hpa , service for load balancing etc can be used here
     - make secure by rate limiting
-
+    - request/response transformation -> header manipulation, payload modification
+    
 - For any general purpose server. ( sync called, stateless ):
     - as your self what's the usecase of this. 
     - do we have any existing thing can be used here ? 
@@ -164,12 +172,14 @@
 -  advance mmap event source mappingn low latency.
 
 -  ledger reconsilation in finance system
-
-
-
-
-
-
+    - double-entry accounting
+    - transaction logs
+    - audit trails
+    - consistency checks
+    - rollback mechanisms
+    - reconciliation jobs
+    - financial reporting
+    - Ready-made solutions: AWS QLDB, Hyperledger Fabric, Stellar
 
 ## 4. Wrap-up (5 minutes)
 - Summarize the design
