@@ -60,8 +60,8 @@
         - 302: temporary redirect ->  mean we will come back on this like A/B testing etc.
         - 400: bad request, request is bad validation failed. 
         - 401: Unauthorized -> user needs to log in or authenticate to access the page.
-        - 403: Forbidden -> server understood the request but won’t fulfill it, due to a lack of permissions.
-        - 404: Not Found -> server couldn’t find the page requested ( might be incorrect url)
+        - 403: Forbidden -> server understood the request but won't fulfill it, due to a lack of permissions.
+        - 404: Not Found -> server couldn't find the page requested ( might be incorrect url)
         - 500: internal server error , server broke.
         - 502: Bad Gateway -> This happens when one server, acting as a gateway or proxy, receives a faulty response from an upstream server.
         - 503: server unavaible -> not able to take request may be undeploy or down. 
@@ -125,16 +125,17 @@
 ![gateway](./apigateway.png)
 
 - For any general purpose server. ( sync called, stateless ):
-    - as your self what's the usecase of this. 
-    - do we have any existing thing can be used here ? 
-    - aws lambda ( mostly event source mapping. ), k8s service ( most of the cases this one.)
-    - stateless -> scale horizontally depending upon qps, add loadbalancer ( service in k8s ) ( nginx (ingress) -> service (LB) -> pods (horizontal server)). -> available
-    - what about hotspot ?? consistency hashing ?? how ?? zookeeper ?? really ?
     - is it https vs grpc vs websocket decide. etc. 
-    - Consistency and error handling. 
-    - or may be server level rate limiting. 
+    - ask your self what's the responsibility of this server and wrote it
+    - stateless -> scale horizontally depending upon qps, add loadbalancer ( service in k8s ) ( nginx (ingress) -> service (LB) -> pods (horizontal server)). -> available
+    - what about hotspot  -> stateless shouldn't be case
 
-
+    - Consistency and error handling , exponential retry, or dlq
+    - or may be server level rate limiting, authentication, timeout
+    - health checks endpoints, monitoring , logging and alertings
+    - deployment strategy -> blue-green, canary, rolling updates
+    - Ready-made solutions: AWS Lambda, Kubernetes Deployments, Google Cloud Run
+   ![](./sync_stateless_server.png)
 -  for any general purpose consumer ( consuming async events):
 
 -  for any general purpose server/consumer/processor( stateful ):
