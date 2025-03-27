@@ -151,7 +151,34 @@
     - Ready-made solutions: aws lambda, k8s
 ![](./consumer_stateless.png)
 
--  for any general purpose server/consumer/processor( stateful ):
+-  for any general purpose server ( stateful ):
+    # In-Memory State Management:
+    - state storage -> in-memory data structures, heap management
+    - consistency -> thread-safe collections, ocks, atomic operations
+    - basically can assume it as inmemory cache and use cache invalidation technique same here.
+    - scaling -> put in redis -> stateless -> horizontal.
+    - invalidate at time of read ( stale data for some time. )
+    - some how figure out to make cache indepdent with some key depending upon cache data so that each server independent of each other.
+    - in case require availability can have backup node with same data and put at case of failure.
+    - if further -> complex -> like database -> consensus
+![](./sync_stateful_server.png)
+
+-  for any general purpose consumer ( stateful ):
+    - basically getting infinite stream of data can find data on overbasis like order book in stock exchange, top k.
+    - this can be like weekly, perday  or can be like any time -> these are read query usecases., weekly top songs.
+    - logic single server -> consume events -> in memory maintain overall state -> flush state to persist -> this flushing depend upon the read query usecase or patter.
+    - stateful processing -> maintain processing state
+    - state recovery -> checkpointing, state restoration
+    - state persistence -> durable state storage
+    - state consistency -> versioning, timestamps
+    - state synchronization -> across consumers
+    - failure handling -> state recovery after crash
+    - scaling challenges -> state partitioning
+    - state migration -> rebalancing, resharding
+    - state backup -> replication, recovery
+    - state monitoring -> state size, growth
+    - state cleanup -> retention, compaction
+    - Ready-made solutions: Apache Flink, Apache Spark Streaming, AWS Kinesis Data Analytics
 
 -  stream/batch, aggregation windowing algorithms ? in batch, issues in clock syn. ( stateful )
 
