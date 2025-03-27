@@ -129,14 +129,26 @@
     - ask your self what's the responsibility of this server and wrote it
     - stateless -> scale horizontally depending upon qps, add loadbalancer ( service in k8s ) ( nginx (ingress) -> service (LB) -> pods (horizontal server)). -> available
     - what about hotspot  -> stateless shouldn't be case
-
     - Consistency and error handling , exponential retry, or dlq
     - or may be server level rate limiting, authentication, timeout
     - health checks endpoints, monitoring , logging and alertings
     - deployment strategy -> blue-green, canary, rolling updates
     - Ready-made solutions: AWS Lambda, Kubernetes Deployments, Google Cloud Run
-   ![](./sync_stateless_server.png)
+![](./sync_stateless_server.png)
+
 -  for any general purpose consumer ( consuming async events):
+    - consuming events via queue/kafka. 
+    - write responsibility.
+    - message processing -> batch vs single, error handling ( like retry or not.)
+    - some also use retry queue for retrying events. ( change order -> in retry batch duplicacy.)
+    - dead letter queue -> failed message handling
+    - scaling strategy -> consumer group scaling -> equal to parition.
+    - message ordering -> partition key -> failure retry -> but idempotency at target.
+    - idempotency -> deduplication, message replay.
+    - discuss about push vs pull. 
+    - monitoring -> consumer lag, processing rate, logger
+    - failure handling to target -> retry policies
+    - Ready-made solutions: aws lambda, k8s
 
 -  for any general purpose server/consumer/processor( stateful ):
 
