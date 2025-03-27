@@ -152,7 +152,6 @@
 ![](./consumer_stateless.png)
 
 -  for any general purpose server ( stateful ):
-    # In-Memory State Management:
     - state storage -> in-memory data structures, heap management
     - consistency -> thread-safe collections, ocks, atomic operations
     - basically can assume it as inmemory cache and use cache invalidation technique same here.
@@ -166,21 +165,17 @@
 -  for any general purpose consumer ( stateful ):
     - basically getting infinite stream of data can find data on overbasis like order book in stock exchange, top k.
     - this can be like weekly, perday  or can be like any time -> these are read query usecases., weekly top songs.
-    - logic single server -> consume events -> in memory maintain overall state -> flush state to persist -> this flushing depend upon the read query usecase or patter.
-    - stateful processing -> maintain processing state
-    - state recovery -> checkpointing, state restoration
-    - state persistence -> durable state storage
-    - state consistency -> versioning, timestamps
-    - state synchronization -> across consumers
-    - failure handling -> state recovery after crash
-    - scaling challenges -> state partitioning
-    - state migration -> rebalancing, resharding
-    - state backup -> replication, recovery
-    - state monitoring -> state size, growth
-    - state cleanup -> retention, compaction
+    - logic single server -> consume events -> in memory maintain overall state -> flush state to persist -> this flushing depend upon the read query usecase or patter. 
+    - for high availabitliy or failover -> kafka replay, or maintain replication second node.
+    - recovery at time of start with statemagement.
+    - Scale: 
+    - scale: ( oops complex man ) -> same like if possible to distribute by some do that like in case of stock could be with  stock name. (google, amazon) but not for top k. ( or what if particular stock have high -> go one level and
+      again try to partition -> like may be a/c to price, timing -> partiion build locally and merge it like this workflow .)
+    - separate read and write , read eventual, write concrete. 
+    - we have readymate different tools. this might be doing like local and then merging etc not sure.  
+    - state monitoring -> state size, duration, latency.
     - Ready-made solutions: Apache Flink, Apache Spark Streaming, AWS Kinesis Data Analytics
-
--  stream/batch, aggregation windowing algorithms ? in batch, issues in clock syn. ( stateful )
+![](./consumer_stateful.png)
 
 -  for any general purpose cronjob ( running at interval with some input event ):
 
