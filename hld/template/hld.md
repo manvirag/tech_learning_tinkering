@@ -149,6 +149,7 @@
     - monitoring -> consumer lag, processing rate, logger
     - failure handling to target -> retry policies
     - Ready-made solutions: aws lambda, k8s
+![](./consumer_stateless.png)
 
 -  for any general purpose server/consumer/processor( stateful ):
 
