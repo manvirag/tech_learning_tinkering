@@ -235,24 +235,43 @@
     - in milliseconds. 
 
 -  talk about CDN: 
-
+    - its a concept: that means there is network of servers (edge server) on multiple location (edge locations) globally, that keep static content (images, JS, CSS) on those servers and deliver it rather sending it by origin server ( mostly s3 integration ). 
+    - it generate different url to access content than original one. ( not sure but might cn)
+    - Push vs Pull.
+    - Similar to cache -> cache invalidations -> ttl, at update etc. 
+    - its very expensive + cache invalidation issues.
+    - ready mate cloudfront (400+ POPs, taking this as example. Lambda@Edge, you can customize request routing based on logic (e.g., serve different content by region). ), akamai
+    - FYI: PoP (Point of Presence) → A data center that houses multiple edge servers for caching and delivering content. Edge Server → A single server inside a PoP that stores and serves cached content to users.
+    
 -  monitoring , pagerduty, only, incident cases (case our system broke and need someone to intervene and how can be restore state):
+    - At any system. to discuss about this. 
+    - have metric
+    - have alerts -> pagerduty -> oncall 
+    - and someway to manually fix it or observe it. 
+    - like in failure over node -> oncall can come and observe it if automatic.
+    - general method for recovery.
 
 -  what about load balancers ?
+    - receive request , send it to a server out of existing , distributed load.
+    - robin round vs weighted with zookeeper(mnoitor status of server) etc.
+    - nginx very famous, hpproxy.
+    - bench mark latency in nanoseconds, 
+    - scale further ? 
 
 -  what to do read / write amplification.
+    - not an ideal solution.
+    - choose hybrid on basis of threshold. if follower xyz etc. 
 
--  what to do when need strict ordering things ? and indempotency and replay kind of thing
-
--  clock synchronisation complicacy in distributed system.
-
--  what about hashing mechanism ? 
-
--  what the heck about service discovery ? 
+-  what the heck about service discovery, zookeeper ?
+    - there might be other use , but i know as key value config saving with high consistency , also has its distributed nature.
+    - usecase: can be used to have data of existing server for e.g. in websocket, whenver there is replacement etc. happen
+that will also change in this discovery, and other server can fetch from here, with load balancer.
+    - also for use selection.
+    - zookeeper, consul.
 
 -  details about decoding/encoding/compression/trancoding/base64/ascii/utf-8(x)/storage-for-char/  ? -> for cost and storage optimization
+    - 
 
--  advance mmap event source mappingn low latency.
 
 -  ledger reconsilation in finance system
     - double-entry accounting
@@ -263,6 +282,11 @@
     - reconciliation jobs
     - financial reporting
     - Ready-made solutions: AWS QLDB, Hyperledger Fabric, Stellar
+
+-  what to do when need strict ordering things ? and indempotency and replay kind of thing
+-  clock synchronisation complicacy in distributed system.
+-  advance mmap event source mappingn low latency.
+
 
 ## 4. Wrap-up (5 minutes)
 - Summarize the design
