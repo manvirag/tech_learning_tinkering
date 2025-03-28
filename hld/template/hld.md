@@ -271,13 +271,11 @@ that will also change in this discovery, and other server can fetch from here, w
     - zookeeper, consul.
 
 -  details about decoding/encoding/compression/trancoding/base64/ascii/utf-8(x)/storage-for-char/  ? -> for cost and storage optimization
-    - 
-
+    - check concept folder.
 
 -  ledger reconsilation in finance system
     - double-entry accounting
     - transaction logs
-    - audit trails
     - consistency checks
     - rollback mechanisms
     - reconciliation jobs
