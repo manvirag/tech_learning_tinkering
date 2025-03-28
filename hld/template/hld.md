@@ -204,14 +204,15 @@
 -  for different types of databases and its challences, transactions, distribute tx: ( altogether different and vast thing will talk about gen.) 
 
 -  for any blob storage usecase: 
-    - blog storage require  images, video, dataset, logs , file etc.
-    - options like s3 -> highly available, multiple zones,
+    - blog storage require  images, video, dataset, logs , file etc. 
+    - options like s3 -> highly available, multiple zones, (No real directories or folders, just a key-value store.)
     - write like bucket with unique address -> {bucket}/{domain}/{date}/{hour}/files.
     - CDN integration with s3 and Multipart Uploads for large files.
     - Limitations: high latency than db, not fine grain update versioning file, New writes → Strong consistency (Always latest version). Updates/Deletes(overide with version) → Eventual consistency (Old version may appear briefly)
 
 
--  what about the file storage ? like logs etc:
+-  what about the hdfs ?
+    - 
 
 -  talk about cache for any general purpose, its data structure:
 
