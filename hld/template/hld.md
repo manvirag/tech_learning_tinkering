@@ -186,8 +186,8 @@
     - pull pattern -> consumer actively polls server
     - kafka vs rabbitmq vs sqs ( assume order maintain one ) vs kinesis ?? ( ignore kinesis same as kafka )
     - SQS: very simple no multiple consumer, can be used for as dlq, task processing, notification etc. ( there are some limitation of this less throughput)
-    - RABBITMQ (10-100k/s and low latency less than 1ms): very scaled version of sqs ( i'd say ): complex routing like pattern, header, key etc. Not retention once read remove message, can't replay and less retention if not read, also have priority queues (need confirmation). Example task queries ( priority option )
-    - KAFKA (100k/s , 10-100ms): mostly can use in all purpose -> high throughput -> scalable -> can act as sqs , fanout , replay , backup, high lots, bit size event etc. 
+    - RABBITMQ (10-100k/s and low latency less than 1ms(gpt)): very scaled version of sqs ( i'd say ): complex routing like pattern, header, key etc. Not retention once read remove message, can't replay and less retention if not read, also have priority queues (need confirmation). Example task queries ( priority option )
+    - KAFKA (100k/s , 10-100ms(gpt)): mostly can use in all purpose -> high throughput -> scalable -> can act as sqs , fanout , replay , backup, high lots, bit size event etc. 
     - then talk about below things for selected queue ( taken kafka and added details )
     - message persistence -> disk storage, replication
     - message ordering -> partition key, sequence numbers
@@ -199,11 +199,29 @@
 ![](./kafka_tx.png)
 ![](./queue.png)
 
+
+
 -  for different types of databases and its challences, transactions, distribute tx: ( altogether different and vast thing will talk about gen.) 
 
 -  for any blob storage usecase: 
+    - blog storage require  images, video, dataset, logs , file etc. 
+    - options like s3 -> highly available, multiple zones, virtually infinite storage, (No real directories or folders, just a key-value store.)
+    - write like bucket with unique address -> {bucket}/{domain}/{date}/{hour}/files.
+    - CDN integration with s3 and Multipart Uploads for large files.
+    - Limitations: high latency than db, not fine grain update versioning file, New writes → Strong consistency (Always latest version). Updates/Deletes(overide with version) → Eventual consistency (Old version may appear briefly)
 
--  what about the file storage ? like logs etc:
+
+-  what about the hdfs ? 
+    - hdfs is concept ->  HDFS (Hadoop Distributed File System) is a design pattern for distributed storage, where large files are split into blocks and stored across multiple nodes with replication.
+    - Default 128MB/256MB block size, optimized for sequential reads.
+    - NameNode manages metadata, DataNodes ( like partition in kafka ) store actual data.
+    - Default 3x replication for fault tolerance, configurable.
+    - **No in-place updates, only appends allowed.**
+    - readymate solution -> hadoop etc.
+    - mostly system based on this in case related to files and processing. 
+    - though apache spark , flink are like processor can be used with hdfs or s3 or kafka ( stream )
+    - less latency than s3, Optimized for big data, not random small file access.
+
 
 -  talk about cache for any general purpose, its data structure:
 
