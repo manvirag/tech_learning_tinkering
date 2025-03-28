@@ -274,8 +274,8 @@ that will also change in this discovery, and other server can fetch from here, w
     - check concept folder.
 
 -  ledger reconsilation in finance system
-    - double-entry accounting
-    - transaction logs
+    - double-entry accounting, transaction logs -> both entry simultaneious.
+    - append only.
     - consistency checks
     - rollback mechanisms
     - reconciliation jobs
