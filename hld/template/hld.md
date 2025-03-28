@@ -187,7 +187,7 @@
     - kafka vs rabbitmq vs sqs ( assume order maintain one ) vs kinesis ?? ( ignore kinesis same as kafka )
     - SQS: very simple no multiple consumer, can be used for as dlq, task processing, notification etc. ( there are some limitation of this less throughput)
     - RABBITMQ (10-100k/s and low latency less than 1ms): very scaled version of sqs ( i'd say ): complex routing like pattern, header, key etc. Not retention once read remove message, can't replay and less retention if not read, also have priority queues (need confirmation). Example task queries ( priority option )
-    - KAFKA (10-100k/s , 10-100ms): mostly can use in all purpose -> high throughput -> scalable -> can act as sqs , fanout , replay , backup, high lots, bit size event etc. 
+    - KAFKA (100k/s , 10-100ms): mostly can use in all purpose -> high throughput -> scalable -> can act as sqs , fanout , replay , backup, high lots, bit size event etc. 
     - then talk about below things for selected queue ( taken kafka and added details )
     - message persistence -> disk storage, replication
     - message ordering -> partition key, sequence numbers
