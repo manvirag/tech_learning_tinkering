@@ -129,22 +129,75 @@
     - ask your self what's the responsibility of this server and wrote it
     - stateless -> scale horizontally depending upon qps, add loadbalancer ( service in k8s ) ( nginx (ingress) -> service (LB) -> pods (horizontal server)). -> available
     - what about hotspot  -> stateless shouldn't be case
-
     - Consistency and error handling , exponential retry, or dlq
     - or may be server level rate limiting, authentication, timeout
     - health checks endpoints, monitoring , logging and alertings
     - deployment strategy -> blue-green, canary, rolling updates
     - Ready-made solutions: AWS Lambda, Kubernetes Deployments, Google Cloud Run
-   ![](./sync_stateless_server.png)
+![](./sync_stateless_server.png)
+
 -  for any general purpose consumer ( consuming async events):
+    - consuming events via queue/kafka. 
+    - write responsibility.
+    - message processing -> batch vs single, error handling ( like retry or not.)
+    - some also use retry queue for retrying events. ( change order -> in retry batch duplicacy.)
+    - dead letter queue -> failed message handling
+    - scaling strategy -> consumer group scaling -> equal to parition.
+    - message ordering -> partition key -> failure retry -> but idempotency at target.
+    - idempotency -> deduplication, message replay.
+    - discuss about push vs pull. 
+    - monitoring -> consumer lag, processing rate, logger
+    - failure handling to target -> retry policies
+    - Ready-made solutions: aws lambda, k8s
+![](./consumer_stateless.png)
 
--  for any general purpose server/consumer/processor( stateful ):
+-  for any general purpose server ( stateful ):
+    - state storage -> in-memory data structures, heap management
+    - consistency -> thread-safe collections, ocks, atomic operations
+    - basically can assume it as inmemory cache and use cache invalidation technique same here.
+    - scaling -> put in redis -> stateless -> horizontal.
+    - invalidate at time of read ( stale data for some time. )
+    - some how figure out to make cache indepdent with some key depending upon cache data so that each server independent of each other.
+    - in case require availability can have backup node with same data and put at case of failure.
+    - if further -> complex -> like database -> consensus
+![](./sync_stateful_server.png)
 
--  stream/batch, aggregation windowing algorithms ? in batch, issues in clock syn. ( stateful )
+-  for any general purpose consumer ( stateful ):
+    - basically getting infinite stream of data can find data on overbasis like order book in stock exchange, top k.
+    - this can be like weekly, perday  or can be like any time -> these are read query usecases., weekly top songs.
+    - logic single server -> consume events -> in memory maintain overall state -> flush state to persist -> this flushing depend upon the read query usecase or patter. 
+    - for high availabitliy or failover -> kafka replay, or maintain replication second node.
+    - recovery at time of start with statemagement.
+    - Scale: 
+    - scale: ( oops complex man ) -> same like if possible to distribute by some do that like in case of stock could be with  stock name. (google, amazon) but not for top k. ( or what if particular stock have high -> go one level and
+      again try to partition -> like may be a/c to price, timing -> partiion build locally and merge it like this workflow .)
+    - separate read and write , read eventual, write concrete. 
+    - we have readymate different tools. this might be doing like local and then merging etc not sure.  
+    - state monitoring -> state size, duration, latency.
+    - Ready-made solutions: Apache Flink, Apache Spark Streaming, AWS Kinesis Data Analytics
+![](./consumer_stateful.png)
 
 -  for any general purpose cronjob ( running at interval with some input event ):
+    - schedule time, input event ,  monitorings.
+    - Ready-made solutions: AWS EventBridge, Kubernetes CronJobs, Apache Airflow
 
 -  queue for any async or decoupling purpose and its complicacy: push pull
+    - push pattern -> server actively sends to consumer
+    - pull pattern -> consumer actively polls server
+    - kafka vs rabbitmq vs sqs ( assume order maintain one ) vs kinesis ?? ( ignore kinesis same as kafka )
+    - SQS: very simple no multiple consumer, can be used for as dlq, task processing, notification etc. ( there are some limitation of this less throughput)
+    - RABBITMQ (10-100k/s and low latency less than 1ms): very scaled version of sqs ( i'd say ): complex routing like pattern, header, key etc. Not retention once read remove message, can't replay and less retention if not read, also have priority queues (need confirmation). Example task queries ( priority option )
+    - KAFKA (100k/s , 10-100ms): mostly can use in all purpose -> high throughput -> scalable -> can act as sqs , fanout , replay , backup, high lots, bit size event etc. 
+    - then talk about below things for selected queue ( taken kafka and added details )
+    - message persistence -> disk storage, replication
+    - message ordering -> partition key, sequence numbers
+    - message delivery -> at-least-once, exactly-once
+    - consumer scaling -> partition-based parallelism
+    - message retention -> TTL, cleanup policies
+    - monitoring -> consumer lag, throughput, dlq
+    - Ready-made solutions: Apache Kafka, RabbitMQ, AWS SQS, Kinesis
+![](./kafka_tx.png)
+![](./queue.png)
 
 -  for different types of databases and its challences, transactions, distribute tx: ( altogether different and vast thing will talk about gen.) 
 
