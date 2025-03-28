@@ -222,8 +222,17 @@
     - though apache spark , flink are like processor can be used with hdfs or s3 or kafka ( stream )
     - less latency than s3, Optimized for big data, not random small file access.
 
-
 -  talk about cache for any general purpose, its data structure:
+    - usecase: low latency, frequently accessed data in memory.
+    - [datastructure](https://github.com/manvirag/tech_learning_tinkering/blob/main/hld/concepts_backup/cache/redis/redis.md): 
+    - cache invalidation(tough): 
+    - eviction policy -> LRU , LFU, TTL
+    - Scale:
+    - consistency? in concurrency ? -> data may loose at crash,  [LWW](https://dev.to/munawwar/concurrent-redis-writes-and-correctness-3fh3#:~:text=If%20two%20parallel%20processes%20tries,and%20the%20last%20write%20wins.) , -> for multiple command -> [redis transaction](https://redis.io/docs/latest/develop/interact/transactions/)
+    - master-slave(write-read), better partition + consistency hashing(or depending upon partition logic), else would become eventual on read like -> multi master for write and replicate to follower and then read (redis cluster).
+    - many options but redis widely used ( also assuming using this or aws redis i.e elastic cache.)
+    - Can persist -> append only files. [More About Redis](https://github.com/manvirag/tech_learning_tinkering/blob/main/hld/concepts_backup/cache/redis/redis.md)
+    - in milliseconds. 
 
 -  talk about CDN: 
 
