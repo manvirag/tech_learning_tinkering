@@ -266,7 +266,8 @@
     - there might be other use , but i know as key value config saving with high consistency , also has its distributed nature.
     - usecase: can be used to have data of existing server for e.g. in websocket, whenver there is replacement etc. happen
 that will also change in this discovery, and other server can fetch from here, with load balancer.
-    - also for use selection.
+    - also for leader selection. 
+    - Health Checks → Remove failed instances automatically. -> register , there is function to call health check. /health
     - zookeeper, consul.
 
 -  details about decoding/encoding/compression/trancoding/base64/ascii/utf-8(x)/storage-for-char/  ? -> for cost and storage optimization
