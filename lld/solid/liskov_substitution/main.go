@@ -1,15 +1,11 @@
-// Example
-
 package main
 
 import "fmt"
 
-// Liskov ...
 type Liskov interface {
 	LiskovFunc()
 }
 
-// Parent ...
 type Parent struct{}
 
 // Child ...   // this is not inheritance this is struct embedding -> https://www.tutorialspoint.com/composition-in-golang
@@ -18,12 +14,10 @@ type Child struct {
 	Parent
 }
 
-// LiskovFunc ...
 func (p *Parent) LiskovFunc() {
 	fmt.Println("It works")
 }
 
-// LiskovSubstitution ...
 func LiskovSubstitution(lis Liskov) {
 	lis.LiskovFunc()
 }
@@ -35,15 +29,11 @@ func main() {
 	LiskovSubstitution(par)
 }
 
-
-
-
-
 /*
 
-c++, in short child should have things what parent told, 
+c++, in short child should have things what parent told,
 
-voilating one: 
+voilating one:
 
 
 
@@ -87,8 +77,8 @@ int main() {
     BrokenShape broken;
 
     try {
-        printArea(rect);    // Works fine ✅
-        printArea(broken);  // Crashes ❌
+        printArea(rect);    // Works fine
+        printArea(broken);  // Crashes
     } catch (const exception& ex) {
         cout << "Exception caught: " << ex.what() << endl;
     }
