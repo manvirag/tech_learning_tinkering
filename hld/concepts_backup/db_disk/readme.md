@@ -102,7 +102,7 @@ AND orderDate >= '2024-01-01' AND orderDate <= '2024-01-31';
 ![img_3.png](img_3.png)
 - why not existing nosql ? , ( Log(N) + duplicate data )
 ![img_4.png](img_4.png)
-- In neo4j it store the address directly to can access to disk directly
+- In neo4j it store the address directly to can access to disk directly. index free adjacency https://thomasvilhena.com/2019/08/index-free-adjacency
 ![img_5.png](img_5.png)
 
 ****- More details****
