@@ -1,4 +1,5 @@
 Top Notch: https://systemdesign.one/url-shortening-system-design/#summary
+With Redis atomic counter: https://www.hellointerview.com/learn/system-design/problem-breakdowns/bitly
 
 ### Requirements:
 
@@ -194,3 +195,72 @@ func main() {
 	http.ListenAndServe(":8080", nil)
 }
 ```
+
+
+With Redis counter
+
+```
+
+package main
+
+import (
+    "context"
+    "fmt"
+    "log"
+    "github.com/redis/go-redis/v9"
+)
+
+var (
+    ctx = context.Background()
+    rdb *redis.Client
+)
+
+func initRedis() {
+    rdb = redis.NewClient(&redis.Options{
+        Addr:     "localhost:6379", // change to your Redis address
+        Password: "",               // no password set
+        DB:       0,                // use default DB
+    })
+
+    _, err := rdb.Ping(ctx).Result()
+    if err != nil {
+        log.Fatalf("Could not connect to Redis: %v", err)
+    }
+}
+
+// IncrementGlobalCounter increases the counter atomically
+func IncrementGlobalCounter(key string) (int64, error) {
+    return rdb.Incr(ctx, key).Result()
+}
+
+func main() {
+    initRedis()
+
+    counterKey := "global_counter"
+    newVal, err := IncrementGlobalCounter(counterKey)
+    if err != nil {
+        log.Fatalf("Failed to increment counter: %v", err)
+    }
+
+    fmt.Printf("New counter value: %d\n", newVal)
+}
+
+```
+
+Comparison with Non-Atomic Approach
+If you did something like:
+
+```
+val, _ := rdb.Get(ctx, "counter").Int()
+val++
+rdb.Set(ctx, "counter", val)
+```
+
+This is not atomic — two clients might:
+
+Read the same value at the same time (e.g., both get 10)
+Both increment and write 11, losing one increment.
+
+TL;DR: Why You Can Trust INCR
+Redis guarantees that INCR (and similar commands like INCRBY, DECR, etc.) will never be interrupted by another command.
+Even in high concurrency scenarios, each call to INCR will return a unique, sequential value — perfect for global counters or ID generation in microservices.
