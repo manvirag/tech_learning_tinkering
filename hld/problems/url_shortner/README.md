@@ -52,4 +52,145 @@ GET api/v1/shortUrl
 
 
 
+### Token based zookeeper approach
 
+```
+package main
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+	"strconv"
+	"strings"
+	"sync/atomic"
+	"time"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	"github.com/samuel/go-zookeeper/zk"
+)
+
+type IDState struct {
+	RangeID    string `json:"range_id"`
+	CurrentID  int64  `json:"current_id"`
+	ServerID   string `json:"server_id"`
+	RangeStart int64  `json:"range_start"`
+	RangeEnd   int64  `json:"range_end"`
+	UpdatedAt  string `json:"updated_at"`
+}
+
+type IDServer struct {
+	db         *dynamodb.DynamoDB
+	table      string
+	rangeID    string
+	rangeStart int64
+	rangeEnd   int64
+	nextID     int64
+	zkConn     *zk.Conn
+}
+
+func NewIDServer(serverID, table string, zkServers []string) *IDServer {
+	zkConn, _, err := zk.Connect(zkServers, time.Second*5)
+	if err != nil {
+		log.Fatalf("Failed to connect to Zookeeper: %v", err)
+	}
+
+	rangeStart := allocateRange(zkConn)
+	rangeEnd := rangeStart + 999999
+	sess := session.Must(session.NewSession())
+	db := dynamodb.New(sess)
+	rangeID := fmt.Sprintf("range-%d-%d", rangeStart, rangeEnd)
+
+	s := &IDServer{
+		db:         db,
+		table:      table,
+		rangeID:    rangeID,
+		rangeStart: rangeStart,
+		rangeEnd:   rangeEnd,
+		nextID:     rangeStart,
+		zkConn:     zkConn,
+	}
+	s.saveState(serverID)
+	return s
+}
+
+func allocateRange(zkConn *zk.Conn) int64 {
+	path := "/id_ranges"
+	children, _, err := zkConn.Children(path)
+	if err != nil && err != zk.ErrNoNode {
+		log.Fatalf("Failed to list znodes: %v", err)
+	}
+
+	max := int64(0)
+	for _, child := range children {
+		parts := strings.Split(child, "-")
+		if len(parts) == 3 {
+			end, _ := strconv.ParseInt(parts[2], 10, 64)
+			if end > max {
+				max = end
+			}
+		}
+	}
+	newStart := max + 1
+	newEnd := newStart + 999999
+	newRange := fmt.Sprintf("%s/range-%d-%d", path, newStart, newEnd)
+	_, err = zkConn.Create(newRange, []byte(""), zk.FlagEphemeral, zk.WorldACL(zk.PermAll))
+	if err != nil {
+		log.Fatalf("Failed to create znode: %v", err)
+	}
+	return newStart
+}
+
+func (s *IDServer) saveState(serverID string) {
+	item := IDState{
+		RangeID:    s.rangeID,
+		CurrentID:  s.nextID,
+		ServerID:   serverID,
+		RangeStart: s.rangeStart,
+		RangeEnd:   s.rangeEnd,
+		UpdatedAt:  time.Now().Format(time.RFC3339),
+	}
+	av, err := dynamodbattribute.MarshalMap(item)
+	if err != nil {
+		log.Fatalf("Failed to marshal state: %v", err)
+	}
+	_, err = s.db.PutItem(&dynamodb.PutItemInput{
+		TableName: aws.String(s.table),
+		Item:      av,
+	})
+	if err != nil {
+		log.Fatalf("Failed to save state to DynamoDB: %v", err)
+	}
+}
+
+func (s *IDServer) GenerateID(serverID string) string {
+	id := atomic.AddInt64(&s.nextID, 1)
+	if id > s.rangeEnd {
+		log.Fatalf("ID range exhausted, restart required")
+	}
+	s.saveState(serverID)
+	return fmt.Sprintf("%010d", id)
+}
+
+func main() {
+	serverID := os.Getenv("SERVER_ID")
+	zkHosts := []string{"127.0.0.1:2181"}
+	dynamoTable := "id_state"
+
+	srv := NewIDServer(serverID, dynamoTable, zkHosts)
+
+	http.HandleFunc("/generate", func(w http.ResponseWriter, r *http.Request) {
+		id := srv.GenerateID(serverID)
+		w.Write([]byte(id))
+	})
+
+	log.Println("ID server running on :8080")
+	http.ListenAndServe(":8080", nil)
+}
+```
