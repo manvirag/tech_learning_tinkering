@@ -94,3 +94,104 @@ https://www.hellointerview.com/learn/system-design/deep-dives/redis
   - sorted set ( leaderboard ) 
   - geospatial ( proximity )
 
+### synchornisation
+
+#### ✅ 1. Atomic Redis Commands
+Redis is single-threaded, so many commands are atomic by default. These are the simplest and most reliable methods for basic atomic operations.
+
+Common Atomic Commands:
+
+INCR: Atomically increments a key.
+SETNX: Sets a key only if it doesn't exist.
+HINCRBY: Atomically increments a field in a hash.
+LPUSH: Pushes an element to a list.
+
+Example in Go:
+```
+
+val, err := rdb.Incr(ctx, "global_counter").Result()
+if err != nil {
+    log.Fatal(err)
+}
+fmt.Println("Counter:", val)
+
+```
+Use atomic commands when only one Redis operation is needed.
+
+#### 🔁 2. Transactions Using MULTI / EXEC
+Redis supports transactions using MULTI and EXEC. Multiple commands can be queued and executed in order atomically.
+
+Behavior:
+
+Commands are queued after MULTI.
+Executed together with EXEC.
+
+Optional: WATCH for optimistic locking.
+
+Example in Go:
+
+```
+err := rdb.Watch(ctx, func(tx *redis.Tx) error {
+    _, err := tx.TxPipelined(ctx, func(pipe redis.Pipeliner) error {
+        pipe.Set(ctx, "user:1001", "active", 0)
+        pipe.Incr(ctx, "global_counter")
+        return nil
+    })
+    return err
+}, "user:1001", "global_counter")
+```
+
+Use this approach when multiple dependent writes must happen together.
+
+#### 🧠 3. Lua Scripting (EVAL)
+Redis supports executing Lua scripts atomically. All commands inside a Lua script run as a single operation.
+
+Use Cases:
+
+Complex logic that must be atomic (e.g., check-and-increment).
+
+Safe read-modify-write behavior.
+
+Example in Go:
+
+```
+script := redis.NewScript(`
+    local current = redis.call("GET", KEYS[1])
+    redis.call("INCR", KEYS[1])
+    return current
+`)
+
+result, err := script.Run(ctx, rdb, []string{"global_counter"}).Result()
+if err != nil {
+    log.Fatal(err)
+}
+fmt.Println("Value before increment:", result)
+```
+Lua scripting is the most powerful and flexible atomic mechanism in Redis.
+
+#### 🔒 4. Conditional Writes: SET with NX / EX / PX
+Use the SET command with options to implement conditional writes or distributed locks.
+
+Options:
+
+NX: Set only if the key doesn't exist.
+EX: Set expiration in seconds.
+PX: Set expiration in milliseconds.
+
+Example: Distributed Lock in Go
+
+```
+ok, err := rdb.SetNX(ctx, "lock:task:123", "uuid-xyz", 5*time.Second).Result()
+if err != nil {
+    log.Fatal(err)
+}
+
+if ok {
+    fmt.Println("Lock acquired!")
+    // Do protected work
+} else {
+    fmt.Println("Lock already held.")
+}
+```
+Use this pattern for safe, auto-expiring distributed locks.
+
