@@ -1,3 +1,5 @@
+Top Notch: https://systemdesign.one/url-shortening-system-design/#summary
+
 ### Requirements:
 
 1.URL shortening: given a long URL => return a much shorter URL
