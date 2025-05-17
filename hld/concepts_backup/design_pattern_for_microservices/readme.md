@@ -1,4 +1,6 @@
-1. Circuit Breaker: check LLD https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/circuit-breaker.html
+1. Circuit Breaker: check LLD https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/circuit-breaker.html , https://dilipkumar.medium.com/service-mesh-istio-for-k8-cluster-f62e13342535
+![image](https://github.com/user-attachments/assets/e04461a0-b264-4ef0-b62b-e1b1e2ff2c23)
+
 2. CQRS Pattern: command query reponsibilities segregation: Command Query Responsibility Segregation (CQRS) is a design pattern that segregates read and write operations for a data store into separate data models. This allows each model to be optimized independently and can improve performance, scalability, and security of an application.
 ![alt text](image.png)
 
