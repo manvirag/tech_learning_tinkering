@@ -55,146 +55,167 @@ GET api/v1/shortUrl
 
 ### Token based zookeeper approach
 
+Put the ranges in zookeeper before hand, zookeeper cluster setup
+script to insert the ranges in zookeeper
+```
+func CreateRanges(zkConn *zk.Conn, numRanges int, rangeSize uint64) error {
+    basePath := "/counter_ranges"
+
+    // Make sure base path exists
+    ensurePath(zkConn, basePath)
+
+    for i := 0; i < numRanges; i++ {
+        start := uint64(i) * rangeSize
+        end := start + rangeSize - 1
+        path := fmt.Sprintf("%s/%d-%d", basePath, start, end)
+
+        exists, _, err := zkConn.Exists(path)
+        if err != nil {
+            return err
+        }
+        if !exists {
+            _, err := zkConn.Create(path, []byte("free"), 0, zk.WorldACL(zk.PermAll))
+            if err != nil {
+                return err
+            }
+            fmt.Printf("Created range node: %s\n", path)
+        }
+    }
+    return nil
+}
+
+```
+
+one this done can use below code 
+
 ```
 package main
 
 import (
-	"context"
-	"encoding/json"
-	"fmt"
-	"log"
-	"net/http"
-	"os"
-	"strconv"
-	"strings"
-	"sync/atomic"
-	"time"
+    "errors"
+    "fmt"
+    "log"
+    "math/rand"
+    "strconv"
+    "strings"
+    "time"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/dynamodb"
-	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
-	"github.com/samuel/go-zookeeper/zk"
+    "github.com/go-zookeeper/zk"
 )
 
-type IDState struct {
-	RangeID    string `json:"range_id"`
-	CurrentID  int64  `json:"current_id"`
-	ServerID   string `json:"server_id"`
-	RangeStart int64  `json:"range_start"`
-	RangeEnd   int64  `json:"range_end"`
-	UpdatedAt  string `json:"updated_at"`
+const (
+    zkServersPath       = "/servers"
+    zkCounterRangesPath = "/counter_ranges"
+)
+
+type CounterRange struct {
+    Start uint64
+    End   uint64
 }
 
-type IDServer struct {
-	db         *dynamodb.DynamoDB
-	table      string
-	rangeID    string
-	rangeStart int64
-	rangeEnd   int64
-	nextID     int64
-	zkConn     *zk.Conn
-}
+// RegisterServer creates ephemeral node and gets assigned a counter range from ZK
+func RegisterServer(zkConn *zk.Conn, serverID string) (CounterRange, error) {
+    // 1. Create ephemeral node for this server under /servers/<serverID>
+    serverPath := fmt.Sprintf("%s/%s", zkServersPath, serverID)
 
-func NewIDServer(serverID, table string, zkServers []string) *IDServer {
-	zkConn, _, err := zk.Connect(zkServers, time.Second*5)
-	if err != nil {
-		log.Fatalf("Failed to connect to Zookeeper: %v", err)
-	}
+    flags := int32(zk.FlagEphemeral)
+    acl := zk.WorldACL(zk.PermAll)
 
-	rangeStart := allocateRange(zkConn)
-	rangeEnd := rangeStart + 999999
-	sess := session.Must(session.NewSession())
-	db := dynamodb.New(sess)
-	rangeID := fmt.Sprintf("range-%d-%d", rangeStart, rangeEnd)
+    // Delete existing if any (clean start)
+    exists, _, err := zkConn.Exists(serverPath)
+    if err != nil {
+        return CounterRange{}, err
+    }
+    if exists {
+        zkConn.Delete(serverPath, -1)
+    }
 
-	s := &IDServer{
-		db:         db,
-		table:      table,
-		rangeID:    rangeID,
-		rangeStart: rangeStart,
-		rangeEnd:   rangeEnd,
-		nextID:     rangeStart,
-		zkConn:     zkConn,
-	}
-	s.saveState(serverID)
-	return s
-}
+    _, err = zkConn.Create(serverPath, []byte("online"), flags, acl)
+    if err != nil {
+        return CounterRange{}, fmt.Errorf("failed to create ephemeral node: %v", err)
+    }
+    log.Printf("Created ephemeral node: %s", serverPath)
 
-func allocateRange(zkConn *zk.Conn) int64 {
-	path := "/id_ranges"
-	children, _, err := zkConn.Children(path)
-	if err != nil && err != zk.ErrNoNode {
-		log.Fatalf("Failed to list znodes: %v", err)
-	}
+    // 2. Find a free counter range in /counter_ranges
+    ranges, _, err := zkConn.Children(zkCounterRangesPath)
+    if err != nil {
+        return CounterRange{}, fmt.Errorf("failed to list counter ranges: %v", err)
+    }
 
-	max := int64(0)
-	for _, child := range children {
-		parts := strings.Split(child, "-")
-		if len(parts) == 3 {
-			end, _ := strconv.ParseInt(parts[2], 10, 64)
-			if end > max {
-				max = end
-			}
-		}
-	}
-	newStart := max + 1
-	newEnd := newStart + 999999
-	newRange := fmt.Sprintf("%s/range-%d-%d", path, newStart, newEnd)
-	_, err = zkConn.Create(newRange, []byte(""), zk.FlagEphemeral, zk.WorldACL(zk.PermAll))
-	if err != nil {
-		log.Fatalf("Failed to create znode: %v", err)
-	}
-	return newStart
-}
+    for _, r := range ranges {
+        path := fmt.Sprintf("%s/%s", zkCounterRangesPath, r)
+        data, stat, err := zkConn.Get(path)
+        if err != nil {
+            log.Printf("Error reading range node %s: %v", path, err)
+            continue
+        }
 
-func (s *IDServer) saveState(serverID string) {
-	item := IDState{
-		RangeID:    s.rangeID,
-		CurrentID:  s.nextID,
-		ServerID:   serverID,
-		RangeStart: s.rangeStart,
-		RangeEnd:   s.rangeEnd,
-		UpdatedAt:  time.Now().Format(time.RFC3339),
-	}
-	av, err := dynamodbattribute.MarshalMap(item)
-	if err != nil {
-		log.Fatalf("Failed to marshal state: %v", err)
-	}
-	_, err = s.db.PutItem(&dynamodb.PutItemInput{
-		TableName: aws.String(s.table),
-		Item:      av,
-	})
-	if err != nil {
-		log.Fatalf("Failed to save state to DynamoDB: %v", err)
-	}
-}
+        status := string(data)
+        if status == "used" {
+            // Already assigned, skip
+            continue
+        }
 
-func (s *IDServer) GenerateID(serverID string) string {
-	id := atomic.AddInt64(&s.nextID, 1)
-	if id > s.rangeEnd {
-		log.Fatalf("ID range exhausted, restart required")
-	}
-	s.saveState(serverID)
-	return fmt.Sprintf("%010d", id)
+        // Try to mark this range as used with a version check to avoid race
+        err = zkConn.Set(path, []byte("used"), stat.Version)
+        if err != nil {
+            // Someone else took it meanwhile, try next
+            continue
+        }
+
+        // Parse the range name like "1000000-2000000"
+        parts := strings.Split(r, "-")
+        if len(parts) != 2 {
+            return CounterRange{}, errors.New("invalid counter range format in znode")
+        }
+        start, err1 := strconv.ParseUint(parts[0], 10, 64)
+        end, err2 := strconv.ParseUint(parts[1], 10, 64)
+        if err1 != nil || err2 != nil {
+            return CounterRange{}, errors.New("failed to parse range numbers")
+        }
+
+        log.Printf("Assigned counter range %s to server %s", r, serverID)
+        return CounterRange{Start: start, End: end}, nil
+    }
+
+    return CounterRange{}, errors.New("no free counter ranges available")
 }
 
 func main() {
-	serverID := os.Getenv("SERVER_ID")
-	zkHosts := []string{"127.0.0.1:2181"}
-	dynamoTable := "id_state"
+    zkServers := []string{"127.0.0.1:2181"}
+    zkConn, _, err := zk.Connect(zkServers, time.Second*5)
+    if err != nil {
+        log.Fatalf("Failed to connect to Zookeeper: %v", err)
+    }
+    defer zkConn.Close()
 
-	srv := NewIDServer(serverID, dynamoTable, zkHosts)
+    serverID := fmt.Sprintf("server-%d", rand.Intn(10000))
 
-	http.HandleFunc("/generate", func(w http.ResponseWriter, r *http.Request) {
-		id := srv.GenerateID(serverID)
-		w.Write([]byte(id))
-	})
+    // Ensure base paths exist
+    ensurePath(zkConn, zkServersPath)
+    ensurePath(zkConn, zkCounterRangesPath)
 
-	log.Println("ID server running on :8080")
-	http.ListenAndServe(":8080", nil)
+    cr, err := RegisterServer(zkConn, serverID)
+    if err != nil {
+        log.Fatalf("Server registration failed: %v", err)
+    }
+    fmt.Printf("Server %s got range [%d-%d]\n", serverID, cr.Start, cr.End)
+}
+
+func ensurePath(zkConn *zk.Conn, path string) {
+    exists, _, err := zkConn.Exists(path)
+    if err != nil {
+        log.Fatalf("Failed to check path %s: %v", path, err)
+    }
+    if !exists {
+        _, err = zkConn.Create(path, []byte{}, 0, zk.WorldACL(zk.PermAll))
+        if err != nil && err != zk.ErrNodeExists {
+            log.Fatalf("Failed to create path %s: %v", path, err)
+        }
+    }
 }
 ```
+
 
 
 With Redis counter
