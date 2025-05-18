@@ -285,3 +285,24 @@ Both increment and write 11, losing one increment.
 TL;DR: Why You Can Trust INCR
 Redis guarantees that INCR (and similar commands like INCRBY, DECR, etc.) will never be interrupted by another command.
 Even in high concurrency scenarios, each call to INCR will return a unique, sequential value — perfect for global counters or ID generation in microservices.
+
+
+
+#### Compare the appraoches for token base. 
+
+cons only: 
+
+1. Zookeeper.
+	-  maintain zookeeper cluster. 
+	-  less writer throughput like 1k-5k per ensemble [CHATGPT, need to confirm]
+2. Redis. ( counter one )
+	- can do with INCR ( atomic), increase range. 
+	- issue durability -> lets say can do with aof, or rdb. But not 100% consistency guarantency, For example, if Redis crashes right after you INCRBY the global counter to assign a new range, but before the increment is saved to disk (or replicated fully), that assignment might be lost.This means two servers could end up with overlapping ranges after Redis restarts. while zookeeper’s writes are synchronous and consensus-backed, ensuring assigned ranges are safely committed before acknowledging.
+	- its write through its very high and super fast. 50,000+ (single node, with INCRBY ) [CHATGPT, need to confirm]
+	- This boils down to the classic Consistency vs. Availability trade-off (from the CAP theorem):
+		- Redis (with async AOF): Leans towards Availability and Performance — super fast, highly available, but with a small window of possible data loss (weaker consistency momentarily).
+		- Zookeeper: Leans towards Strong Consistency and Durability — strict coordination ensures no duplicate ranges, but with lower write throughput and higher latency.
+
+3. database. 
+	- manually have to do locking and optimistic , while in zookeeper its at core, so have high contention in case of multiple server trying to get range concurrently. ( zookeeper also have but not that high )
+	
