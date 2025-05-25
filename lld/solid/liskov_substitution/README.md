@@ -5,3 +5,5 @@ another implementation of the interface without any code change
 Or
 
 Superclass shall be replaceable/interchangeable with the objects of its subclass without breaking the application
+
+Car car = new Ford()
