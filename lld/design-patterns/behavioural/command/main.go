@@ -1,113 +1,66 @@
 package main
 
-import (
-	"fmt"
-)
+import "fmt"
 
 // Command interface
 type Command interface {
 	Execute()
-	Undo()
 }
 
-// Receiver - the object the command operates on
-type Document struct {
-	content string
+// Receiver
+type Light struct{}
+
+func (l *Light) On() {
+	fmt.Println("The light is ON")
 }
 
-func (d *Document) Write(text string) {
-	d.content += text
+func (l *Light) Off() {
+	fmt.Println("The light is OFF")
 }
 
-func (d *Document) Erase() {
-	if len(d.content) > 0 {
-		d.content = d.content[:len(d.content)-1]
-	}
+// Concrete Command to turn the light ON
+type LightOnCommand struct {
+	light *Light
 }
 
-func (d *Document) Print() {
-	fmt.Println("Content:", d.content)
+func (c *LightOnCommand) Execute() {
+	c.light.On()
 }
 
-// Concrete Command - WriteCommand
-type WriteCommand struct {
-	document *Document
-	text     string
+// Concrete Command to turn the light OFF
+type LightOffCommand struct {
+	light *Light
 }
 
-func NewWriteCommand(document *Document, text string) *WriteCommand {
-	return &WriteCommand{document, text}
-}
-
-func (wc *WriteCommand) Execute() {
-	wc.document.Write(wc.text)
-}
-
-func (wc *WriteCommand) Undo() {
-	wc.document.Erase()
-}
-
-// Concrete Command - EraseCommand
-type EraseCommand struct {
-	document *Document
-}
-
-func NewEraseCommand(document *Document) *EraseCommand {
-	return &EraseCommand{document}
-}
-
-func (ec *EraseCommand) Execute() {
-	ec.document.Erase()
-}
-
-func (ec *EraseCommand) Undo() {
-	// For simplicity, no undo action for EraseCommand in this example
+func (c *LightOffCommand) Execute() {
+	c.light.Off()
 }
 
 // Invoker
-type Invoker struct {
-	commands []Command
+type RemoteControl struct {
+	command Command
 }
 
-func (i *Invoker) ExecuteCommand(command Command) {
-	command.Execute()
-	i.commands = append(i.commands, command)
+func (r *RemoteControl) SetCommand(c Command) {
+	r.command = c
 }
 
-func (i *Invoker) Undo() {
-	if len(i.commands) > 0 {
-		lastCommand := i.commands[len(i.commands)-1]
-		lastCommand.Undo()
-		i.commands = i.commands[:len(i.commands)-1]
-	}
+func (r *RemoteControl) PressButton() {
+	r.command.Execute()
 }
 
+// Client
 func main() {
-	// Client code
+	light := &Light{}
 
-	document := &Document{}
-	invoker := &Invoker{}
+	lightOn := &LightOnCommand{light}
+	lightOff := &LightOffCommand{light}
 
-	// Writing commands
-	writeCommand1 := NewWriteCommand(document, "Hello, ")
-	writeCommand2 := NewWriteCommand(document, "World!")
+	remote := &RemoteControl{}
 
-	// Execute and store commands
-	invoker.ExecuteCommand(writeCommand1)
-	invoker.ExecuteCommand(writeCommand2)
+	remote.SetCommand(lightOn)
+	remote.PressButton() // Output: The light is ON
 
-	// Print document content
-	document.Print() // Output: Content: Hello, World!
-
-	// Undo the last command
-	invoker.Undo()
-
-	// Print document content after undo
-	document.Print() // Output: Content: Hello,
-
-	// Redo the undone command
-	invoker.ExecuteCommand(writeCommand2)
-
-	// Print document content after redo
-	document.Print() // Output: Content: Hello, World!
+	remote.SetCommand(lightOff)
+	remote.PressButton() // Output: The light is OFF
 }

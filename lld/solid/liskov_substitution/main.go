@@ -1,33 +1,90 @@
+// Before
+
 package main
 
 import "fmt"
 
-type Liskov interface {
-	LiskovFunc()
+type Bird interface {
+	Fly()
 }
 
-type Parent struct{}
+type Sparrow struct{}
 
-// Child ...   // this is not inheritance this is struct embedding -> https://www.tutorialspoint.com/composition-in-golang
-// now child can access parent methods as well as field direct.
-type Child struct {
-	Parent
+func (s Sparrow) Fly() {
+	fmt.Println("Sparrow is flying")
 }
 
-func (p *Parent) LiskovFunc() {
-	fmt.Println("It works")
+type Ostrich struct{}
+
+func (o Ostrich) Fly() {
+	// Ostriches can't fly!
+	panic("Ostrich can't fly!") // LSP violation
 }
 
-func LiskovSubstitution(lis Liskov) {
-	lis.LiskovFunc()
+func MakeBirdFly(b Bird) {
+	b.Fly()
 }
 
 func main() {
-	ch := &Child{}
-	par := &Parent{}
-	LiskovSubstitution(ch)
-	LiskovSubstitution(par)
+	s := Sparrow{}
+	o := Ostrich{}
+
+	MakeBirdFly(s) // OK
+	MakeBirdFly(o) // Panic! LSP broken
 }
+
+// After 
+
+package main
+
+import "fmt"
+
+type Bird interface {
+	Walk()
+}
+
+type FlyingBird interface {
+	Bird
+	Fly()
+}
+
+type Sparrow struct{}
+
+func (s Sparrow) Walk() {
+	fmt.Println("Sparrow is walking")
+}
+
+func (s Sparrow) Fly() {
+	fmt.Println("Sparrow is flying")
+}
+
+type Ostrich struct{}
+
+func (o Ostrich) Walk() {
+	fmt.Println("Ostrich is walking")
+}
+
+func MakeBirdWalk(b Bird) {
+	b.Walk()
+}
+
+func MakeBirdFly(fb FlyingBird) {
+	fb.Fly()
+}
+
+func main() {
+	s := Sparrow{}
+	o := Ostrich{}
+
+	MakeBirdWalk(s) // OK
+	MakeBirdFly(s)  // OK
+
+	MakeBirdWalk(o) // OK
+	// MakeBirdFly(o) // Compile error! Ostrich does not implement FlyingBird
+}
+
+
+
 
 /*
 

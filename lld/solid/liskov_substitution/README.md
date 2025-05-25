@@ -4,4 +4,8 @@ another implementation of the interface without any code change
 
 Or
 
-Superclass shall be replaceable/interchangeable with the objects of its subclass without breaking the application
+Objects of a superclass should be replaceable with objects of a subclass without affecting the correctness of the program.
+
+Car car = new Ford()  ( means ford would be implementing all function of car, to solve this only implement when sure all method will be used. ) 
+
+
