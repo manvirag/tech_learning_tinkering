@@ -6,4 +6,6 @@ Or
 
 Objects of a superclass should be replaceable with objects of a subclass without affecting the correctness of the program.
 
-Car car = new Ford()
+Car car = new Ford()  ( means ford would be implementing all function of car, to solve this only implement when sure all method will be used. ) 
+
+
