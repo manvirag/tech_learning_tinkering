@@ -129,6 +129,7 @@ this is how 2d map look like
 ![image](https://github.com/user-attachments/assets/4f850189-7aaa-4543-bfe9-bbb3cccf0be0)
 
 
-![image](https://github.com/user-attachments/assets/2f9bc77e-f9cc-45f6-a5a5-805a52757ede)
+![image](https://github.com/user-attachments/assets/8197c994-b000-4536-af5b-9715fe0d879f)
+
 
 
