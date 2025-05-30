@@ -124,3 +124,7 @@ User can also have on p2p connection ,but that won't work for so high QPS
     ![alt text](image-11.png)
 
 ![image](https://github.com/user-attachments/assets/f07ead07-726c-4664-8f97-e56b30bed933)
+
+this is how 2d map look like
+![image](https://github.com/user-attachments/assets/4f850189-7aaa-4543-bfe9-bbb3cccf0be0)
+
