@@ -128,8 +128,8 @@ User can also have on p2p connection ,but that won't work for so high QPS
 this is how 2d map look like
 ![image](https://github.com/user-attachments/assets/4f850189-7aaa-4543-bfe9-bbb3cccf0be0)
 
+![image](https://github.com/user-attachments/assets/267e0f59-246d-4745-aabc-65eec9273cc3)
 
-![image](https://github.com/user-attachments/assets/8197c994-b000-4536-af5b-9715fe0d879f)
 
 
 
