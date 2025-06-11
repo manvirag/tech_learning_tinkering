@@ -1,40 +1,18 @@
 # Distributed transaction
 
-[https://www.youtube.com/watch?v=eltn4x788UM](https://www.youtube.com/watch?v=eltn4x788UM)
-
-[https://www.youtube.com/watch?v=7FgU1D4EnpQ](https://www.youtube.com/watch?v=7FgU1D4EnpQ)
 
 Problem statement:
 
 we have multiple databases and we want to do transactions including both. Since both have their different transaction, how do we combine them?
 
-Same problem to understand this.:
-
+Sample problem to understand this.:
 here store and delivery are the two different service and having their own database.
-
-![Untitled](Distributed%20transaction/Untitled.png)
-
-![Untitled](Distributed%20transaction/Untitled%201.png)
 
 Some Solution:
 
 1. Two-Phase Commit.
 
-[https://drive.google.com/file/d/1FJa0DQPOxVJP2kXdyZDSttdMDI4Q2fUx/view](https://drive.google.com/file/d/1FJa0DQPOxVJP2kXdyZDSttdMDI4Q2fUx/view)
-
-![Untitled](Distributed%20transaction/Untitled%202.png)
-
-![Untitled](Distributed%20transaction/Untitled%203.png)
-
-![Untitled](Distributed%20transaction/Untitled%204.png)
-
-https://www.linkedin.com/pulse/implementing-distributed-transactions-golang-arpit-bhayani/
-
-https://medium.com/@abhishekranjandev/implementing-distributed-transactions-with-golang-and-gin-c6f00297fc21
-
 how to implement pre phase ? 
-
-- There is already predefined PREPARE key word in mysql like abort and commit.
 
 Code:
 
@@ -119,40 +97,6 @@ func rollbackAll(transactions []*sql.Tx) {
 }
 
 ```
-
-What if first commit → success and second → failed ? 
-
-What about the first query then ? how it is atomix > 
-
-Here are a few cases where a failure might happen after the prepare phase
-
-1. **Coordinator or system crash**: If the transaction coordinator crashes between the prepare and commit phases, it may not send the commit command to some of the participants.
-2. **Network failures**: If the coordinator cannot communicate with a participant after the prepare phase, the participant may remain in the prepared state indefinitely, waiting for a commit or rollback decision.
-3. **Database crash**: Even if a participant has prepared successfully, a database crash before the commit can cause the participant to lose its state.
-
-2PC does not inherently guarantee that a prepared transaction will always commit successfully. Instead, it relies on **recovery mechanisms** to handle failures.
-
-To address the risk of failure between the **prepare** and **commit** phases, most systems that implement 2PC use additional mechanisms like **persistent logs** to ensure reliability
-
-like WAL
-
-### Handling Failures During Commit
-
-1. **Coordinator Failure**:
-    - If the coordinator fails after sending the prepare command, the participants wait. Once the coordinator is back up, it reads its logs to determine whether to commit or abort the transaction and notifies the participants accordingly.
-2. **Participant Failure**:
-    - If a participant crashes after preparing but before committing, it can recover its state by reading its logs after restarting. The participant can then ask the coordinator for the final decision and proceed with either a commit or rollback.
-
-still not clear much
-
-Once a participant has committed, it cannot roll back, which leads to inconsistency in the system (some participants have committed while others have not). This is one of the known limitations of 2PC,  if a participant crashes after committing, it can recover and notify the coordinator that it has successfully committed. However, this logging doesn’t prevent the partial commit scenario but helps in recovering from crashes by knowing what was the last state of the transaction. Still, once a participant commits, there's no way to undo it. ( **ChatGPT** ) → Pager and fix it manually or other way.
-
-There is better solution
-
-3PC → it has pre commit phase → so that to make more sure , that transaction doesn’t fail in commit phase. 
-
-Martin-Fowler: [https://martinfowler.com/articles/patterns-of-distributed-systems/two-phase-commit.html](https://martinfowler.com/articles/patterns-of-distributed-systems/two-phase-commit.html)
-
 ................................................................
 
 
@@ -174,11 +118,12 @@ Now we will discuss the few methods( that i read ), which help to implement the 
 	- Its very less probable that after prepare, node failed to commit, but possible ( just clarifying phase nothing but begin and exec command without command as mentioned in above golang code). 
 	- Failure cases:
 		- Fail in middle of prepare -> abort all . --> consistent. ( via node )
-		- Fail in middle of commit ( via node ) -> will require to maintain the status of all commit and rollback them and make it consistent state. ( that's why it is important , that our system is fault tolerance to this failure, shouldn't be disacter in consistency , it should work well -> like in case of digital wallet , we remove money first from account A and commit , event after that it fail, that is very disacter at as of now , once we get to know about failure -> we will validate and increase the amount of A), that's why sometime it called blocking protol.
+		- Fail in middle of commit ( via node ) -> will require to maintain the status of all commit and rollback them and make it consistent state. ( that's why it is important , that our system is fault tolerance to this failure, shouldn't be disacter in consistency , it should work well -> like in case of digital wallet , we remove money first from account A and commit , after that it fail, that is very disacter at as of now , once we get to know about failure -> we will validate and increase the amount of A), that's why sometime it called blocking protol.
 		- Failure via coordinator crash -> in middle of prepare -> very risky -> all node will be stuck until the coordinator recover and locking those row for other -> disaster. => how to solve this ??
 			- There are some solution -> mentioned in the above notes as fault tolerant two phase commit -> high level all nodes including coordinate will be in consensus algorithm and share their heartbeat to other node, and if any node crash , we abort the transactions.
 			- Some other solution -> TC/C, Saga, they have their own pros and cons
 		- Failure via coordinater -> in middle of commit -> same , after recover with help of status rollback things.
+        - Note cooridination nothing but the server implementing distributed transaction, node are nothing but the database which are part of distributed transaction.
 
 2. TC/C ( Try Confirm/Cancel)
 	- Its a compensating transaction as mentioned by ALEX xu, what that mean ?  -> tx which can do undo of failed transaction i.e. rollback
