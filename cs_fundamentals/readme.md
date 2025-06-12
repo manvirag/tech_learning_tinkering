@@ -3,3 +3,4 @@ https://docs.google.com/document/d/18PTTnRwE7mFPKpBeadrrhrAhdMLXKqjOdqDpUBQZpLQ/
 lld: https://docs.google.com/document/d/1YGYNdqX4Emz13kKvF4isKpkps2_2TCE_1N5SbZr7Bsw/edit
 java: https://docs.google.com/document/d/1SDUUCX0u42JTh7_iHpu0j_eG6qLpi028T9oFqfOA9m8/edit
 CN: https://docs.google.com/document/d/1otOgIngS3c_e8SyJQbcvl_7srs2-_j2-/edit?rtpof=true
+dbms: https://docs.google.com/document/d/1muHboc6ee9vxZFRkZLI0LLxXFGGp4UJ_gf2FGpu6-xM/edit?usp=sharing
