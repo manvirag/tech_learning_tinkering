@@ -115,7 +115,7 @@ Now we will discuss the few methods( that i read ), which help to implement the 
 - Will Add few points, related to cons or general.
 	- It has two phase Prepare and commit.
 	- Prepare phase -> all db send yes , they make the local transaction and check validate and send yes , and they also ready to receive the commit from coordinator, here its serious that they are ready for commit like promising some human being and suppose if db not get the abort/commit back they will stuck infinitely , until coordination recover. This is problematic 1.
-	- Its very less probable that after prepare, node failed to commit, but possible ( just clarifying phase nothing but begin and exec command without command as mentioned in above golang code). 
+	- Its very less probable that after prepare, node failed to commit, but possible ( just clarifying phase nothing but begin and exec command without commit as mentioned in above golang code). 
 	- Failure cases:
 		- Fail in middle of prepare -> abort all . --> consistent. ( via node )
 		- Fail in middle of commit ( via node ) -> will require to maintain the status of all commit and rollback them and make it consistent state. ( that's why it is important , that our system is fault tolerance to this failure, shouldn't be disacter in consistency , it should work well -> like in case of digital wallet , we remove money first from account A and commit , after that it fail, that is very disacter at as of now , once we get to know about failure -> we will validate and increase the amount of A), that's why sometime it called blocking protol.
