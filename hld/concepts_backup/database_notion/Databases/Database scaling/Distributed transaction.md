@@ -138,15 +138,15 @@ Now we will discuss the few methods( that i read ), which help to implement the 
 	- similar to fault tolerant, all node will send information which is available across all node include coordination.
 	- and commit is break into 2 precommit and commit, precommit nothing but the indication to all node that coordination received the prepare phase yes and going to commit.
 	- See concept and coding once or other doc [ Assume not 100% sure]
-4. Saga
+4. Saga 
 	- Its nothing but the linear transaction, first do transaction in one db and then in other db with maintaining the state of transaction in durable store.
 	- if first fail then fine, if fail in middle rollback one by one all previous commited transactions.
 	- This is also a general pattern in distributed systems.
-	- This can be implemented either by async way -> called choreography. like queue wise by subscribing other events. [ complexity increases]
+	- This can be implemented either by async way -> called choreography . like queue wise by subscribing other events. [ complexity increases]
 	- or by coordinator -> called orchestration. 
 	- Not deep diving. Revisit if needed.
 	- via chat gpt 
-	- 
+	- https://threedots.tech/post/distributed-transactions-in-go/
 	
 ```
 package main
