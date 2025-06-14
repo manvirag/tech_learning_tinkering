@@ -95,6 +95,69 @@ These are based on operation did by user and other some condition. That will eve
 
   video later: https://www.youtube.com/watch?v=B5NULPSiOGw
 
+#### How to implement CRDT ( specially this one LSEQ ) 
+The name LSEQ comes from the idea behind the algorithm:
+- L stands for "List" — it’s about ordering elements in a list (like characters in a document).
+- SEQ stands for "Sequence" — it generates a sequence of position identifiers to keep the list ordered.
+
+This is how we can imagine:
+
+```
+doc := &Document{
+		chars: []CharItem{
+			{'h', PosID{1}, "init", 0},
+			{'e', PosID{2}, "init", 0},
+			{'l', PosID{3}, "init", 0},
+			{'l', PosID{4}, "init", 0},
+			{'o', PosID{5}, "init", 0},
+		},
+	}
+```
+PosId is list of value. 
+To show on UI, sort the char with these PosId, and concatenate. 
+
+- From UI it send the PosId of left and right character to backend.
+- Backend can generate the PosId of this , logic can see in handson. But on high level 
+   - include the same value with both left and right, like same prefix. then
+   - since one is left and one is right , we assume it is sorted. 
+   - there would be some different if its greater than one then add number , upto that fix lenth.
+```
+
+func generatePosIDBetween(l, r PosID, depth int) PosID {
+	// Max integer range to choose from
+	const maxDigit = 10
+
+	// Get digit at current depth or default boundaries
+	var leftDigit int = 0
+	if depth < len(l) {
+		leftDigit = l[depth]
+	}
+
+	var rightDigit int = maxDigit
+	if depth < len(r) {
+		rightDigit = r[depth]
+	}
+
+	// If space between digits, pick random digit between leftDigit+1 and rightDigit-1
+	if rightDigit-leftDigit > 1 {
+		randDigit := leftDigit + 1 + rand.Intn(rightDigit-leftDigit-1)
+		posID := append(l[:depth], randDigit)
+		return posID
+	}
+
+	// No room at this level, go deeper
+	posID := append([]int{}, l[:depth]...)
+	posID = append(posID, leftDigit)
+	return generatePosIDBetween(l, r, depth+1)
+}
+
+```
+
+Now what if we somehow generate same address . 
+- Yes possible , rarely , but they will interleave.
+- there are few solution, like in pos val, include client id as well and client specific sequence for sorting. its very very rate, clientid and sequence are same. but yes it can cause priority to one client than other. 
+
+
 
 
 
