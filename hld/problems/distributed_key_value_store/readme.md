@@ -52,7 +52,23 @@ How to deal and resolve inconsistency (In the available model about consistency 
     Such a situation can arise in the presence of node failures, combined with concurrent updates leading to conflicting versions of an object. An example of semantic reconciliation is the shopping cart feature provided by Amazon. This mechanism guarantees that an ‘Add to cart’ operation is never lost, but it is possible that deleted items will resurface.
     
     ![Untitled](./images/Untitled%202.png)
-    
+
+   DynamodD , aws service doesn’t use this, it uses LWW. Dynamo Paper use it. 
+   so in case of conflict it return all the conflict vector, 
+
+   for e.g.  , We got the key X,  now its client responsibilty to fix and save the correct.
+
+   ```
+     {
+     "key": "X",
+     "siblings": [
+         { "value": "foo", "version_clock": { "A": 1 } },
+         { "value": "bar", "version_clock": { "B": 1 } }
+     ]
+    }
+   ```
+
+
     More Read:
     
      [https://www.mydistributed.systems/2022/02/eventual-consistency-part-2.html](https://www.mydistributed.systems/2022/02/eventual-consistency-part-2.html)
