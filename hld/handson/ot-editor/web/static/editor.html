@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collaborative Editor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .editor-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .header {
+            background: white;
+            border-bottom: 1px solid #e1e5e9;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .document-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .document-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .document-id {
+            font-size: 0.9rem;
+            color: #718096;
+            background: #f7fafc;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #48bb78;
+        }
+
+        .status-indicator.disconnected {
+            background: #f56565;
+        }
+
+        .status-indicator.connecting {
+            background: #ed8936;
+        }
+
+        .collaborators {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .collaborator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: white;
+            font-weight: 500;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            position: relative;
+        }
+
+        .editor-wrapper {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .editor {
+            width: 100%;
+            max-width: 800px;
+            min-height: calc(100vh - 120px);
+            padding: 40px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            font-size: 16px;
+            line-height: 1.6;
+            border: none;
+            resize: none;
+            outline: none;
+            font-family: 'Georgia', serif;
+        }
+
+        .editor:focus {
+            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.2);
+        }
+
+        .sidebar {
+            width: 300px;
+            background: white;
+            border-left: 1px solid #e1e5e9;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-section {
+            padding: 20px;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        .sidebar-section h3 {
+            margin-bottom: 15px;
+            color: #2d3748;
+            font-size: 1rem;
+        }
+
+        .operation-log {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 20px;
+        }
+
+        .operation-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #f7fafc;
+            font-size: 0.8rem;
+        }
+
+        .operation-time {
+            color: #718096;
+        }
+
+        .operation-author {
+            font-weight: 600;
+            margin-right: 5px;
+        }
+
+        .operation-content {
+            color: #4a5568;
+        }
+
+        .footer {
+            background: white;
+            border-top: 1px solid #e1e5e9;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #718096;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-name {
+            padding: 4px 8px;
+            background: #667eea;
+            color: white;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            background: #48bb78;
+        }
+
+        .toast.error {
+            background: #f56565;
+        }
+
+        .toast.info {
+            background: #4299e1;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            
+            .editor {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="editor-container">
+        <div class="header">
+            <div class="document-info">
+                <div class="document-title" id="documentTitle">Loading...</div>
+                <div class="document-id" id="documentId"></div>
+            </div>
+            <div class="connection-status">
+                <div class="collaborators" id="collaborators"></div>
+                <div class="status-indicator" id="statusIndicator"></div>
+                <span id="connectionStatus">Connecting...</span>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="editor-wrapper">
+                <textarea 
+                    class="editor" 
+                    id="editor" 
+                    placeholder="Start typing to collaborate in real-time...">
+                </textarea>
+            </div>
+
+            <div class="sidebar">
+                <div class="sidebar-section">
+                    <h3>Active Users</h3>
+                    <div id="activeUsers"></div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h3>Document Info</h3>
+                    <div id="documentInfo">
+                        <div>Version: <span id="documentVersion">0</span></div>
+                        <div>Operations: <span id="operationCount">0</span></div>
+                    </div>
+                </div>
+
+                <div class="operation-log">
+                    <h3 style="padding: 20px 0 15px 0;">Recent Operations</h3>
+                    <div id="operationsList"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="stats">
+                <span>Characters: <span id="charCount">0</span></span>
+                <span>Words: <span id="wordCount">0</span></span>
+            </div>
+            <div class="user-info">
+                <span>You are:</span>
+                <span class="user-name" id="userName"></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class CollaborativeEditor {
+            constructor() {
+                this.documentId = this.getDocumentIdFromUrl();
+                this.clientId = this.generateClientId();
+                this.clientName = this.generateClientName();
+                this.ws = null;
+                this.connected = false;
+                this.documentVersion = 0;
+                this.operations = [];
+                this.collaborators = new Map();
+                
+                this.editor = document.getElementById('editor');
+                this.lastContent = '';
+                this.isRemoteChange = false;
+                
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.updateDocumentId();
+                this.updateUserName();
+                this.connectWebSocket();
+            }
+
+            getDocumentIdFromUrl() {
+                const path = window.location.pathname;
+                return path.split('/').pop();
+            }
+
+            generateClientId() {
+                return 'client_' + Math.random().toString(36).substr(2, 9);
+            }
+
+            generateClientName() {
+                const names = ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve', 'Frank', 'Grace', 'Henry'];
+                const colors = ['Blue', 'Red', 'Green', 'Purple', 'Orange', 'Pink', 'Cyan', 'Yellow'];
+                const name = names[Math.floor(Math.random() * names.length)];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                return `${color} ${name}`;
+            }
+
+            setupEventListeners() {
+                this.editor.addEventListener('input', (e) => this.handleInput(e));
+                this.editor.addEventListener('selectionchange', () => this.handleCursorChange());
+                
+                // Update stats on content change
+                this.editor.addEventListener('input', () => this.updateStats());
+                
+                // Handle page unload
+                window.addEventListener('beforeunload', () => {
+                    if (this.ws) {
+                        this.leaveDocument();
+                    }
+                });
+            }
+
+            connectWebSocket() {
+                const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                const wsUrl = `${protocol}//${window.location.host}/ws`;
+                
+                this.updateConnectionStatus('connecting');
+                
+                this.ws = new WebSocket(wsUrl);
+                
+                this.ws.onopen = () => {
+                    console.log('WebSocket connected');
+                    this.connected = true;
+                    this.updateConnectionStatus('connected');
+                    this.joinDocument();
+                };
+                
+                this.ws.onmessage = (event) => {
+                    this.handleMessage(JSON.parse(event.data));
+                };
+                
+                this.ws.onclose = () => {
+                    console.log('WebSocket disconnected');
+                    this.connected = false;
+                    this.updateConnectionStatus('disconnected');
+                    
+                    // Attempt to reconnect after 3 seconds
+                    setTimeout(() => {
+                        this.connectWebSocket();
+                    }, 3000);
+                };
+                
+                this.ws.onerror = (error) => {
+                    console.error('WebSocket error:', error);
+                    this.showToast('Connection error occurred', 'error');
+                };
+            }
+
+            joinDocument() {
+                const message = {
+                    type: 'join_document',
+                    payload: {
+                        document_id: this.documentId,
+                        client_name: this.clientName
+                    },
+                    client_id: this.clientId,
+                    timestamp: Date.now()
+                };
+                
+                this.sendMessage(message);
+            }
+
+            leaveDocument() {
+                if (this.connected) {
+                    const message = {
+                        type: 'leave_document',
+                        payload: {
+                            document_id: this.documentId
+                        },
+                        client_id: this.clientId,
+                        timestamp: Date.now()
+                    };
+                    
+                    this.sendMessage(message);
+                }
+            }
+
+            handleMessage(message) {
+                console.log('Received WebSocket message:', message.type, message);
+                
+                switch (message.type) {
+                    case 'document_state':
+                        this.handleDocumentState(message.payload);
+                        break;
+                    case 'operation_ack':
+                        this.handleOperationAck(message.payload);
+                        break;
+                    case 'operation_broadcast':
+                        console.log('Applying remote operation:', message.payload.operation);
+                        this.handleOperationBroadcast(message.payload);
+                        break;
+                    case 'client_joined':
+                        this.handleClientJoined(message.payload);
+                        break;
+                    case 'client_left':
+                        this.handleClientLeft(message.payload);
+                        break;
+                    case 'cursor_broadcast':
+                        this.handleCursorUpdate(message.payload);
+                        break;
+                    case 'error':
+                        this.handleError(message.payload);
+                        break;
+                    default:
+                        console.log('Unknown message type:', message.type);
+                }
+            }
+
+            handleDocumentState(payload) {
+                this.documentVersion = payload.document.version;
+                this.isRemoteChange = true;
+                this.editor.value = payload.document.content;
+                this.lastContent = payload.document.content;
+                this.isRemoteChange = false;
+                
+                // Update UI
+                document.getElementById('documentTitle').textContent = payload.document.title;
+                document.getElementById('documentVersion').textContent = this.documentVersion;
+                document.getElementById('operationCount').textContent = payload.document.operations?.length || 0;
+                
+                // Update collaborators
+                this.collaborators.clear();
+                payload.clients.forEach(client => {
+                    this.collaborators.set(client.id, client);
+                });
+                this.updateCollaboratorsUI();
+                this.updateStats();
+                
+                this.showToast('Document loaded successfully', 'success');
+            }
+
+            handleOperationAck(payload) {
+                if (payload.success) {
+                    this.documentVersion = payload.new_version;
+                    document.getElementById('documentVersion').textContent = this.documentVersion;
+                } else {
+                    this.showToast(`Operation failed: ${payload.error_message}`, 'error');
+                }
+            }
+
+            handleOperationBroadcast(payload) {
+                const operation = payload.operation;
+                this.applyRemoteOperation(operation);
+                this.addOperationToLog(operation);
+                
+                this.documentVersion = Math.max(this.documentVersion, operation.version);
+                document.getElementById('documentVersion').textContent = this.documentVersion;
+            }
+
+            handleClientJoined(payload) {
+                this.collaborators.set(payload.client.id, payload.client);
+                this.updateCollaboratorsUI();
+                this.showToast(`${payload.client.username} joined the document`, 'info');
+            }
+
+            handleClientLeft(payload) {
+                const client = this.collaborators.get(payload.client_id);
+                if (client) {
+                    this.collaborators.delete(payload.client_id);
+                    this.updateCollaboratorsUI();
+                    this.showToast(`${client.username} left the document`, 'info');
+                }
+            }
+
+            handleCursorUpdate(payload) {
+                // Handle cursor updates from other clients
+                // This could be implemented to show cursor positions
+            }
+
+            handleError(payload) {
+                this.showToast(`Error: ${payload.message}`, 'error');
+            }
+
+            handleInput(e) {
+                if (this.isRemoteChange) return;
+                
+                const currentContent = this.editor.value;
+                const operations = this.generateOperations(this.lastContent, currentContent);
+                
+                operations.forEach(op => {
+                    this.sendOperation(op);
+                });
+                
+                this.lastContent = currentContent;
+            }
+
+            generateOperations(oldText, newText) {
+                // Simple diff algorithm - in production, use a more sophisticated one
+                if (oldText === newText) return [];
+                
+                // For simplicity, we'll treat the entire change as a single operation
+                // In a real implementation, you'd want more granular operations
+                const operations = [];
+                
+                if (newText.length > oldText.length) {
+                    // Insert operation
+                    const insertPos = this.findInsertPosition(oldText, newText);
+                    const insertedText = newText.substring(insertPos, insertPos + (newText.length - oldText.length));
+                    
+                    operations.push({
+                        type: 'insert',
+                        position: insertPos,
+                        content: insertedText
+                    });
+                } else if (newText.length < oldText.length) {
+                    // Delete operation
+                    const deletePos = this.findDeletePosition(oldText, newText);
+                    const deleteLength = oldText.length - newText.length;
+                    
+                    operations.push({
+                        type: 'delete',
+                        position: deletePos,
+                        length: deleteLength
+                    });
+                }
+                
+                return operations;
+            }
+
+            findInsertPosition(oldText, newText) {
+                for (let i = 0; i < Math.min(oldText.length, newText.length); i++) {
+                    if (oldText[i] !== newText[i]) {
+                        return i;
+                    }
+                }
+                return oldText.length;
+            }
+
+            findDeletePosition(oldText, newText) {
+                for (let i = 0; i < Math.min(oldText.length, newText.length); i++) {
+                    if (oldText[i] !== newText[i]) {
+                        return i;
+                    }
+                }
+                return newText.length;
+            }
+
+            sendOperation(operation) {
+                const message = {
+                    type: 'operation',
+                    payload: {
+                        document_id: this.documentId,
+                        operation: {
+                            ...operation,
+                            author: this.clientId,
+                            version: this.documentVersion
+                        }
+                    },
+                    client_id: this.clientId,
+                    timestamp: Date.now()
+                };
+                
+                this.sendMessage(message);
+            }
+
+            applyRemoteOperation(operation) {
+                this.isRemoteChange = true;
+                
+                const currentText = this.editor.value;
+                let newText = currentText;
+                
+                switch (operation.type) {
+                    case 'insert':
+                        newText = currentText.slice(0, operation.position) + 
+                                 operation.content + 
+                                 currentText.slice(operation.position);
+                        break;
+                    case 'delete':
+                        newText = currentText.slice(0, operation.position) + 
+                                 currentText.slice(operation.position + operation.length);
+                        break;
+                }
+                
+                this.editor.value = newText;
+                this.lastContent = newText;
+                this.updateStats();
+                
+                this.isRemoteChange = false;
+            }
+
+            handleCursorChange() {
+                if (this.isRemoteChange) return;
+                
+                const position = this.editor.selectionStart;
+                const message = {
+                    type: 'cursor_update',
+                    payload: {
+                        document_id: this.documentId,
+                        position: position
+                    },
+                    client_id: this.clientId,
+                    timestamp: Date.now()
+                };
+                
+                this.sendMessage(message);
+            }
+
+            sendMessage(message) {
+                if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+                    this.ws.send(JSON.stringify(message));
+                }
+            }
+
+            updateConnectionStatus(status) {
+                const indicator = document.getElementById('statusIndicator');
+                const statusText = document.getElementById('connectionStatus');
+                
+                indicator.className = `status-indicator ${status}`;
+                
+                switch (status) {
+                    case 'connected':
+                        statusText.textContent = 'Connected';
+                        break;
+                    case 'connecting':
+                        statusText.textContent = 'Connecting...';
+                        break;
+                    case 'disconnected':
+                        statusText.textContent = 'Disconnected';
+                        break;
+                }
+            }
+
+            updateCollaboratorsUI() {
+                const collaboratorsEl = document.getElementById('collaborators');
+                const activeUsersEl = document.getElementById('activeUsers');
+                
+                const collaboratorElements = Array.from(this.collaborators.values())
+                    .filter(client => client.id !== this.clientId)
+                    .map(client => `
+                        <div class="collaborator" style="background-color: ${client.color}">
+                            ${client.username}
+                        </div>
+                    `).join('');
+                
+                collaboratorsEl.innerHTML = collaboratorElements;
+                
+                const activeUsersList = Array.from(this.collaborators.values())
+                    .map(client => `
+                        <div style="padding: 5px 0; ${client.id === this.clientId ? 'font-weight: bold;' : ''}">
+                            ${client.username} ${client.id === this.clientId ? '(You)' : ''}
+                        </div>
+                    `).join('');
+                
+                activeUsersEl.innerHTML = activeUsersList;
+            }
+
+            updateDocumentId() {
+                document.getElementById('documentId').textContent = this.documentId;
+                document.title = `Editing: ${this.documentId}`;
+            }
+
+            updateUserName() {
+                document.getElementById('userName').textContent = this.clientName;
+            }
+
+            updateStats() {
+                const content = this.editor.value;
+                const charCount = content.length;
+                const wordCount = content.trim() ? content.trim().split(/\s+/).length : 0;
+                
+                document.getElementById('charCount').textContent = charCount;
+                document.getElementById('wordCount').textContent = wordCount;
+            }
+
+            addOperationToLog(operation) {
+                const operationsList = document.getElementById('operationsList');
+                const time = new Date().toLocaleTimeString();
+                const author = this.collaborators.get(operation.author)?.username || 'Unknown';
+                
+                let content = '';
+                switch (operation.type) {
+                    case 'insert':
+                        content = `inserted "${operation.content}"`;
+                        break;
+                    case 'delete':
+                        content = `deleted ${operation.length} characters`;
+                        break;
+                }
+                
+                const operationEl = document.createElement('div');
+                operationEl.className = 'operation-item';
+                operationEl.innerHTML = `
+                    <div class="operation-time">${time}</div>
+                    <span class="operation-author">${author}</span>
+                    <span class="operation-content">${content}</span>
+                `;
+                
+                operationsList.insertBefore(operationEl, operationsList.firstChild);
+                
+                // Keep only last 50 operations
+                while (operationsList.children.length > 50) {
+                    operationsList.removeChild(operationsList.lastChild);
+                }
+            }
+
+            showToast(message, type) {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                
+                setTimeout(() => toast.classList.add('show'), 100);
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => document.body.removeChild(toast), 300);
+                }, 3000);
+            }
+        }
+
+        // Initialize the editor when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new CollaborativeEditor();
+        });
+    </script>
+</body>
+</html>
