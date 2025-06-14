@@ -10,9 +10,9 @@ here store and delivery are the two different service and having their own datab
 
 Some Solution:
 
-1. Two-Phase Commit. ( Lock rows ( local transaction, update rows etc ) , prepare ( ask are you prepare ? how ? -> check as per db )  , commit ) 
+1. Two-Phase Commit. ( Lock rows ( local transaction, update rows etc ) , prepare ( ask are you prepare ? how ? -> check as per db, but on high level its kind of prepare and commit 2 phase. upto prepare you should have written query except commit remaining. )  , commit ) 
 
-how to implement pre phase ? 
+how to implement pre phase ? ( or we can put the query out of prepare phase, and explicity call db for checking they are parepare or not. )
 
 Code:
 
