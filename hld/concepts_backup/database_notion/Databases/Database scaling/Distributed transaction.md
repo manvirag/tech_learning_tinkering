@@ -122,7 +122,7 @@ Now we will discuss the few methods( that i read ), which help to implement the 
 		- Failure via coordinator crash -> in middle of prepare -> very risky -> all node will be stuck until the coordinator recover and locking those row for other -> disaster. => how to solve this ??
 			- There are some solution -> mentioned in the above notes as fault tolerant two phase commit -> high level all nodes including coordinate will be in consensus algorithm and share their heartbeat to other node, and if any node crash , we abort the transactions.
 			- Some other solution -> TC/C, Saga, they have their own pros and cons
-		- Failure via coordinater -> in middle of commit -> same , after recover with help of status rollback things.
+		- Failure via coordinater -> in middle of commit -> same , after recover with help of status rollback things. ( like maintain the local log files. )
         - Note cooridination nothing but the server implementing distributed transaction, node are nothing but the database which are part of distributed transaction.
 
 2. TC/C ( Try Confirm/Cancel)
