@@ -1,3 +1,4 @@
+<img width="823" alt="image" src="https://github.com/user-attachments/assets/d2c76489-e8cd-436e-b016-ce0b021f787b" />
 
 https://www.uber.com/en-IN/blog/real-time-exactly-once-ad-event-processing/ ( using tools )
 
