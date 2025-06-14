@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collaborative Document Editor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            margin-bottom: 20px;
+            color: #4a5568;
+            font-size: 1.5rem;
+        }
+
+        .create-section {
+            text-align: center;
+        }
+
+        .create-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        .input-group label {
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .input-field {
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 2px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: #edf2f7;
+        }
+
+        .documents-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .document-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .document-item:hover {
+            background: #f7fafc;
+            transform: translateX(5px);
+        }
+
+        .document-info h3 {
+            margin-bottom: 5px;
+            color: #2d3748;
+        }
+
+        .document-meta {
+            font-size: 0.9rem;
+            color: #718096;
+        }
+
+        .document-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #718096;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #4a5568;
+        }
+
+        .status-bar {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .stat-item h3 {
+            font-size: 2rem;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-item p {
+            color: #718096;
+            font-weight: 500;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: 500;
+        }
+
+        .message.success {
+            background: #c6f6d5;
+            color: #276749;
+            border: 1px solid #9ae6b4;
+        }
+
+        .message.error {
+            background: #fed7d7;
+            color: #c53030;
+            border: 1px solid #feb2b2;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .status-bar {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📝 Collaborative Editor</h1>
+            <p>Real-time document collaboration with Operational Transform</p>
+        </div>
+
+        <div class="main-content">
+            <div class="card create-section">
+                <h2>Create New Document</h2>
+                <form class="create-form" id="createForm">
+                    <div class="input-group">
+                        <label for="documentId">Document ID</label>
+                        <input type="text" id="documentId" class="input-field" placeholder="my-document" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="documentTitle">Title</label>
+                        <input type="text" id="documentTitle" class="input-field" placeholder="My Document" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Document</button>
+                </form>
+                
+                <div style="margin: 20px 0;">
+                    <p style="color: #718096; margin-bottom: 10px;">Or join an existing document:</p>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="joinDocumentId" class="input-field" placeholder="Document ID" style="flex: 1;">
+                        <button onclick="joinDocument()" class="btn btn-secondary">Join</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Recent Documents</h2>
+                <button onclick="loadDocuments()" class="btn btn-secondary btn-small" style="margin-bottom: 15px;">🔄 Refresh</button>
+                <div id="documentsList" class="documents-list">
+                    <div class="loading">Loading documents...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <div class="stat-item">
+                <h3 id="totalDocs">0</h3>
+                <p>Total Documents</p>
+            </div>
+            <div class="stat-item">
+                <h3 id="connectedClients">0</h3>
+                <p>Connected Clients</p>
+            </div>
+            <div class="stat-item">
+                <h3 id="totalOperations">0</h3>
+                <p>Total Operations</p>
+            </div>
+        </div>
+
+        <div id="messages"></div>
+    </div>
+
+    <script>
+        let documents = [];
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDocuments();
+            loadStats();
+            setupEventListeners();
+            
+            // Refresh stats every 30 seconds
+            setInterval(loadStats, 30000);
+        });
+
+        function setupEventListeners() {
+            document.getElementById('createForm').addEventListener('submit', createDocument);
+            document.getElementById('joinDocumentId').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    joinDocument();
+                }
+            });
+        }
+
+        async function createDocument(e) {
+            e.preventDefault();
+            
+            const documentId = document.getElementById('documentId').value.trim();
+            const documentTitle = document.getElementById('documentTitle').value.trim();
+            
+            if (!documentId || !documentTitle) {
+                showMessage('Please fill in all fields', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/documents', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id: documentId,
+                        title: documentTitle
+                    })
+                });
+
+                if (response.ok) {
+                    showMessage(`Document "${documentTitle}" created successfully!`, 'success');
+                    document.getElementById('createForm').reset();
+                    loadDocuments();
+                    
+                    // Open the new document
+                    setTimeout(() => {
+                        openDocument(documentId);
+                    }, 1000);
+                } else {
+                    const error = await response.text();
+                    showMessage(`Error creating document: ${error}`, 'error');
+                }
+            } catch (error) {
+                showMessage(`Error creating document: ${error.message}`, 'error');
+            }
+        }
+
+        function joinDocument() {
+            const documentId = document.getElementById('joinDocumentId').value.trim();
+            if (!documentId) {
+                showMessage('Please enter a document ID', 'error');
+                return;
+            }
+            
+            openDocument(documentId);
+        }
+
+        function openDocument(documentId) {
+            window.open(`/document/${documentId}`, '_blank');
+        }
+
+        async function loadDocuments() {
+            try {
+                const response = await fetch('/api/documents');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    documents = data.documents || [];
+                    renderDocuments();
+                } else {
+                    showMessage('Error loading documents', 'error');
+                }
+            } catch (error) {
+                showMessage(`Error loading documents: ${error.message}`, 'error');
+            }
+        }
+
+        function renderDocuments() {
+            const documentsList = document.getElementById('documentsList');
+            
+            if (documents.length === 0) {
+                documentsList.innerHTML = '<div class="empty-state">No documents found. Create your first document!</div>';
+                return;
+            }
+
+            const documentsHtml = documents.map(doc => `
+                <div class="document-item">
+                    <div class="document-info">
+                        <h3>${doc.title}</h3>
+                        <div class="document-meta">
+                            ID: ${doc.id} • Version: ${doc.version} • 
+                            Updated: ${new Date(doc.updated_at).toLocaleString()}
+                        </div>
+                    </div>
+                    <div class="document-actions">
+                        <button onclick="openDocument('${doc.id}')" class="btn btn-primary btn-small">
+                            Open
+                        </button>
+                        <button onclick="deleteDocument('${doc.id}', '${doc.title}')" class="btn btn-danger btn-small">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            documentsList.innerHTML = documentsHtml;
+        }
+
+        async function deleteDocument(documentId, title) {
+            if (!confirm(`Are you sure you want to delete "${title}"?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/documents/${documentId}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    showMessage(`Document "${title}" deleted successfully!`, 'success');
+                    loadDocuments();
+                    loadStats();
+                } else {
+                    const error = await response.text();
+                    showMessage(`Error deleting document: ${error}`, 'error');
+                }
+            } catch (error) {
+                showMessage(`Error deleting document: ${error.message}`, 'error');
+            }
+        }
+
+        async function loadStats() {
+            try {
+                const response = await fetch('/api/stats');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('totalDocs').textContent = data.total_documents || 0;
+                    document.getElementById('connectedClients').textContent = data.connected_clients || 0;
+                    document.getElementById('totalOperations').textContent = data.total_operations || 0;
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        function showMessage(message, type) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.textContent = message;
+            messagesDiv.appendChild(messageDiv);
+
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html> 
