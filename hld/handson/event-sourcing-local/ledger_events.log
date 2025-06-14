@@ -1,0 +1,3 @@
+{"type":"deposit","account":"alice","amount":100}
+{"type":"withdraw","account":"alice","amount":30}
+{"type":"deposit","account":"bob","amount":50}
