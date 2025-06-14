@@ -10,7 +10,7 @@ here store and delivery are the two different service and having their own datab
 
 Some Solution:
 
-1. Two-Phase Commit.
+1. Two-Phase Commit. ( Lock ( can also be in prepare ) , prepare ( local transaction ) , commit ) 
 
 how to implement pre phase ? 
 
