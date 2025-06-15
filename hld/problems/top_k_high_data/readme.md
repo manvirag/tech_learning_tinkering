@@ -1,5 +1,5 @@
 <img width="823" alt="image" src="https://github.com/user-attachments/assets/d2c76489-e8cd-436e-b016-ce0b021f787b" />
-
+- one more, find the analytics between the time range like monitoring system datadob. 
 https://www.uber.com/en-IN/blog/real-time-exactly-once-ad-event-processing/ ( using tools )
 
 - Before going design of this, let's understand what's the different between real time leader board and this problem.
