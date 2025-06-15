@@ -162,7 +162,7 @@ Without Ready made tools Architecture:
 
 Ready mate tools and implementation and arch:
 - Flink, aws flink
-
+![alt text](image-16.png)
 ![alt text](image-13.png)
 ![alt text](image-10.png)
 
@@ -179,8 +179,6 @@ Ready mate tools and implementation and arch:
 - Regarding the failure cases will be handled by flink.
 - Let's discuss about flink and its architecture in some other lecture.
 ![alt text](image-7.png)
-
-
 ![alt text](image-14.png)
 
 Real World Kappa Example: https://www.uber.com/en-IN/blog/kafka-tiered-storage/
