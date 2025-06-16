@@ -1,3 +1,4 @@
+https://medium.com/@mayilb77/design-a-real-time-leaderboard-system-for-millions-of-users-08b96b4b64ce
 
 [Note this is less detailed blog as compare to book, not talk much about redis command]
 Functional Requirements:
