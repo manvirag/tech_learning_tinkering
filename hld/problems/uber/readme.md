@@ -244,6 +244,78 @@ It is hard to remove drivers from their old cells. The implication is obvious; t
 
 To deal with this problem, we could introduce a timestamp to each record. With timestamps, it is easy to filter out stale location data [ Has to check more ]
 
+```
+
+package main
+
+import (
+	"context"
+	"fmt"
+	"time"
+
+	"github.com/redis/go-redis/v9"
+)
+
+var ctx = context.Background()
+
+func main() {
+	rdb := redis.NewClient(&redis.Options{
+		Addr: "localhost:6379",
+	})
+
+	driverID := "driver_123"
+	lat := 37.7749
+	lon := -122.4194
+
+	// Compute geohash (dummy example - replace with real geohash library)
+	geohash := computeGeoHash(lat, lon)
+
+	// Get old geohash
+	oldGeohash, err := rdb.HGet(ctx, "driver_geo", driverID).Result()
+	if err == redis.Nil {
+		oldGeohash = ""
+	} else if err != nil {
+		panic(err)
+	}
+
+	// Remove from old geohash ZSET if geohash changed
+	if oldGeohash != "" && oldGeohash != geohash {
+		rdb.ZRem(ctx, fmt.Sprintf("geo:%s", oldGeohash), driverID)
+	}
+
+	// Add to new geohash ZSET with timestamp
+	timestamp := float64(time.Now().Unix())
+	rdb.ZAdd(ctx, fmt.Sprintf("geo:%s", geohash), redis.Z{
+		Score:  timestamp,
+		Member: driverID,
+	})
+
+	// Update driver -> geohash map
+	rdb.HSet(ctx, "driver_geo", driverID, geohash)
+
+	// EXAMPLE: Query drivers in this geohash updated in last 30 sec
+	now := float64(time.Now().Unix())
+	minTime := now - 30
+
+	drivers, err := rdb.ZRangeByScore(ctx, fmt.Sprintf("geo:%s", geohash), &redis.ZRangeBy{
+		Min: fmt.Sprintf("%f", minTime),
+		Max: "+inf",
+	}).Result()
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("Active drivers in %s: %v\n", geohash, drivers)
+}
+
+// Dummy geohash (replace with actual geohash encoding)
+func computeGeoHash(lat, lon float64) string {
+	return "9q9hv" // Example geohash
+}
+```
+
+
 #### Reference:
 1. https://github.com/karanpratapsingh/system-design?tab=readme-ov-file#uber
 2. https://towardsdatascience.com/ace-the-system-design-interview-uber-lyft-7e4c212734b3
