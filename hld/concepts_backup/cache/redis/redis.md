@@ -98,8 +98,12 @@ Its like running a single redis server on same application server. Can Make it m
 ![Untitled](Untitled%208.png)
 
  what happens when you can't store all your data in memory on one machine. Currently, the maximum RAM available in a single server is 24TIB, presently listed online at AWS. Granted, that's a lot, but for some systems, that isn't enough, even for a caching layer.
+ - Data partition / sharded by redis itself.
+ - Failover of second.
+ - High availability and scalable.
+ - on aws elastic cache, you create cluster mode, tell about shard count ( how many master ), node count ( include master total nodes, if node count 5, shard 2 -> 2 master each master have 2 and 3 replica ) , it tell list of endpoints, while at client side setup client with list of endpoints.   
 
-Redis Cluster allows for the horizontal scaling of Redis.
+Redis Cluster allows for the horizontal scaling of Redis. 
 
 # **Gossiping**
 
