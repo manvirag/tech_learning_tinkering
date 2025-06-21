@@ -265,4 +265,13 @@ CHAPTER 11: STREAM PROCESSING:
 			- In some cases, it may not even be necessary to replicate the state, because it can be rebuilt from the input streams. For example, if the state consists of aggregations over a fairly short window, it may be fast enough to simply replay the input events corre‐ sponding to that window
 			- However, all of these trade-offs depend on the performance characteristics of the underlying infrastructure:
 	
-	
+- **Techniques to handle delay events**: 
+	- Reconsillation type system, batch processing.
+ 	- Allow bit late event -> watermark technique, let say 5 second allow -> make system bit complex since will require to maintain previous state as well. 
+        ```
+           💡 Example in Flink:
+			WatermarkStrategy
+			  .forBoundedOutOfOrderness(Duration.ofSeconds(5))
+        ``` 
+	- Means: allow 5 seconds of lateness → handle late events → emit window results when watermark passes window end time.
+ 		
