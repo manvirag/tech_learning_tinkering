@@ -104,6 +104,7 @@ Its like running a single redis server on same application server. Can Make it m
  - on aws elastic cache, you create cluster mode, tell about shard count ( how many master ), node count ( include master total nodes, if node count 5, shard 2 -> 2 master each master have 2 and 3 replica ) , it tell list of endpoints, while at client side setup client with list of endpoints.   
 
 Redis Cluster allows for the horizontal scaling of Redis. 
+<img width="836" alt="image" src="https://github.com/user-attachments/assets/61910a8f-0d3d-4f4e-bb1e-87164078f76b" />
 
 # **Gossiping**
 
