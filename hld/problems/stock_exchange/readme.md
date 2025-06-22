@@ -111,3 +111,6 @@ Deep Dive:
     - if that price order ends move to level up in bid or ask and continue.
 
 How to optimize latency on critical path ( order execution part 1,2,3,4,5 )
+
+
+<img width="945" alt="image" src="https://github.com/user-attachments/assets/a46873a8-1cfd-4145-9121-bc6bf5ef6c73" />
