@@ -184,7 +184,7 @@ userId: [ postid1, postid2, postid3, postid4 ]  while inserting let say maintain
 - Cassandra, high write
 - normalised not in list.
 
-  ```
+```
 
   Table: user_newsfeed
    Partition key: user_id
