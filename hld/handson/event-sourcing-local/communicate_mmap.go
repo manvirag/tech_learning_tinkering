@@ -152,4 +152,6 @@ Any changes you make to that memory can be reflected in the file (depending on f
 
 🔹 Internally, the OS uses page tables to link file contents to memory pages.
 
+
+for reliability, we can forcely write at time of appending, while reading via mmap 
 */
