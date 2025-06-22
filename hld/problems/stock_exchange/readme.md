@@ -2,8 +2,8 @@ Functional Requirements:
 
 - We have to design the stock exchange.
 - User can buy and sell the stocks.
-- User can see the market listing price.
-- User can do only limit order.
+- User can see the market live stock price.
+- User can do market and limit order.
 
 Non-functional Requirements:
 - latency should be very low.
