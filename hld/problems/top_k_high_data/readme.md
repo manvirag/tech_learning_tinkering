@@ -229,3 +229,4 @@ References:
 
 
 ![alt text](top_k.png)
+![alt text](top_k_without.png)
