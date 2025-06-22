@@ -166,6 +166,50 @@ Maybe we can use column database cassandra. or else key store db would also work
 
 Have similar usecaes like user , can use same type of db here as well.
 
+#### Post Cache
+```
+PostId: { postdescription, photolink, location....}
+
+```
+
+#### News feed cache
+
+- Redis list, fix size , push latest on left side.
+```
+userId: [ postid1, postid2, postid3, postid4 ]  while inserting let say maintain size 100 i.e 4 page , if greater remove older. we can also use set
+
+```
+
+#### News feed db
+- Cassandra, high write
+- normalised not in list.
+
+  ```
+
+  Table: user_newsfeed
+   Partition key: user_id
+   Clustering key: created_at DESC
+   Columns:
+     - user_id (PK part)
+     - created_at (PK part)
+     - post_id
+     - actor_id
+     - verb (e.g. "posted", "liked")
+     - content_snippet
+     - media_url
+     - visibility
+
+  select * from user_newsfeed where user_id = "" order by created_at offset <> limit <>
+```
+
+#### Cache invalidation
+
+- we an push data to db with worker + cache,
+- and make cache invalidation via TTL , also update at time of worker event came
+- so at time of read, if miss fetch from db and also save in cache.
+- if workder fail to cache -> cache will expire after some time or we can have refresher in some period.
+- or use saga with new feed db and update cache offline.
+
 #### Relation table:
 
 Usecase:
