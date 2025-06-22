@@ -210,6 +210,11 @@ userId: [ postid1, postid2, postid3, postid4 ]  while inserting let say maintain
 - if workder fail to cache -> cache will expire after some time or we can have refresher in some period.
 - or use saga with new feed db and update cache offline.
 
+#### 
+- similar to above there can be more question like if user following very high user etc.
+- so most of time rather thinking about the 0.01% cases, system have product limit like linkedin allow limited connections, twitter allow limited pages to be scrolled. 
+
+
 #### Relation table:
 
 Usecase:
