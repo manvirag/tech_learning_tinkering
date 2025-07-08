@@ -41,6 +41,8 @@ GET api/v1/shortUrl
 - So 7 length of short url would be enough
   ![alt_text](./images/img_4.png)
 
+![alt_text](./images/how_many_character_62_sha_256.png)
+
 
 1. Hash + collision resolution:
    Inshort get the long hashed value from function and take only first 7 letter. This might cause collision. So start adding letter one by one more and check if its not already exist. Cons: Call db every time or cache . Not much efficient. Optimisation use bloom filter.
