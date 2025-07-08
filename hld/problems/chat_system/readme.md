@@ -1,3 +1,4 @@
+Note -> Slack is in different folder:
 Design chat system:
 
 
