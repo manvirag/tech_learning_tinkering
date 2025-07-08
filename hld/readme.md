@@ -57,36 +57,37 @@
 7. Read these in your free time or subscribe.
   
 
-   1. Airbnb: https://lnkd.in/dAPjjaA3
-   2. Amazon: https://lnkd.in/dyp43Yqp
-   3. Bittorrent: https://lnkd.in/dfZPa6Ma
-   4. Asana: https://lnkd.in/dWqZxf6Y
-   5. Atlassian: https://lnkd.in/d-i34bUQ
-   6. Cloudera: [https://blog.cloudera.com](https://blog.cloudera.com/)
-   7. Docker: [https://blog.docker.com](https://blog.docker.com/)
-   8. Dropbox: https://lnkd.in/dUQJTxac
-   9. eBay: https://lnkd.in/dnmca2uT
-   10. Facebook: https://lnkd.in/dbwkUDjN
-   11. GitHub: https://lnkd.in/dSC9StzD
-   12. Google: https://lnkd.in/dBwy8_G7
-   13. Groupon: https://lnkd.in/dsyGvUWF
-   14. High scalability: http://highscalability.com](http://highscalability.com/
-   15. Instacart: https://tech.instacart.com](https://tech.instacart.com/
-   16. Instagram: https://lnkd.in/dEs6FyGn
-   17. Linkedin: https://lnkd.in/d_yQe9g6
-   18. Mixpanel: https://mixpanel.com/blog
-   19. Netflix: https://lnkd.in/dADsZZpJ
-   20. Nextdoor: https://lnkd.in/dDdGPQgR
-   21. PayPal: https://lnkd.in/d9YkeE_h
-   22. Pinterest: https://lnkd.in/dQWFTwas
-   23. Quora: https://lnkd.in/d-iuzYZq
-   24. Reddit: https://redditblog.com](https://redditblog.com/
-   25. Salesforce: https://lnkd.in/dV9unb47
-   26. Shopify: https://lnkd.in/dQtK4TME
-   27. Slack: https://slack.engineering](https://slack.engineering/
-   28. Soundcloud: https://lnkd.in/dgWK_v4h
-   29. Spotify: https://labs.spotify.com](https://labs.spotify.com/
-   30. Stripe: https://lnkd.in/dm-WBTgr
+   1.https://systemdesign.one/system-design-interview-cheatsheet/
+   2. Airbnb: https://lnkd.in/dAPjjaA3
+   3. Amazon: https://lnkd.in/dyp43Yqp
+   4. Bittorrent: https://lnkd.in/dfZPa6Ma
+   5. Asana: https://lnkd.in/dWqZxf6Y
+   6. Atlassian: https://lnkd.in/d-i34bUQ
+   7. Cloudera: [https://blog.cloudera.com](https://blog.cloudera.com/)
+   8. Docker: [https://blog.docker.com](https://blog.docker.com/)
+   9. Dropbox: https://lnkd.in/dUQJTxac
+   10. eBay: https://lnkd.in/dnmca2uT
+   11. Facebook: https://lnkd.in/dbwkUDjN
+   12. GitHub: https://lnkd.in/dSC9StzD
+   13. Google: https://lnkd.in/dBwy8_G7
+   14. Groupon: https://lnkd.in/dsyGvUWF
+   15. High scalability: http://highscalability.com](http://highscalability.com/
+   16. Instacart: https://tech.instacart.com](https://tech.instacart.com/
+   17. Instagram: https://lnkd.in/dEs6FyGn
+   18. Linkedin: https://lnkd.in/d_yQe9g6
+   19. Mixpanel: https://mixpanel.com/blog
+   20. Netflix: https://lnkd.in/dADsZZpJ
+   21. Nextdoor: https://lnkd.in/dDdGPQgR
+   22. PayPal: https://lnkd.in/d9YkeE_h
+   23. Pinterest: https://lnkd.in/dQWFTwas
+   24. Quora: https://lnkd.in/d-iuzYZq
+   25. Reddit: https://redditblog.com](https://redditblog.com/
+   26. Salesforce: https://lnkd.in/dV9unb47
+   27. Shopify: https://lnkd.in/dQtK4TME
+   28. Slack: https://slack.engineering](https://slack.engineering/
+   29. Soundcloud: https://lnkd.in/dgWK_v4h
+   30. Spotify: https://labs.spotify.com](https://labs.spotify.com/
+   31. Stripe: https://lnkd.in/dm-WBTgr
    32. Twitter: https://lnkd.in/d6RqN-Cq
    33. Thumbtack: https://lnkd.in/d6QTWF_p
    34. Uber: https://lnkd.in/dFh5V6UW
@@ -96,6 +97,7 @@
    38. JioCinema: https://blog.jiocinema.com/
    39. Tinder
    40. Notion
+   41. 
 
 
 
