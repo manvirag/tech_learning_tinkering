@@ -213,6 +213,9 @@ s3://your-bucket/videos/abc123/h264/720p/2.5Mbps/chunk_0001.m4s
 3. protocol for video upload and video stream ?
 - upload: simply https, steam: already mentioned hds,HTTP Live Streaming (HLS) or Dynamic Adaptive Streaming over HTTP (DASH) etc.
 
+4. Are live stream and youtube video are same flow ?
+- Answer is yes and no. in case of youtube video its kind of same but here we have complete video, and we can switch to any part of video, its ok to have bit latency and all. in live we do all at time of stream, not previous video ( usually have few minute ), latency matters. though both eventually us HLS and DASH, live stream also use rtmp for ingest without loss. 
+
 
 Follow up:
 - Add live-streaming
