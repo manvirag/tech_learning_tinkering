@@ -48,7 +48,7 @@ We are more interested in video stream and uploading part.
 ![alt_text](./images/img_3.png)
 
 - More about protocol
-- 
+- In Doubt section
 This is how on high level video uploading and stream look like
 
 ### Deep-dive high level design
@@ -121,7 +121,14 @@ https://github.com/manvirag/tech_learning_tinkering/tree/main/hld/concepts_backu
 
 1. what's the protocol used for uploading video ? since it will be long process and how do we do chunking ? First flow from ui to s3.
 - https, we create the chunk of file on frontend and upload on s3 with differen paths , and these according these path we fetch at the time of stream.
-2. How are we getting the chunks of video from CDN ?
+2. Resolution of number of pixels, more resolution more clarity. What is codec
+- a codec (short for coder-decoder or compressor-decompressor) is a technology or software that compresses and decompresses digital video files. It's essential for reducing file size and making video easier to store, stream, or transmit.
+- 
+
+
+3. How are we getting the chunks of video from CDN ?
+- Let say i have pu
+
 - it depends on the path every time we send the query according to timeline and we get that chunk only from cloudfront or from s3.
 - For e.g. below is list of request for chunk. 
 ![alt_text](./images/img_9.png)
