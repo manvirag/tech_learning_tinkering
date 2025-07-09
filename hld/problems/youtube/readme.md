@@ -110,24 +110,39 @@ Video Transcoding Responsibilities:
 
 https://github.com/manvirag/tech_learning_tinkering/tree/main/hld/concepts_backup/video_processing
 
-![image](https://github.com/user-attachments/assets/b9b3971e-7d4a-46df-8abf-276ab6673b7f)
+![image](./images/transcoder.png)
+
+## Correction: Transcoding also invole bitrates
+- so lets say we decided container mp4 , then it will generate chunks -> resolution * codec * bitrate
+
+- bitrate 
+
+![](/images/Screenshot%202025-07-09%20at%2011.38.52%20AM.png)
+![](/images/Screenshot%202025-07-09%20at%2011.39.00%20AM.png)
 
 
 
+![](./images/bitrate.png)
 #### References:
 1. Alex xu volume 1
 
 #### Doubts:
 
-1. what's the protocol used for uploading video ? since it will be long process and how do we do chunking ? First flow from ui to s3.
-- https, we create the chunk of file on frontend and upload on s3 with differen paths , and these according these path we fetch at the time of stream.
-2. Resolution of number of pixels, more resolution more clarity. What is codec
-- a codec (short for coder-decoder or compressor-decompressor) is a technology or software that compresses and decompresses digital video files. It's essential for reducing file size and making video easier to store, stream, or transmit.
-- 
+- what's the protocol used for uploading video ? since it will be long process and how do we do chunking ? First flow from ui to s3.
+   - https, we create the chunk of file on frontend and upload on s3 with differen paths , and these according these path we fetch at the time of stream.
+- Resolution of number of pixels, more resolution more clarity. What is codec
+   - a codec (short for coder-decoder or compressor-decompressor) is a technology or software that compresses and decompresses digital video files. It's essential for reducing file size and making video easier to store, stream, or transmit.
+
+![alt_text](./images/a.png)
+![alt_text](./images/b.png)
 
 
 3. How are we getting the chunks of video from CDN ?
-- Let say i have pu
+- so eventuall after trancoder -> it will save as the fmp4 -> basically fragmented mp4, basically small parts of mp4 which are require for streaming in hds.
+ 
+```
+s3://your-bucket/videos/abc123/h264/720p/2.5Mbps/chunk_0001.m4s
+```
 
 - it depends on the path every time we send the query according to timeline and we get that chunk only from cloudfront or from s3.
 - For e.g. below is list of request for chunk. 
