@@ -1,4 +1,4 @@
-Designing a Live Video Streaming System Like ESPN
+Designing a Live Video Streaming System Like ESPN ( this is the source of truth )
 
 ### Functional requirements
 1. There should be a maximum delay of 1 minute between the live event and the stream
