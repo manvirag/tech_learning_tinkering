@@ -59,13 +59,15 @@ Each pixel = 3 bytes (R, G, B) or more
   - Step 2: Decode & Transcode  
   - Decode compressed frames to raw video/audio  
   - Transcode to target resolutions & codecs (e.g., 720p H.264, 480p VP9)   // store these
+  - Correction also in different bitrates -> can check in youtube. 
   - send into queue
 - Another worker , which do below things packaging worker.
   - Step 3: Encode & Repackage into fragmented MP4 (fMP4)    
   - Encode frames into segments suitable for HLS/DASH (usually fragmented MP4)  
   - Each segment contains a short chunk of video/audio (e.g., 4 seconds)  // store these
   - Step 4: Generate playlists/manifests    // its just a file telling about the sequence of segements fMP4 to play on client side. 
-  - Create `.m3u8` playlists for HLS or `.mpd` manifest for DASH  
+  - Create `.m3u8` playlists for HLS or `.mpd` manifest for DASH  ( HDS (HTTP Dynamic Streaming) is Adobe's legacy format.
+MPEG-DASH is the modern, standard format for HTTP Adaptive Streaming — and what you’re actually asking about. )
   - Playlists reference segments with timestamps, durations, and variant streams  
   - Step 5: Upload segments & manifests to CDN/storage  
   - Deliver segments to end users for adaptive streaming
