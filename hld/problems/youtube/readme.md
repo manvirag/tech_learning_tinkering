@@ -139,12 +139,12 @@ https://github.com/manvirag/tech_learning_tinkering/tree/main/hld/concepts_backu
 
 3. How are we getting the chunks of video from CDN ?
 - so eventuall after trancoder -> it will save as the fmp4 -> basically fragmented mp4, basically small parts of mp4 which are require for streaming in hds.
- 
+
 ```
 s3://your-bucket/videos/abc123/h264/720p/2.5Mbps/chunk_0001.m4s
 ```
 
-- it depends on the path every time we send the query according to timeline and we get that chunk only from cloudfront or from s3.
+- we use HLS/DASH protocol and fetch the next segment with manifest and run it.
 - For e.g. below is list of request for chunk. 
 ![alt_text](./images/img_9.png)
 
