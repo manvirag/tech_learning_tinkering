@@ -124,3 +124,31 @@ like shard1: [ a, b ] and shard2: [ c, w, ,x, y]
 3. How can be implement in go that shard manager ?
    1. [``TBU``] This is kinda same like zoo-keeper, master-slave, service-discovery, distributed-chat-server manager. Will implement these
 
+#### Implementation
+
+https://medium.com/@prefixyteam/how-we-built-prefixy-a-scalable-prefix-search-service-for-powering-autocomplete-c20f98e2eff1
+
+basically instead of inmemoty trie
+
+they used the sorted set 
+
+like this
+```
+// Redis sorted set for prefix "go":
+go: [
+  "google"     (score: -100),  // ← Most popular (lowest score = highest rank)
+  "good"       (score: -50),
+  "goose"      (score: -10),
+  "government" (score: 0)      // ← Least popular
+]
+```
+
+and similar saving this in mongodb. 
+
+cache invalidation: 
+
+- writing at cache at read if not found and found in db.
+- updaing in db at insertion.
+- and deletion → erase cache and in db.
+
+- To improve we can do tradeoff with consistency and save in db offline and at each interal update the redis.
