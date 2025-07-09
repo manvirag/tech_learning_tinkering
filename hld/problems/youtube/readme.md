@@ -110,6 +110,9 @@ Video Transcoding Responsibilities:
 
 https://github.com/manvirag/tech_learning_tinkering/tree/main/hld/concepts_backup/video_processing
 
+![image](https://github.com/user-attachments/assets/b9b3971e-7d4a-46df-8abf-276ab6673b7f)
+
+
 
 #### References:
 1. Alex xu volume 1
