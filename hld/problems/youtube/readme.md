@@ -36,17 +36,19 @@ We are more interested in video stream and uploading part.
 
 - So video uploading is like putting mp4 or video file on our service. But how our database hasn't been made for this.
 - Here's comes the object storage like S3 ( Design this is a separate problem , but were we are using this.).
-- So what we can do , from frontend itself directly start uploading the video on S3. Once its done we will internaly send the information about the s3 url or details of the video to the api servers that will save these information in db.
+- So what we can do , from frontend itself directly start uploading the video on S3 ( it would also be better if it do in chunks, to make storage efficient, we can maintain state of chunk updated so retry to previous part only ). Once its done we will internaly send the information about the s3 url or details of the video to the api servers that will save these information in db.
 
 ![alt_text](./images/img_2.png)
 
-#### Video streaming:
+#### Video streaming 
 
 - Fetching data from s3 everytime would be much efficient , better is to keep CDN for this and that will internally connect with s3. [ Note: CDN also incur cost. ]. Streaming protocol e.g. MPEG-DASH , Adobe HTTPS dynamic stream etc. ( HDS ).
 - Fetch complete video in one go would be inefficient , its better to break into the chunk of videos. 
 
 ![alt_text](./images/img_3.png)
 
+- More about protocol
+- 
 This is how on high level video uploading and stream look like
 
 ### Deep-dive high level design
@@ -105,6 +107,9 @@ Video Transcoding Responsibilities:
    2. This is also connected to the temporary storage that helps in dealing at particular chunk and merge all task.
 5. Encoded video:
    1. It is the final out put . video_chunk_1.mp4
+
+https://github.com/manvirag/tech_learning_tinkering/tree/main/hld/concepts_backup/video_processing
+
 
 #### References:
 1. Alex xu volume 1
