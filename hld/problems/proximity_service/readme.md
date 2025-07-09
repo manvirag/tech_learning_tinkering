@@ -1,1 +1,2 @@
-As of now see the pdf, will update here later on.
+Source of truth:  book + github.
+
