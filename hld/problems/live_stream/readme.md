@@ -78,7 +78,7 @@ MPEG-DASH is the modern, standard format for HTTP Adaptive Streaming — and wha
   - HLS is HTTP-based, so the CDN just delivers the .m3u8 playlists and .m4s (segment) files over standard HTTP/HTTPS.
     
 ```
-Example:
+Example: ( this is for HLS )
 When bandwidth is high → player chooses 1080p stream
 When bandwidth drops → player switches to 480p or 360p smoothly without stopping playback
 This is called adaptive bitrate streaming (ABR) and ensures the best user experience.
@@ -86,72 +86,48 @@ This is called adaptive bitrate streaming (ABR) and ensures the best user experi
   
   - Bit about manifest and fmp4
 
-  - Two fMP4 segments (different resolutions/bitrates)
+  - Two fMP4 segments (different resolutions bitrates ( both are different) )
   - A  sample .m3u8 manifest for adaptive bitrate streaming
-
-```
-
-fMP4 segments (simplified names)
-720p_segment1.m4s  
-720p_segment2.m4s  
-
-480p_segment1.m4s  
-480p_segment2.m4s  
-```
-
 
   - Sample .m3u8 master playlist for adaptive streaming
 
 m3u8
 ```
 #EXTM3U
-#EXT-X-VERSION:7
-
-# 720p variant playlist
-#EXT-X-STREAM-INF:BANDWIDTH=3000000,RESOLUTION=1280x720
-720p.m3u8
-
-# 480p variant playlist
-#EXT-X-STREAM-INF:BANDWIDTH=1000000,RESOLUTION=854x480
-480p.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=2000000,RESOLUTION=1280x720
+720p/index_720p_2M.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=800000,RESOLUTION=854x480
+480p/index_480p_800k.m3u8
 
 ```
-Sample 720p.m3u8 (variant playlist)
-```
-#EXTM3U
-#EXT-X-VERSION:7
-#EXT-X-TARGETDURATION:4
-#EXT-X-MAP:URI="init_720p.mp4"
-
-# Segments
-#EXTINF:4.0,
-720p_segment1.m4s
-#EXTINF:4.0,
-720p_segment2.m4s
-#EXT-X-ENDLIST
 
 ```
-Sample 480p.m3u8 (variant playlist)
+GET https://cdn.yourdomain.com/videos/abc123/hls/720p/index_720p_2M.m3u8
+```
+
 
 ```
 #EXTM3U
-#EXT-X-VERSION:7
-#EXT-X-TARGETDURATION:4
-#EXT-X-MAP:URI="init_480p.mp4"
+#EXTINF:4.0,
+segment00001.ts
+#EXTINF:4.0,
+segment00002.ts
+#EXTINF:4.0,
+segment00003.ts
+```
 
-# Segments
-#EXTINF:4.0,
-480p_segment1.m4s
-#EXTINF:4.0,
-480p_segment2.m4s
-#EXT-X-ENDLIST
+Then Pick one by one 
+
+```
+GET https://cdn.yourdomain.com/videos/abc123/hls/720p/segment00001.ts
+GET https://cdn.yourdomain.com/videos/abc123/hls/720p/segment00002.ts
 
 ```
 
   - How adaptive streaming works here:
-  - Player downloads master .m3u8, sees two streams (720p & 480p)
-  - Player picks the stream best suited to current network (e.g., 480p if slow)
-  - Player fetches segments listed in that variant playlist (720p_segment1.m4s etc.)
+  - Player downloads master .m3u8, sees two streams (720p & 480p and bitrate )
+  - Player picks the stream best suited to current network (e.g., 480p + bitrate if slow)
+  - Player fetches segments listed in that variant playlist (index_720p_2M.m3u8 etc.)
   - Player can switch between 720p and 480p playlists mid-stream smoothly
 
 
