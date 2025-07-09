@@ -37,7 +37,7 @@ Each pixel = 3 bytes (R, G, B) or more
 
 - Cool Now cient computer, espn have row audio and video stream.
 - It does not send raw frames + raw audio → too huge, inefficient for network
-- It sends encoded + packetized data over protocol RTMP Protocol: RTMP (Real Time Messaging Protocol) Encoding ( made on top of TCP, not using UDP since not reliable )
+- It sends encoded + packetized data over protocol RTMP Protocol: RTMP (Real Time Messaging Protocol) Encoding ( made on top of TCP, not using UDP since not reliable ) . RTMP is similar to WebSocket in connection model: persistent, real-time, low-latency. But it’s specialized for live media and uses its own binary format. While hls/dash is https for each chunk. 
 - espn server, compress and encode both data and make in FLV ( flash video ) format , having other flag -> after that it send via rtmp in chunks of size 128b over network.
 
   
