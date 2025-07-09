@@ -36,13 +36,74 @@ We are more interested in video stream and uploading part.
 
 - So video uploading is like putting mp4 or video file on our service. But how our database hasn't been made for this.
 - Here's comes the object storage like S3 ( Design this is a separate problem , but were we are using this.).
-- So what we can do , from frontend itself directly start uploading the video on S3 ( it would also be better if it do in chunks, to make storage efficient, we can maintain state of chunk updated so retry to previous part only ). Once its done we will internaly send the information about the s3 url or details of the video to the api servers that will save these information in db.
+- So what we can do , from frontend itself directly start uploading the video on S3 ( it would also be better if it do in chunks, to make storage efficient, we can maintain state of chunk updated so retry to previous part only. Basically storing chunks of video ). Once its done we will internaly send the information about the s3 url or details of the video to the api servers that will save these information in db.
 
 ![alt_text](./images/img_2.png)
 
+```
+
+# multipart means -> chunk -> paralle
+
+import boto3
+from pathlib import Path
+
+s3 = boto3.client('s3')
+bucket = "your-bucket-name"
+key = "uploads/raw_videos/video.mp4"
+file_path = "video.mp4"
+chunk_size = 5 * 1024 * 1024  # 5 MB minimum per part
+
+# 1. Initiate multipart upload
+response = s3.create_multipart_upload(Bucket=bucket, Key=key)
+upload_id = response['UploadId']
+parts = []
+
+try:
+    with open(file_path, 'rb') as f:
+        part_number = 1
+        while chunk := f.read(chunk_size):
+            response = s3.upload_part(
+                Bucket=bucket,
+                Key=key,
+                PartNumber=part_number,
+                UploadId=upload_id,
+                Body=chunk
+            )
+            parts.append({
+                'PartNumber': part_number,
+                'ETag': response['ETag']
+            })
+            part_number += 1
+
+    # 2. Complete upload
+    s3.complete_multipart_upload(
+        Bucket=bucket,
+        Key=key,
+        UploadId=upload_id,
+        MultipartUpload={'Parts': parts}
+    )
+    print("Upload completed successfully.")
+
+except Exception as e:
+    # 3. Abort on failure
+    s3.abort_multipart_upload(Bucket=bucket, Key=key, UploadId=upload_id)
+    print("Upload failed and aborted:", e)
+
+```
+
+```
+s3://your-bucket/uploads/raw_chunks/video_12345/
+├── chunk_00001
+├── chunk_00002
+├── ...
+```
+
+![](./images/Screenshot%202025-07-09%20at%2012.38.20%20PM.png)
+![](./images/Screenshot%202025-07-09%20at%2012.38.38%20PM.png)
+
 #### Video streaming 
 
-- Fetching data from s3 everytime would be much efficient , better is to keep CDN for this and that will internally connect with s3. [ Note: CDN also incur cost. ]. Streaming protocol e.g. MPEG-DASH , Adobe HTTPS dynamic stream etc. ( HDS ).
+- Fetching data from s3 everytime would be much efficient , better is to keep CDN for this and that will internally connect with s3. [ Note: CDN also incur cost. ]. Streaming protocol e.g. MPEG-DASH , Adobe HTTPS dynamic stream etc. ( HDS ) this is not used much, another HLS. So DASH/HLS . So basically as per these protocol format we send data to s3 and CDN and then it take care. client with these protocal fetch data and play.
 - Fetch complete video in one go would be inefficient , its better to break into the chunk of videos. 
 
 ![alt_text](./images/img_3.png)
@@ -51,7 +112,7 @@ We are more interested in video stream and uploading part.
 - In Doubt section
 This is how on high level video uploading and stream look like
 
-### Deep-dive high level design
+### Deep-dive high level design (  remeber transcoder also have bitrate so its multplication of 3 variation)
 
 - How cdn getting updated ?
 - How we are getting chunks of video ?  
@@ -106,7 +167,7 @@ Video Transcoding Responsibilities:
    1. Executing the actual task as shown above.
    2. This is also connected to the temporary storage that helps in dealing at particular chunk and merge all task.
 5. Encoded video:
-   1. It is the final out put . video_chunk_1.mp4
+   1. It is the final out put . video_chunk_1_{codec}-{resolution}-{bitrates}.mp4
 
 https://github.com/manvirag/tech_learning_tinkering/tree/main/hld/concepts_backup/video_processing
 
@@ -115,7 +176,7 @@ https://github.com/manvirag/tech_learning_tinkering/tree/main/hld/concepts_backu
 ## Correction: Transcoding also invole bitrates
 - so lets say we decided container mp4 , then it will generate chunks -> resolution * codec * bitrate
 
-- bitrate 
+- bitrate (resolution is like matrix size, bitrate is like quality in each pixel or box of matrix, mot bits for at box more clarity. )
 
 ![](/images/Screenshot%202025-07-09%20at%2011.38.52%20AM.png)
 ![](/images/Screenshot%202025-07-09%20at%2011.39.00%20AM.png)
@@ -138,7 +199,7 @@ https://github.com/manvirag/tech_learning_tinkering/tree/main/hld/concepts_backu
 
 
 3. How are we getting the chunks of video from CDN ?
-- so eventuall after trancoder -> it will save as the fmp4 -> basically fragmented mp4, basically small parts of mp4 which are require for streaming in hds.
+- so eventuall after trancoder -> it will save as per protocol -> basically fragmented mp4, basically small parts of mp4 which are require for streaming in hls. ( .m4s or .ts) , then there is manifest .m3u8 for hls, .mpd  for  Dynamic Adaptive Streaming over HTTP (DASH), dash also require init.mp4
 
 ```
 s3://your-bucket/videos/abc123/h264/720p/2.5Mbps/chunk_0001.m4s
