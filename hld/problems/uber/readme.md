@@ -1,4 +1,4 @@
-[ Kind of copy paste ]
+Source of truth -> first escalidraw , then this 
 
 ### Functional Requirements:
 
