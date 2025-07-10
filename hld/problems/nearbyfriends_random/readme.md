@@ -1,4 +1,4 @@
-### Source of truth ( book and this ) 
+### Source of truth ( book and this ) , its like group chat ( see whatspp ) 
 Before going into deep dive, why did we creating this again ? we have already did same in proximity service.
 No , if you think carefully, there we could have delay in update no real time. Here we need real time update. So quad tree won't work here.
 
