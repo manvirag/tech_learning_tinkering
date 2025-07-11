@@ -42,8 +42,7 @@ Favourable Database for this case -> MYSQL
 - In case of reservation we need ACID properties and transactions etc.
 - We have already structured.
 
-#### Data model
-
+#### Data model 
 ![alt_text](./images/img_2.png)
 
 Status can be Pending, cancelled, Paid, Refunded or Rejected.
@@ -66,6 +65,149 @@ if (( total_reserved + ${numberOfRoomsToReverse})) <= 110% of total_inventory
 ```
 
 Optimisation: This table be big, so we can only focus on current and some future data ( that is filled up by a job). or database sharding.
+
+
+### Above one not clear with flows, how session management happending, below is example for booking to include the session.
+
+```
+
+-- ----------------------------------------
+-- 📦 BOOKING SYSTEM DATABASE SCHEMA
+-- ----------------------------------------
+
+-- USERS
+CREATE TABLE users (
+    id UUID PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(100),
+    phone VARCHAR(20),
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- BOOKABLE ITEMS (e.g., seats, rooms)
+CREATE TABLE items (
+    id UUID PRIMARY KEY,
+    type VARCHAR(50),
+    name VARCHAR(100),
+    metadata JSONB,
+    is_active BOOLEAN DEFAULT TRUE
+);
+
+-- BOOKING SESSIONS (temporary hold)
+CREATE TABLE booking_sessions (
+    id UUID PRIMARY KEY,
+    user_id UUID REFERENCES users(id),
+    expires_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW(),
+    status VARCHAR(20) DEFAULT 'active',  -- active, expired, completed
+    UNIQUE(user_id, status) WHERE status = 'active'
+);
+
+-- SESSION ITEMS (held items during session)
+CREATE TABLE session_items (
+    id UUID PRIMARY KEY,
+    session_id UUID REFERENCES booking_sessions(id) ON DELETE CASCADE,
+    item_id UUID REFERENCES items(id),
+    UNIQUE(item_id)  -- prevent double-holding
+);
+
+-- BOOKINGS (confirmed after payment)
+CREATE TABLE bookings (
+    id UUID PRIMARY KEY,
+    user_id UUID REFERENCES users(id),
+    session_id UUID REFERENCES booking_sessions(id),
+    status VARCHAR(20) DEFAULT 'confirmed',  -- confirmed, cancelled, failed
+    booked_at TIMESTAMP DEFAULT NOW()
+);
+
+-- BOOKING ITEMS
+CREATE TABLE booking_items (
+    id UUID PRIMARY KEY,
+    booking_id UUID REFERENCES bookings(id) ON DELETE CASCADE,
+    item_id UUID REFERENCES items(id)
+);
+
+-- PAYMENTS
+CREATE TABLE payments (
+    id UUID PRIMARY KEY,
+    booking_id UUID REFERENCES bookings(id),
+    user_id UUID REFERENCES users(id),
+    amount DECIMAL(10, 2),
+    currency VARCHAR(10),
+    payment_status VARCHAR(20),         -- pending, success, failed
+    gateway VARCHAR(50),
+    transaction_ref VARCHAR(255),
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- OPTIONAL: Reverse booking reference
+ALTER TABLE booking_sessions
+ADD COLUMN booking_id UUID UNIQUE,
+ADD FOREIGN KEY (booking_id) REFERENCES bookings(id);
+
+
+-- ----------------------------------------
+-- 🔁 BOOKING FLOW WITH SQL QUERIES
+-- ----------------------------------------
+
+-- 1. START SESSION
+INSERT INTO booking_sessions (id, user_id, expires_at)
+VALUES ('<session_uuid>', '<user_uuid>', NOW() + INTERVAL '10 minutes');
+
+-- 2. HOLD ITEMS
+INSERT INTO session_items (id, session_id, item_id)
+VALUES 
+  ('<session_item_1>', '<session_uuid>', '<item_id_1>'),
+  ('<session_item_2>', '<session_uuid>', '<item_id_2>');
+
+-- 3. (OPTIONAL) EXPIRE OLD SESSIONS (via cron)
+UPDATE booking_sessions
+SET status = 'expired'
+WHERE status = 'active' AND expires_at < NOW();
+
+-- 4. INITIATE PAYMENT
+INSERT INTO payments (
+  id, booking_id, user_id, amount, currency, payment_status, gateway, transaction_ref
+) VALUES (
+  '<payment_id>', NULL, '<user_id>', 100.00, 'USD', 'pending', 'stripe', '<stripe_ref>'
+);
+
+-- 5. ON PAYMENT SUCCESS
+
+-- a. Create booking
+INSERT INTO bookings (id, user_id, session_id, status)
+VALUES ('<booking_id>', '<user_id>', '<session_id>', 'confirmed');
+
+-- b. Link booking to session (optional)
+UPDATE booking_sessions
+SET status = 'completed', booking_id = '<booking_id>'
+WHERE id = '<session_id>';
+
+-- c. Copy held items to booking
+INSERT INTO booking_items (id, booking_id, item_id)
+SELECT
+  gen_random_uuid(), '<booking_id>', item_id
+FROM session_items
+WHERE session_id = '<session_id>';
+
+-- d. Update payment status
+UPDATE payments
+SET booking_id = '<booking_id>', payment_status = 'success'
+WHERE id = '<payment_id>';
+
+-- 6. ON TIMEOUT / PAYMENT FAILURE
+
+-- a. Expire session
+UPDATE booking_sessions
+SET status = 'expired'
+WHERE id = '<session_id>' AND status = 'active';
+
+-- b. Mark payment as failed
+UPDATE payments
+SET payment_status = 'failed'
+WHERE id = '<payment_id>';
+
+```
 
 #### Concurrency Issues
 
