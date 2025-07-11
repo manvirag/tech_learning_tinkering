@@ -82,6 +82,7 @@ Solutions:
 Solutions:
 Visit this hands on repo: https://github.com/manvirag?tab=repositories 
 other solution, status + timeout , redis distributed lock with ttl.
+- for extremely popular events, they use virtual waiting queue. 
 
 1. Pessimistic Locking:
 - Block other transaction when one is happening.
