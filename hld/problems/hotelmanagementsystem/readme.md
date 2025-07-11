@@ -1,4 +1,4 @@
-( this and book is source of truth )
+( this and book is source of truth, https://www.hellointerview.com/learn/system-design/problem-breakdowns/ticketmaster )
 ## Design Hotel management system. 
 Same others similar can be done like Airbnb, flight reservation, movie ticket booking etc.
 
