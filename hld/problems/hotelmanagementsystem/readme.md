@@ -1,4 +1,7 @@
 ( this and book is source of truth, https://www.hellointerview.com/learn/system-design/problem-breakdowns/ticketmaster )
+
+Interesting fact: in book my show crash for cold play it was ~13M concurrent users. 
+
 ## Design Hotel management system. 
 Same others similar can be done like Airbnb, flight reservation, movie ticket booking etc.
 
@@ -79,10 +82,7 @@ Solutions:
 2. The more than one user trying to book the same rooms.
    ![alt_text](./images/img_6.png)
     
-Solutions:
-Visit this hands on repo: https://github.com/manvirag?tab=repositories 
-other solution, status + timeout , redis distributed lock with ttl.
-- for extremely popular events, they use virtual waiting queue. 
+
 
 1. Pessimistic Locking:
 - Block other transaction when one is happening.
@@ -115,6 +115,49 @@ Pros:
 Cons:
 - Still user experience bad and performance , since if we see we are trying concurrent but ending up a only multiple transactions.
 - All databases might not have this feature.
+
+
+4.  Visit this hands on repo: https://github.com/manvirag?tab=repositories 
+   - other solution, status + timeout , redis distributed lock with ttl.
+   - for extremely popular events, they use virtual waiting queue. ( this usually start few minutes before event and also continue at live sales)
+   -  How
+      - on UI people come and they see queue and how many people ahead of them.
+      - once their turns come, they redirect to normal booking page and start processing. ( on backend would be allowing concurrent as per system limits and other would be in queue as FIFO way. ) 
+      - How can we implement this. 
+         - user send request to server as usual
+         - backend server , as of now assume maintain the lag or queue size how -> later ( that is size of sorted set ), it checks if empty and redirect to as usual, else redirec to queue page.
+         - now it will queue api, 
+         - push that userid, timestampe , in redis sorted set. 
+         ```
+            ZADD event_queue:concert_2025 1620000010 user_123
+         ```
+         - 13M -> 30b -> 400MB cool.
+         - also create sessionId with status. ( we can maintain the aof and master-replica etc to handle redis worst case, yes its possilbe in very worst case we can miss few folk, verify rarely, like which are in redis but unable to save in aof, and also in replica.)
+         - session ttl has good number like 1hour, 30-mins and famous show event book very early, so user logout, refresh , new table it will be in queue. 
+         
+         ```
+               HSET session:{session_id} status in_queue
+               HSET session:{session_id} event_id event_id
+               HSET session:{session_id} user_id user_id
+               HSET session:{session_id} created_at timestamp
+               HSET session:{session_id} expires_at (timestamp + TTL)
+         ```
+         - there would be worker received those events, that will pull the some set of user ( as per timestampe , yes possible to pull in logn from sorted set.) from redis and assign some token and also save this in redis and update session status to started from in queue.
+
+         ```
+            HSET session:{session_id} status ready
+            HSET session:{session_id} token booking_token_abc
+            HSET session:{session_id} expires_at (new TTL, e.g., 10 min)
+         ```
+         - and notificy user at their time with timeout, and user redirect to booking page and have ttl for 5-10 mins, they book or drop on basis of it update the session status or delete so that can try again. ( here db status will also be updated, its like normal scene )
+         - interesting things is that ,  we  have limit search let say even if its 1 lakh, its less or if people are enthusiast not timepassing first 2-3 lakh would end up all tickets.  so actualy db operatoin will be less it was only concurrency
+         - once payment done, mark tha session. 
+         - one all seat filled we can clean the data for that event. 
+         - it is done for very popular event. 
+         
+
+
+
 
 
 #### Scaling the system
