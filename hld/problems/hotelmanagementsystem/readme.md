@@ -1,4 +1,4 @@
-( escali -> this --> book is source of truth, 
+this --> book is source of truth, 
 
 Interesting fact: in book my show crash for cold play it was ~13M concurrent users. 
 
