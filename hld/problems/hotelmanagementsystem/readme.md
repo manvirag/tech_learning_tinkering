@@ -1,3 +1,4 @@
+( this and book is source of truth )
 ## Design Hotel management system. 
 Same others similar can be done like Airbnb, flight reservation, movie ticket booking etc.
 
