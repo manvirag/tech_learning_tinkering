@@ -1,4 +1,4 @@
-( this and book is source of truth, https://www.hellointerview.com/learn/system-design/problem-breakdowns/ticketmaster )
+this --> book is source of truth, 
 
 Interesting fact: in book my show crash for cold play it was ~13M concurrent users. 
 
@@ -202,6 +202,7 @@ Solution: Use distributed transaction
 
 #### References
 1. System design alex xu volume 2.
+2. https://www.hellointerview.com/learn/system-design/problem-breakdowns/ticketmaster )
 
 
 #### Latest Summary: 
