@@ -1,3 +1,5 @@
+Handson two repo -> ot and crdt
+
 ### Functional Requirement
 1. Document collaboration: Multiple users should be able to edit a document simultaneously ( assume it is text based only). Written of one user should be seen dy other user immediately.
 2. Conflict resolution: The system should push the edits done by one user to all the other collaborators. The system should also resolve conflicts between users if they’re editing the same portion of the document. So at the end user should be able to see same data.
