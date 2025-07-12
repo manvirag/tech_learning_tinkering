@@ -105,7 +105,8 @@ Check the googl-drive-mcp, bascially from client we will chunk the local big fil
    - sync communication -> retry with exponential backofff. + send to kafka there will be reconsillation that will take care of it but will have hit of eventual consistency. 
    - s3 replicated to multiple region.
    - db -> master replica and also sharded .
-9. what about the answer of large doc upload very frequently ? 
+9. what about the answer of large doc upload very frequently ? or big excel etc 
+   - hmm, not 100% sure, but mostly via OT, its just series of operations, we can batch and then update it ( event sorucing visit google doc) or you explicity save it and while doing so user doesn't explicity do save since its collaborative and eventually save it. with that collaboratife feel we can handle this. some file there is not possile this we are arleady doing the chunking upload only. basically user client on doc/excel in google drive, it will redirect to their specific app or native app -> they change their native format and do collaboratin and reduce save frequency. 
 
 
 Latest Flow: (assume taking second way)
