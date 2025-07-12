@@ -80,7 +80,7 @@ Check the googl-drive-mcp, bascially from client we will chunk the local big fil
       - each new version will have previous version.
       ![](./images/image.png)
 3. Metadata DB:
-   1.  ![](/images/Screenshot%202025-07-12%20at%202.21.54%20PM.png)
+   1.  ![](./images/Screenshot%202025-07-12%20at%202.21.54%20PM.png)
 5. High consistency:
    1. User shouldn't see different version on different system.
    2. We want strong consistency , then we can use the sql database for metadata.  Instead of nosql which are based on eventual consistency. Now all metadata update will be done by transactions.
