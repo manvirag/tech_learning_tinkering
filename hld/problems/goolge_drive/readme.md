@@ -16,7 +16,7 @@ Design the google-drive: Its kinda same of youtube once. But here we don't need 
 ### Capacity Estimations
 1. Assume 50M sign up and upto 10M DAU.
 2. User gets 10 GB free space.
-3. User upload 2 files perday. The average file size is 500KB.
+3. User upload 2 files perday. The average file size is 500Kb.
 4. 1:1 read to write ratio.
 5. Total storage allocated = 50 M * 10GB => 500 * 10^12 -> 500 PB
 6. QPS  = 10M * 2 / 10^5 = 200 request/second.
