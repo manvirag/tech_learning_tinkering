@@ -31,7 +31,9 @@ Same others similar can be done like Airbnb, flight reservation, movie ticket bo
 
 On a high level since we are not considering the search with multiple filter or by name . so it would be like of normal micro servers and database.
 
-#### Api design
+#### Api design 
+
+Note: Most of the api are correct, last one reservationId ( take it as idempotencyKey because we will generate different reservationId) you can assume its like for each checkout client generate token with help of server for each booking.
 
 ![alt_text](./images/img_1.png)
 #### Database
@@ -67,147 +69,16 @@ if (( total_reserved + ${numberOfRoomsToReverse})) <= 110% of total_inventory
 Optimisation: This table be big, so we can only focus on current and some future data ( that is filled up by a job). or database sharding.
 
 
-### Above one not clear with flows, how session management happending, below is example for booking to include the session.
+#### Above db scheme, lets assume we have one more table reservation_session ( basically a unique id for each booking try and that will be send as idempotency key at time of actual booking, but bookingid will be different see below). Also it has not timer, now moder solution uses few minutes timer for lock that in case of less traffic
 
 ```
+reservation_session -> id(send to client initially), reservationid (initially null, mean not used this session yet), sessionId (general login sesoin), createdTime, userId, expiration ( user redirect to starting let say 30mins)
 
--- ----------------------------------------
--- 📦 BOOKING SYSTEM DATABASE SCHEMA
--- ----------------------------------------
+reservation -> id (not given by UI), hotelid, roomtype, start, end, status, expirationTime (10 mins)
 
--- USERS
-CREATE TABLE users (
-    id UUID PRIMARY KEY,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    name VARCHAR(100),
-    phone VARCHAR(20),
-    created_at TIMESTAMP DEFAULT NOW()
-);
-
--- BOOKABLE ITEMS (e.g., seats, rooms)
-CREATE TABLE items (
-    id UUID PRIMARY KEY,
-    type VARCHAR(50),
-    name VARCHAR(100),
-    metadata JSONB,
-    is_active BOOLEAN DEFAULT TRUE
-);
-
--- BOOKING SESSIONS (temporary hold)
-CREATE TABLE booking_sessions (
-    id UUID PRIMARY KEY,
-    user_id UUID REFERENCES users(id),
-    expires_at TIMESTAMP NOT NULL,
-    created_at TIMESTAMP DEFAULT NOW(),
-    status VARCHAR(20) DEFAULT 'active',  -- active, expired, completed
-    UNIQUE(user_id, status) WHERE status = 'active'
-);
-
--- SESSION ITEMS (held items during session)
-CREATE TABLE session_items (
-    id UUID PRIMARY KEY,
-    session_id UUID REFERENCES booking_sessions(id) ON DELETE CASCADE,
-    item_id UUID REFERENCES items(id),
-    UNIQUE(item_id)  -- prevent double-holding
-);
-
--- BOOKINGS (confirmed after payment)
-CREATE TABLE bookings (
-    id UUID PRIMARY KEY,
-    user_id UUID REFERENCES users(id),
-    session_id UUID REFERENCES booking_sessions(id),
-    status VARCHAR(20) DEFAULT 'confirmed',  -- confirmed, cancelled, failed
-    booked_at TIMESTAMP DEFAULT NOW()
-);
-
--- BOOKING ITEMS
-CREATE TABLE booking_items (
-    id UUID PRIMARY KEY,
-    booking_id UUID REFERENCES bookings(id) ON DELETE CASCADE,
-    item_id UUID REFERENCES items(id)
-);
-
--- PAYMENTS
-CREATE TABLE payments (
-    id UUID PRIMARY KEY,
-    booking_id UUID REFERENCES bookings(id),
-    user_id UUID REFERENCES users(id),
-    amount DECIMAL(10, 2),
-    currency VARCHAR(10),
-    payment_status VARCHAR(20),         -- pending, success, failed
-    gateway VARCHAR(50),
-    transaction_ref VARCHAR(255),
-    created_at TIMESTAMP DEFAULT NOW()
-);
-
--- OPTIONAL: Reverse booking reference
-ALTER TABLE booking_sessions
-ADD COLUMN booking_id UUID UNIQUE,
-ADD FOREIGN KEY (booking_id) REFERENCES bookings(id);
-
-
--- ----------------------------------------
--- 🔁 BOOKING FLOW WITH SQL QUERIES
--- ----------------------------------------
-
--- 1. START SESSION
-INSERT INTO booking_sessions (id, user_id, expires_at)
-VALUES ('<session_uuid>', '<user_uuid>', NOW() + INTERVAL '10 minutes');
-
--- 2. HOLD ITEMS
-INSERT INTO session_items (id, session_id, item_id)
-VALUES 
-  ('<session_item_1>', '<session_uuid>', '<item_id_1>'),
-  ('<session_item_2>', '<session_uuid>', '<item_id_2>');
-
--- 3. (OPTIONAL) EXPIRE OLD SESSIONS (via cron)
-UPDATE booking_sessions
-SET status = 'expired'
-WHERE status = 'active' AND expires_at < NOW();
-
--- 4. INITIATE PAYMENT
-INSERT INTO payments (
-  id, booking_id, user_id, amount, currency, payment_status, gateway, transaction_ref
-) VALUES (
-  '<payment_id>', NULL, '<user_id>', 100.00, 'USD', 'pending', 'stripe', '<stripe_ref>'
-);
-
--- 5. ON PAYMENT SUCCESS
-
--- a. Create booking
-INSERT INTO bookings (id, user_id, session_id, status)
-VALUES ('<booking_id>', '<user_id>', '<session_id>', 'confirmed');
-
--- b. Link booking to session (optional)
-UPDATE booking_sessions
-SET status = 'completed', booking_id = '<booking_id>'
-WHERE id = '<session_id>';
-
--- c. Copy held items to booking
-INSERT INTO booking_items (id, booking_id, item_id)
-SELECT
-  gen_random_uuid(), '<booking_id>', item_id
-FROM session_items
-WHERE session_id = '<session_id>';
-
--- d. Update payment status
-UPDATE payments
-SET booking_id = '<booking_id>', payment_status = 'success'
-WHERE id = '<payment_id>';
-
--- 6. ON TIMEOUT / PAYMENT FAILURE
-
--- a. Expire session
-UPDATE booking_sessions
-SET status = 'expired'
-WHERE id = '<session_id>' AND status = 'active';
-
--- b. Mark payment as failed
-UPDATE payments
-SET payment_status = 'failed'
-WHERE id = '<payment_id>';
-
+payment -> id, reservationId ( actual ), price, creationtime, status ..... 
 ```
+
 
 #### Concurrency Issues
 
@@ -217,7 +88,7 @@ WHERE id = '<payment_id>';
     
 Solutions:
 1. Client side checking -> disable button after once clicked . ( Not perfect solution ).
-2. Make api idempotent -> user reservation key or any other global unique key as a idempotency key and validate with it.
+2. Make api idempotent -> user reservation session key as a idempotency key and validate with it.
 
 
 
@@ -226,7 +97,7 @@ Solutions:
     
 
 
-1. Pessimistic Locking:
+1. Pessimistic Locking: 
 - Block other transaction when one is happening.
 
 Pros:
@@ -259,7 +130,7 @@ Cons:
 - All databases might not have this feature.
 
 
-4.  Visit this hands on repo: https://github.com/manvirag?tab=repositories 
+4.  [IMP MODERN SOLUTION in repo]Visit this hands on repo: https://github.com/manvirag?tab=repositories 
    - other solution, status + timeout , redis distributed lock with ttl.
    - for extremely popular events, they use virtual waiting queue. ( this usually start few minutes before event and also continue at live sales)
    -  How
@@ -333,3 +204,40 @@ Solution: Use distributed transaction
 1. System design alex xu volume 2.
 
 
+#### Latest Summary: 
+
+- Lets assume its MMT 
+- UI 
+   - it showing list of hotel
+   - start to end date
+   - select hotel -> select room type
+   - select count 
+   - enter details 
+   - book the hotel. ( payment can do later , like 2 days before start date )
+   - hotel is booked
+   - payment pending status. 
+-  Backend
+   - db -> hotel, hotel_room_type, room_inventory (date, total, reserved), booking, booking_session.
+   - search hotel with date range area etc.
+   - show list 
+   - client hotel for booking
+   - select room type, and count.
+   - assume there is button for start booking
+   - click -> create booking_session with reservationId as null now.
+   - client got the unique id for this checkout. 
+   - user enter email and other details.
+   - click on book and start payment button.
+   - now -> backend 
+      - create reservation entry with timer of 10 minutes.
+      - upate that booking session.
+      - lock the room for time range and reduce them for other users.
+      - return the reservationId ( actual )
+   - user seelct up paymentn way and done payment with the reservationId.
+      - out backend received payment status with reversation id.
+      - we mark it as success or fail. 
+   - user after payment redirect to success page or
+   - redirect to again hotel searches result.
+   - it will retry to checkout and generate new token.
+   - user click twice we will first see is this token taken or not if yes return error. 
+   - there might be possibility that it is taken and booking failed.
+   
