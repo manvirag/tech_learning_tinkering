@@ -1,5 +1,6 @@
-### This is source of truth, but TBU 
+### This is source of truth, repo goolge-drive-mvp and book
 Design the google-drive: Its kinda same of youtube once. But here we don't need transcoding but yes need chunking.
+
 
 ### Functional Requirements
 1. Add and download files. 
