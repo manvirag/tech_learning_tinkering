@@ -1,4 +1,5 @@
 ###  source of truth -> book , repo goolge-drive-mvp and This is
+
 Design the google-drive: Its kinda same of youtube once. But here we don't need transcoding but yes need chunking.
 
 
@@ -124,6 +125,10 @@ References:
 1. https://www.linkedin.com/pulse/google-drive-design-saral-saxena/
 2. https://www.pankajtanwar.in/blog/system-design-how-to-design-google-drive-dropbox-a-cloud-file-storage-service
 3. Alex xu volume 1.
+4. Mostly people preferred client side chunking ( there is concept of presigned url to allow client safely to upload to s3 directly.) -> https://www.pankajtanwar.in/blog/system-design-how-to-design-google-drive-dropbox-a-cloud-file-storage-service , this also support this : https://www.hellointerview.com/learn/system-design/problem-breakdowns/dropbox#1-users-should-be-able-to-upload-a-file-from-any-device 
+5. in case of fialure at between client chunk upload and send meta data reqeuwts api -> use s3 notification 100 % gaurantee.
+6. another solution which seems more better is directly do the things by client whatever is block server doing ad remove it, it will save the twice netwrok bandwidth and direct to s3 and after that it will send the meta , in case of upload also upload and send meta to get upload. https://www.hellointerview.com/learn/system-design/problem-breakdowns/dropbox#1-users-should-be-able-to-upload-a-file-from-any-device 
+6. use cdn to optimize download
 
 Curious Doubts [ WIP ]:
 
