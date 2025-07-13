@@ -50,7 +50,7 @@ This is done on basic of token concept or token based authentication . see below
    - base64 of header and payload separately. 
    - create its signature with unique key and append that also.
    - so if someone have jwt token it can get that user details, 
-   - but can do much with signature need to be done with uniqeu id. 
+   - but can't do much with signature need to be done with uniqeu id. 
    - how to save ths unique id ?
       - it is save in secret of k8s and server only use to do thse thing. rotate the key for safety
 - How we verify it.
@@ -73,7 +73,7 @@ This is done on basic of token concept or token based authentication . see below
 
 Example: login with twitter, login with github, login with google
 
-OAuth is used to allow third-party applications to securely access a user’s data or perform actions on their behalf without exposing the user’s password; common use cases include enabling “Sign in with Google/Facebook/GitHub” buttons on websites or apps, granting apps permission to access user resources like email, calendars, or files from cloud services
+OAuth (a protocol for auth, widely used ) is used to allow third-party applications to securely access a user’s data or perform actions on their behalf without exposing the user’s password; common use cases include enabling “Sign in with Google/Facebook/GitHub” buttons on websites or apps, granting apps permission to access user resources like email, calendars, or files from cloud services
 
 
 **Flow:**
