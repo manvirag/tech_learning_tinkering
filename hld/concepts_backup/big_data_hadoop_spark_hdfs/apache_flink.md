@@ -136,6 +136,71 @@ productViews.addSink(new ElasticsearchSink<>(config, indexer));
 ```
 This example processes a stream of user events, calculates product views in 5-minute windows, and sends the results to Elasticsearch for visualization.
 
+Sliding window with sliding time interval
+
+```
+
+import org.apache.flink.api.common.eventtime.WatermarkStrategy;
+import org.apache.flink.api.common.serialization.SimpleStringSchema;
+import org.apache.flink.api.java.tuple.Tuple2;
+import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.windowing.time.Time;
+import org.apache.flink.streaming.api.windowing.assigners.SlidingEventTimeWindows;
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
+import org.apache.flink.util.OutputTag;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.time.Duration;
+import java.util.Properties;
+
+public class SlidingWindowClickCount {
+
+    public static class ClickEvent {
+        public String userId;
+        public long timestamp;
+        public String page;
+        public String action;
+    }
+
+    public static void main(String[] args) throws Exception {
+        final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+
+        Properties kafkaProps = new Properties();
+        kafkaProps.setProperty("bootstrap.servers", "localhost:9092");
+        kafkaProps.setProperty("group.id", "click-counter");
+
+        FlinkKafkaConsumer<String> consumer = new FlinkKafkaConsumer<>("user-clicks", new SimpleStringSchema(), kafkaProps);
+        consumer.assignTimestampsAndWatermarks(
+            WatermarkStrategy
+                .<String>forBoundedOutOfOrderness(Duration.ofSeconds(5))
+                .withTimestampAssigner((eventStr, timestamp) -> {
+                    try {
+                        ClickEvent event = new ObjectMapper().readValue(eventStr, ClickEvent.class);
+                        return event.timestamp;
+                    } catch (Exception e) {
+                        return 0L;
+                    }
+                })
+        );
+
+        SingleOutputStreamOperator<String> result = env
+            .addSource(consumer)
+            .map(value -> new ObjectMapper().readValue(value, ClickEvent.class))
+            .keyBy(event -> event.userId)
+            .window(SlidingEventTimeWindows.of(Time.minutes(1), Time.seconds(10)))
+            .aggregate(new ClickCountAggregator(), new ClickWindowFunction())
+            .map(new ObjectMapper()::writeValueAsString);
+
+        FlinkKafkaProducer<String> producer = new FlinkKafkaProducer<>("user-click-counts", new SimpleStringSchema(), kafkaProps);
+        result.addSink(producer);
+
+        env.execute("Sliding Window Click Counter");
+    }
+}
+
+```
 
 ## Fraud Detection
 
