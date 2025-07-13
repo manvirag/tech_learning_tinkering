@@ -1,4 +1,4 @@
-## How does different type of authentication works ?
+## How does different type of authentication works ? ( this is source of truth ) 
 
 ### Different types of authentications
 
