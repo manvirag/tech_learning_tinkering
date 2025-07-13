@@ -1,4 +1,4 @@
-### Functional Requirements
+### Functional Requirements ( book is source of truth ) 
 
 1. Accurately limit to excessive requests.
 2. Distributed rate limit: Can be shared across multiple servers and processes.
