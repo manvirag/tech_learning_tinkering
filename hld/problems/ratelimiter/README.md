@@ -1,4 +1,4 @@
-### Functional Requirements ( book is source of truth, then this its not covering scaling and race conditin. ) 
+### Functional Requirements ( book is source of truth, then this its not covering scaling and race conditin. its just a separated redis ) 
 
 1. Accurately limit to excessive requests.
 2. Distributed rate limit: Can be shared across multiple servers and processes.
