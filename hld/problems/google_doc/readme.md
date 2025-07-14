@@ -1999,7 +1999,10 @@ so o1 -> "azbydc" // conflicthing at o1, so it see ohh y is greater than mean in
   - what if user click twice or what about idempotency 
     - as usual resolving with id. 
 
-#### High level diagram and flow:  
+#### High level diagram and flow: 
+
+![](./crdt_doc.png)
+
 #### How to implement CRDT ( specially this one LSEQ ) 
 The name LSEQ comes from the idea behind the algorithm:
 - L stands for "List" — it’s about ordering elements in a list (like characters in a document).
