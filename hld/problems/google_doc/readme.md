@@ -1995,13 +1995,11 @@ so o1 -> "azbydc" // conflicthing at o1, so it see ohh y is greater than mean in
   ![alt_text](./images/img_13.png)
 - Disadvantages -> 
   - tree can change in array, but some advance algorithm has solved this also by balancing tree.
-  - Possible to interleave in very worst case: can use more complex algo to solve this as shown above.
+  - Possible to interleave in very worst case: can use more complex algo to solve this as shown above. In previous case OT had to involve in the cases like insert both but hat different index, then the greater one had to increase. Now that has resolve, but the cases when user try to insert at same index can cause interleave, in that case we sort with alternate like below shown. 
   - what if user click twice or what about idempotency 
-    - UUID: -> overhead on client each operation/character has to maintain its unique id.
-    - version vector:  We have solved with this check ,check the attached hands on.
-- Flow: 
-	- a
+    - as usual resolving with id. 
 
+#### High level diagram and flow:  
 #### How to implement CRDT ( specially this one LSEQ ) 
 The name LSEQ comes from the idea behind the algorithm:
 - L stands for "List" — it’s about ordering elements in a list (like characters in a document).
