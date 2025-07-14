@@ -1976,9 +1976,9 @@ so o1 -> "azbydc" // conflicthing at o1, so it see ohh y is greater than mean in
 
 
 
-........................................................................................................
+.......................................................................
 
-#### Conflict-free Replicated Data Type (CRDT)
+#### Solution 2: Conflict-free Replicated Data Type (CRDT)
 
 - The Conflict-free Replicated Data Type (CRDT) was developed in an effort to improve OT.
 - This solve multi peer at more extends as it doesn't have conflicts. And has low latency as compare to OT since no centralisd server and no need to resolved conflict as much in OT.
@@ -1987,7 +1987,7 @@ so o1 -> "azbydc" // conflicthing at o1, so it see ohh y is greater than mean in
   ![alt_text](./images/img_17.png)
 - In this each node and client maintain a local data structure in tree shape what actually denoting the document. And its dfs is actually the document in order. For e.g. below is how the sandwich is written in it. It has some weight in edge.
 ![alt_text](./images/img_10.png)
-- Instead of instead here character or each node denoted as address for e.g. the address of d in above image will be [3.7.7] and ***it must be unique and immutable in whole tree***. 
+- Instead of index, here character or each node denoted as address for e.g. the address of d in above image will be [3.7.7] and ***it must be unique and immutable in whole tree***. 
 - lets see how we can insert some character between or suppose we have 2 operations.
   ![alt_text](./images/img_11.png)
 - Operations: Now these operations can de done independently or concurrently no need to have centralised server.
@@ -1995,16 +1995,12 @@ so o1 -> "azbydc" // conflicthing at o1, so it see ohh y is greater than mean in
   ![alt_text](./images/img_13.png)
 - Disadvantages -> 
   - tree can change in array, but some advance algorithm has solved this also by balancing tree.
-  - what if two user insert character with same address (though it has less probability) -> Yes this is case is tough to handle in this case , the operations will be interleaved. 
+  - Possible to interleave in very worst case: can use more complex algo to solve this as shown above.
   - what if user click twice or what about idempotency 
     - UUID: -> overhead on client each operation/character has to maintain its unique id.
-    - version vector:  ? tired take this up separately [link](https://readmedium.com/en/https:/distributedsystemsmadeeasy.medium.com/version-vectors-a9a69e4c34f0)
-- Flow: nodes maintain its crdt and similarly client, nodes received operation concurrently then do operations and broadcast to all client and all nodes do this ( also persist in db ) and nodes asyncly update them self with gossip protocol.  
-  ![alt_text](./images/img_16.png)
-![alt_text](./images/img_14.png)
-![alt_text](./images/img_6.png)
-
-  video later: https://www.youtube.com/watch?v=B5NULPSiOGw
+    - version vector:  We have solved with this check ,check the attached hands on.
+- Flow: 
+	- a
 
 #### How to implement CRDT ( specially this one LSEQ ) 
 The name LSEQ comes from the idea behind the algorithm:
@@ -2017,7 +2013,7 @@ This is how we can imagine:
 doc := &Document{
 		chars: []CharItem{
 			{'h', PosID{1}, "init", 0},
-			{'e', PosID{2}, "init", 0},
+			{'e'nodes, PosID{2}, "init", 0},
 			{'l', PosID{3}, "init", 0},
 			{'l', PosID{4}, "init", 0},
 			{'o', PosID{5}, "init", 0},
