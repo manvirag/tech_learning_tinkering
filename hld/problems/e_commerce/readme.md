@@ -1,4 +1,4 @@
-Design the flipkart/amazon
+Design the flipkart/amazon ( this is source of truth, tbu )
 
 ### Functional Requirements
 
