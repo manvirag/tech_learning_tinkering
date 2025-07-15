@@ -79,7 +79,7 @@ Db schema:
   - id, videoId, roomId, video_url, createdtime, createdby...
 
 
-### High level design
+### High level design ( believe 100% until creating mvp )
 
 In case of video call, User 1 continuously sends video chunks to User 2, and vice versa. Since some minor data loss is acceptable in video streaming, UDP is used because it is fast and provides low latency, which is essential for smooth video processing.
 
@@ -104,7 +104,7 @@ Flow of two client usually:
 ![](./webrtc_protocol_flow.png)
 
 
-High Level Design and deep dive: 
+High Level Design and deep dive : 
 
 ![](./video_call.png)
 
