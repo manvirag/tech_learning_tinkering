@@ -84,6 +84,7 @@ Data Modelling:
 ![alt text](image-2.png)
 
 Deep Dive:
+![](./stock_exhange_main.png)
 1. Low latency and performance ( Modern system )
     - By putting all the components in a single server.
     - Doing Less on the critical path. 
