@@ -79,7 +79,7 @@ Db schema:
   - id, videoId, roomId, video_url, createdtime, createdby...
 
 
-### High level design
+### High level design ( believe 100% until creating mvp )
 
 In case of video call, User 1 continuously sends video chunks to User 2, and vice versa. Since some minor data loss is acceptable in video streaming, UDP is used because it is fast and provides low latency, which is essential for smooth video processing.
 
@@ -104,7 +104,7 @@ Flow of two client usually:
 ![](./webrtc_protocol_flow.png)
 
 
-High Level Design and deep dive: 
+High Level Design and deep dive : 
 
 ![](./video_call.png)
 
@@ -113,7 +113,7 @@ High Level Design and deep dive:
   - this is an api doc : https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API
   - it provide the interface and we have to fill that
   - you can assume it like it need a stun ,turn and signalling server and once we provider this and its implementation to ti then its start working. More can be deep dive once start developing.
-- if so how we are doing group call ?
+- if so how we are doing group call , its similar just transferring 1:1 -> 1:m
 
 
 
