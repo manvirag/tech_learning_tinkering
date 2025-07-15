@@ -113,7 +113,7 @@ High Level Design and deep dive:
   - this is an api doc : https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API
   - it provide the interface and we have to fill that
   - you can assume it like it need a stun ,turn and signalling server and once we provider this and its implementation to ti then its start working. More can be deep dive once start developing.
-- if so how we are doing group call ?
+- if so how we are doing group call , its similar just transferring 1:1 -> 1:m
 
 
 
