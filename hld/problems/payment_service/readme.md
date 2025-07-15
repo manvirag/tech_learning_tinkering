@@ -1,4 +1,4 @@
-Design the Payment system.
+Design the Payment system. ( book and this ), but question is why need 2 service
 
 ### 1. Functional Requirements:
 
