@@ -185,6 +185,8 @@ Above user click and another case both will be handled in this way.
 
 ### Reference:
 
-1. https://blog.bytebytego.com/p/payment-system
-2. Alex xu system design volume 2.
-3. https://www.youtube.com/watch?v=olfaBgJrUBI
+1. https://newsletter.pragmaticengineer.com/p/designing-a-payment-system
+2. https://blog.bytebytego.com/p/payment-system
+3. Alex xu system design volume 2.
+4. https://www.youtube.com/watch?v=olfaBgJrUBI
+5. https://www.designgurus.io/answers/detail/designing-payment-processing-system-for-e-commerce
