@@ -49,7 +49,7 @@ In this, we will highlight the second point because that’s a significant contr
 **Redis uses the same approach of implementing a single thread and event loop like [node.js](https://nodejs.org/en/docs/guides/event-loop-timers-and-nexttick/). Check Js File**.  **Redis accepts TCP connections in an async manner, then handles each accepted connection in the event loop**
 
 ### Different Ways of deployment with their trade-off.
-
+https://medium.com/codeboulevard/redis-deployment-types-replication-cluster-sentinel-fb23fa8ca523
 [https://architecturenotes.co/redis/](https://architecturenotes.co/redis/)
 
 1. Single Redis Instance
