@@ -181,6 +181,74 @@ Ready mate tools and implementation and arch:
 ![alt text](image-7.png)
 ![alt text](image-14.png)
 
+
+Code for doing kappa in one system 
+
+```
+
+import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.streams.*;
+import org.apache.kafka.streams.kstream.*;
+import java.time.Duration;
+
+public class LikesAggregator {
+    public static void main(String[] args) {
+        Properties props = new Properties();
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "likes-aggregator");
+        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+        props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+
+        StreamsBuilder builder = new StreamsBuilder();
+
+        // 1. Consume Like events from Kafka
+        KStream<String, String> likes = builder.stream("likes_topic");
+
+        // 2. Map TweetId as key
+        KStream<String, String> likesByTweet = likes
+            .selectKey((key, value) -> extractTweetId(value)); // custom fn
+
+        // --- Real-time metric: 5-min sliding window ---
+        KTable<Windowed<String>, Long> fiveMinCounts = likesByTweet
+            .groupByKey()
+            .windowedBy(TimeWindows.ofSizeWithNoGrace(Duration.ofMinutes(5))
+                                   .advanceBy(Duration.ofMinutes(1))) // sliding
+            .count();
+
+        fiveMinCounts.toStream()
+            .map((windowedKey, count) -> KeyValue.pair(
+                windowedKey.key(),
+                "5min_window=" + windowedKey.window().startTime() + ", count=" + count
+            ))
+            .to("likes_5min_metrics", Produced.with(Serdes.String(), Serdes.String()));
+
+        // --- Daily metric: 24h tumbling window ---
+        KTable<Windowed<String>, Long> dailyCounts = likesByTweet
+            .groupByKey()
+            .windowedBy(TimeWindows.ofSizeWithNoGrace(Duration.ofHours(24))) // tumbling
+            .count();
+
+        dailyCounts.toStream()
+            .map((windowedKey, count) -> KeyValue.pair(
+                windowedKey.key(),
+                "day=" + windowedKey.window().startTime() + ", count=" + count
+            ))
+            .to("likes_daily_metrics", Produced.with(Serdes.String(), Serdes.String()));
+
+        // 3. Build & start streaming app
+        KafkaStreams streams = new KafkaStreams(builder.build(), props);
+        streams.start();
+    }
+
+    // Dummy JSON parser for TweetId
+    private static String extractTweetId(String jsonValue) {
+        // e.g., {"tweet_id":"123","user_id":"456","event":"like"}
+        return jsonValue.split("\"tweet_id\":\"")[1].split("\"")[0];
+    }
+}
+
+```
+
 Real World Kappa Example: https://www.uber.com/en-IN/blog/kafka-tiered-storage/
 here also:
 https://readmedium.com/kappa-architecture-is-mainstream-replacing-lambda-8b3abc93d718
