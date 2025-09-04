@@ -120,6 +120,8 @@ About Hadoop , HDFS and map reduce and batch processing.
 ***
 
 Before directly jumping to this let first understand two data processing paradigm
+https://pathway.com/blog/exploring-kappa-architecture-with-pathway/
+
 ![alt text](image-5.png)
 
 1. Batch(offline): 
