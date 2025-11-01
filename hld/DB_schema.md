@@ -23,6 +23,7 @@ Database Schema: ( not sure order , just writing which i found )
 6. The Data Model Resource Book, Vol. 1: A Library of Universal Data Models for All Enterprises
 7. The Data Model Resource Book, Vol. 2: A Library of Data Models for Specific Industries
 
+https://leetcode.com/discuss/post/836689/database-design-interview-questions-syst-o07y/
 
 Decision: 
 - for model thinking to read first PATTERNS OF DATA MODELING MICHAEL BLAHA ( since i know bit of basics )
