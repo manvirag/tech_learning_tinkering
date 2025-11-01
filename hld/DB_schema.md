@@ -23,4 +23,11 @@ Database Schema: ( not sure order , just writing which i found )
 6. The Data Model Resource Book, Vol. 1: A Library of Universal Data Models for All Enterprises
 7. The Data Model Resource Book, Vol. 2: A Library of Data Models for Specific Industries
 
+
+Decision: 
+- for model thinking to read first PATTERNS OF DATA MODELING MICHAEL BLAHA ( since i know bit of basics )
+- this is also good for modeling -> Enterprise Model Patterns. David C. Hay This is a beast of a book, but has some great patterns.
+- different model for different enterprise:  The Data Model Resource Book, Vol. 1: A Library of Universal Data Models for All Enterprise
+- antipattern in sql: SQL antipattern.
+- this one looks form basic specially for mysql: Database Design for Mere Mortals®: 25th Anniversary Edition
 -> https://github.com/sujeet-agrahari/awesome-database-design 
