@@ -149,7 +149,13 @@ Decision:
 
 ### DB Schema Designing Template ( specially modelling ) 
 
-- Thing on high level , how would you divide in microservice architecture. basically what are the flows and what are the component in them. For e.g. in rental car -> its user , car, resevation , payment . On very high level. 
+- Find very high level and major entities. Thinking ->  how would you divide in microservice architecture. basically what are the flows and what are the component in them. For e.g. in rental car -> its user , car, resevation , payment . [text](https://www.red-gate.com/blog/a-data-model-for-an-online-musical-equipment-shop)
 - Then write only big entities. Like user, reservation etc. 
 - Then after that deepdive into each bit entity like user. 
     - check with help of given or asking, what are the things related to users. 
+- divide into 1:m, 1:1, m:m 
+- in case of 1:m -> m will have foreignn key of 1 
+- in case of m:m -> create another table so that it can be break down into 1:m and m:1, that table contain the primary key of both tables. 
+- create other entities, based on this principle. 
+- later on denormalise if require for efficiency. 
+- Learn about different product and their scheme with above red-gate.com for all mentioned above, red-gate have all those.  
