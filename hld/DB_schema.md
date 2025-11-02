@@ -136,4 +136,15 @@ Decision:
 - different model for different enterprise:  The Data Model Resource Book, Vol. 1: A Library of Universal Data Models for All Enterprise
 - antipattern in sql: SQL antipattern.
 - this one looks form basic specially for mysql: Database Design for Mere Mortals®: 25th Anniversary Edition
--> https://github.com/sujeet-agrahari/awesome-database-design 
+-> https://github.com/sujeet-agrahari/awesome-database-design
+
+
+
+
+
+
+
+
+
+
+### DB Schema Designing Template ( specially modelling ) 
