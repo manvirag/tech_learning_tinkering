@@ -148,3 +148,8 @@ Decision:
 
 
 ### DB Schema Designing Template ( specially modelling ) 
+
+- Thing on high level , how would you divide in microservice architecture. basically what are the flows and what are the component in them. For e.g. in rental car -> its user , car, resevation , payment . On very high level. 
+- Then write only big entities. Like user, reservation etc. 
+- Then after that deepdive into each bit entity like user. 
+    - check with help of given or asking, what are the things related to users. 
