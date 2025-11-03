@@ -156,6 +156,16 @@ Decision:
 - divide into 1:m, 1:1, m:m 
 - in case of 1:m -> m will have foreignn key of 1 
 - in case of m:m -> create another table so that it can be break down into 1:m and m:1, that table contain the primary key of both tables. 
-- create other entities, based on this principle. 
+- we can first write all entitities, write their Id and foreign key , then later populate attributes.
 - later on denormalise if require for efficiency. 
 - Learn about different product and their scheme with above red-gate.com for all mentioned above, red-gate have all those.  
+
+
+
+- There are few pattern which we can remember , one like 1:m, m:m, -> that is already done. 
+- Normation -> different normalization. 
+- Also denormation in case of efficiency. 
+- whenever there is different type of particular entity -> we can have 
+    - one table for particular type, for e.g. eventType. productType
+    - one table for actual entity. event, product -> that contain actual data. 
+- each table can have their own unique Id , and foreign key to others table uniqueId. 
