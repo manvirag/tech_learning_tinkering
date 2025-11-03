@@ -30,6 +30,8 @@ Search Vertablo, they have a lot of case studies of Database Schema Design. I kn
 Example Link -> https://vertabelo.com/blog/earn-money-with-unused-stuff-a-sharing-economy-data-model/
 
 A SaaS Subscription Data Model
+managing-roles-and-statuses-in-a-system
+how-to-store-authentication-data-in-a-database-part-1
 A Data Model for an Online Musical Equipment Shop
 A Data Model for a Wine Store
 A Peer-to-Peer Lending Platform Data Model
@@ -153,12 +155,16 @@ Decision:
 - Then write only big entities. Like user, reservation etc. 
 - Then after that deepdive into each bit entity like user. 
     - check with help of given or asking, what are the things related to users. 
+    - find the small surrounding of that event like star.
+    - find the attribute , which can be changes to new tables.
 - divide into 1:m, 1:1, m:m 
 - in case of 1:m -> m will have foreignn key of 1 
 - in case of m:m -> create another table so that it can be break down into 1:m and m:1, that table contain the primary key of both tables. 
+    - like employee, role and employee_role tables
 - we can first write all entitities, write their Id and foreign key , then later populate attributes.
 - later on denormalise if require for efficiency. 
 - Learn about different product and their scheme with above red-gate.com for all mentioned above, red-gate have all those.  
+    - or better to learn about different type or part or feature of system design, different type of business like authentication, subscriptionbased, payment
 
 
 
@@ -169,3 +175,4 @@ Decision:
     - one table for particular type, for e.g. eventType. productType
     - one table for actual entity. event, product -> that contain actual data. 
 - each table can have their own unique Id , and foreign key to others table uniqueId. 
+- for attribute if we have multiple values -> see its possible to do in enum , else better to create another table.
