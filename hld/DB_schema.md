@@ -165,6 +165,7 @@ Decision:
 - later on denormalise if require for efficiency. 
 - Learn about different product and their scheme with above red-gate.com for all mentioned above, red-gate have all those.  
     - or better to learn about different type or part or feature of system design, different type of business like authentication, subscriptionbased, payment
+    - like payment -> it can have reservation, invoice, contract, payment etc. 
 
 
 
