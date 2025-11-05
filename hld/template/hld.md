@@ -75,6 +75,8 @@
     - write the structure, fields -> default -> id, createdtime, updatedtime. createdby, updatedby, globalcontextid , foreignId etc. 
     - write the type as well , but write the primary key and foreign key detail. 
     - mysql -> CHAR ( 0-255B), VARCHAR(0-64KB) -> both (can contain letters, numbers, and special characters) || TEXT -> string (0-64kB) , LONGTEXT(0-4GB) , TIMESTAMP (19731230153000 sample) , INT(4B), BIGINT(8B), BOOLEAN(1B), ENUM(variable) ... so on.
+    - postgresql: <img width="373" height="681" alt="image" src="https://github.com/user-attachments/assets/12fe097c-c78b-462d-afd1-ff89bbc76e7f" />
+
     - any specific contraint of field.
     - do as much normalised as possible. 
     - create as much as table as possible or as much as entities.
