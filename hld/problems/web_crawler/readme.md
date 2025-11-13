@@ -1,3 +1,4 @@
+Check this -> https://www.hellointerview.com/learn/system-design/problem-breakdowns/web-crawler
 Functional Requirements:
 
 - We want to make a web crawler, that will take url as input.
