@@ -76,3 +76,11 @@ URL Frontier:
 
 Later:
 - https://github.com/donnemartin/system-design-primer/blob/master/solutions/system_design/web_crawler/README.md
+
+- RSS Feed:
+  - Really simple syndicate( Versions 2.0, 2.0.1, and 0.9x). It depends on what version of RSS 
+  - RSS is an open method for delivering regularly changing web content. Many news-related sites, weblogs, and other online publishers syndicate their content as an RSS Feed to whoever wants it.
+  - Any time you want to retrieve the latest headlines from your favorite sites, you can access the available RSS Feeds via a desktop RSS reader. You can also make an RSS Feed for your own site if your content changes frequently.
+  - You can also download RSS Feeds from other sites to display the updated news items on your site, or use a desktop or online reader to access your favorite RSS Feeds.
+  - RSS is an XML application
+  - 
