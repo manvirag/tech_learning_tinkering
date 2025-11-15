@@ -1,3 +1,5 @@
+IN above escalidraw design -> we have taken user: list of posts,  user: list of following -> but it can be problematic in case of unfollow, follow, and post update , since will reuqire to fetch and upadate -> better to user single, single and make one as partition key second one as sort key -> in case of feed -> sort key can be timestampe. 
+
 Design NewsFeed System:
 
 #### Problem Statement:
