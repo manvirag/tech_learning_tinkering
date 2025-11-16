@@ -31,6 +31,8 @@
 11. main memory ( RAM ) → 100ns.
 
 
+12. [benchmarking kafka vs rabbit](https://www.confluent.io/blog/kafka-fastest-messaging-system/)
+    - <img width="725" height="597" alt="image" src="https://github.com/user-attachments/assets/68c7fcb8-b286-47da-ad6f-92f3fb64d816" />
 
 
 ........Aboout Go Server qps , or k8s pods. 
