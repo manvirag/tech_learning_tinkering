@@ -1,3 +1,4 @@
+https://www.onehouse.ai/blog/apache-spark-structured-streaming-vs-apache-flink-vs-apache-kafka-streams-comparing-stream-processing-engines?utm_source=chatgpt.com 
 # Introduction to Apache Flink ( Next step -> read its doc complete )
 
 ``The limits of event-driven applications are defined by how well a stream processor can handle time and state``
