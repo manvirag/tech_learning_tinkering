@@ -34,7 +34,9 @@
 12. [benchmarking kafka vs rabbit](https://www.confluent.io/blog/kafka-fastest-messaging-system/)
     - <img width="725" height="597" alt="image" src="https://github.com/user-attachments/assets/68c7fcb8-b286-47da-ad6f-92f3fb64d816" />
 
-
+13. apache flink, etc as per chatgpt:
+    - <img width="852" height="806" alt="image" src="https://github.com/user-attachments/assets/662d8099-69a3-415c-8f77-8c6a783c28b6" />
+ 
 ........Aboout Go Server qps , or k8s pods. 
 
 #### HTTP Protocol Versions
