@@ -98,6 +98,13 @@
 - Telling the things below in order do them one by one , deep dive one and move to other. 
 - Think about any end to end flow,  which you think important , then Do the dfs. Let say you have select some flow. Then go to client add details there , go the next component of flow add details there .... to end. Details are the below order wise.
 - Tell the same to the interviewer
+- Deep dive in other cases except below ->
+  - write responsibility. ( do this event in hld part )
+  - which tech/protocol/queue to use here.
+  - scaling -> scale as per scale and tell future.
+  - error handling -> workaround.
+  - fault tolerance -> up after failing.
+  - durability, reliability -> replication, multile db etc. 
 
 ### 3.1 Order wide details -> could be possible for some component couldn't be possible for other. 
 
