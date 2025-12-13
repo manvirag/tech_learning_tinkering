@@ -24,7 +24,7 @@ Simplified Syntax:
 [ capture-list ] ( parameters ) { body }  // Return type deduced automatically
 
 Key Components:
-1. Capture List: Specifies which variables from the enclosing scope ( the scope where the lambda is written ) are captured
+1. Capture List: Specifies which variables from the enclosing scope are captured
    - []        : Capture nothing
    - [=]       : Capture all by value
    - [&]       : Capture all by reference
@@ -37,27 +37,6 @@ Key Components:
 3. Return Type: Optional, can be deduced
 4. Body: Function body
 
-
-What is "Enclosing Scope"?
-Enclosing scope is the scope where the lambda is defined. It’s the surrounding code block (function, class, or block) that contains the lambda.
-Visual Example:
-void outerFunction() {           // ← Outer scope (enclosing scope)    int x = 10;                   // ← Variable in enclosing scope    int y = 20;                   // ← Variable in enclosing scope        if (true) {                   // ← Inner block        int z = 30;               // ← Variable in inner block                // Lambda defined here        auto lambda = [x, y, z]() {  // ← Captures from enclosing scopes            // x and y are from outerFunction's scope            // z is from the if block's scope            cout << x << " " << y << " " << z << endl;        };                lambda();    }}
-Detailed Explanation:
-Function scope (most common):
-}
-   void myFunction() {       int a = 5;        // ← Variable in enclosing scope       int b = 10;       // ← Variable in enclosing scope              auto lambda = [a, b]() {  // Captures a and b from myFunction's scope           return a + b;       };   }
-Class scope:
-   class MyClass {       int memberVar = 100;  // ← Member variable in class scope              void method() {           int localVar = 50;  // ← Local variable in method scope                      auto lambda = [this, localVar]() {  // Captures from both scopes               // 'this' captures class scope (to access memberVar)               // localVar captures method scope               return memberVar + localVar;           };       }   };
-Nested scopes:
-   void outer() {       int outerVar = 1;              if (true) {           int middleVar = 2;                      for (int i = 0; i < 5; i++) {  // ← Loop creates a scope               int innerVar = 3;                              // Lambda can capture from ALL enclosing scopes               auto lambda = [outerVar, middleVar, innerVar, i]() {                   // outerVar from outer() scope                   // middleVar from if block scope                   // innerVar from for loop scope                   // i from for loop scope                   return outerVar + middleVar + innerVar + i;               };           }       }   }
-Key Points:
-Enclosing scope = the scope where the lambda is written
-The lambda can access variables from that scope only if they are captured
-Without capture, the lambda cannot access variables from the enclosing scope
-You can capture from multiple nested scopes (outer function, inner blocks, etc.)
-Example showing the difference:
-void demonstrate() {    int x = 10;  // ← Variable in enclosing scope        // Without capture - ERROR!    // auto lambda1 = []() {    //     cout << x;  // ERROR: 'x' is not captured    // };        // With capture - OK!    auto lambda2 = [x]() {  // Captures x from enclosing scope        cout << x;  // OK: x is captured    };        lambda2();}
-Summary: "Enclosing scope" is the surrounding code block where the lambda is defined. The capture list lets the lambda access variables from that scope.
 ================================================================================
 */
 
@@ -74,12 +53,10 @@ void example1_BasicLambda() {
         cout << "Hello from lambda!" << endl;
     };
     
-    int x = 10;
     greet();
     
     // Lambda with parameters
-    auto add = [x](int a, int b) {
-        cout << "x = " << x << endl;
+    auto add = [](int a, int b) {
         return a + b;
     };
     
@@ -107,12 +84,12 @@ void example2_CaptureByValue() {
     int y = 20;
     
     // Capture all variables by value
-    auto lambda1 = [=](int p) {
+    auto lambda1 = [=]() {
         cout << "Inside lambda: x = " << x << ", y = " << y << endl;
         // x = 100;  // ERROR: Cannot modify captured by-value variables
     };
     
-    lambda1(34);
+    lambda1();
     cout << "Outside lambda: x = " << x << ", y = " << y << endl;
     
     // Capture specific variables by value
@@ -259,6 +236,39 @@ void example6_LambdaWithSTL() {
     cout << "Sorted (descending): ";
     for (int n : numbers) cout << n << " ";
     cout << endl;
+    
+    // Find elements greater than 5
+    auto it = find_if(numbers.begin(), numbers.end(), [](int n) {
+        return n > 5;
+    });
+    
+    if (it != numbers.end()) {
+        cout << "First number > 5: " << *it << endl;
+    }
+    
+    // Count even numbers
+    int evenCount = count_if(numbers.begin(), numbers.end(), [](int n) {
+        return n % 2 == 0;
+    });
+    cout << "Even numbers count: " << evenCount << endl;
+    
+    // Transform: square each number
+    vector<int> squared;
+    transform(numbers.begin(), numbers.end(), back_inserter(squared), [](int n) {
+        return n * n;
+    });
+    
+    cout << "Squared: ";
+    for (int n : squared) cout << n << " ";
+    cout << endl;
+    
+    // For each: print with prefix
+    cout << "For each: ";
+    for_each(numbers.begin(), numbers.end(), [](int n) {
+        cout << "[" << n << "] ";
+    });
+    cout << endl;
+    
     cout << "\n✓ Lambda with STL examples completed\n" << endl;
 }
 
@@ -319,13 +329,6 @@ void example8_LambdaAsParameter() {
     int result2 = applyOperation(10, 5, [](int x, int y) { return x * y; });
     cout << "10 * 5 = " << result2 << endl;
     
-
-    // function<int(int, int)>
-    //     │   │   │   │
-    //     │   │   │   └─ Second parameter type
-    //     │   │   └───── First parameter type  
-    //     │   └───────── Parameter list (in parentheses)
-    //     └───────────── Return type
     // Template function with lambda
     auto process = [](vector<int>& vec, function<void(int&)> processor) {
         for (auto& v : vec) {
@@ -345,6 +348,42 @@ void example8_LambdaAsParameter() {
     cout << endl;
     
     cout << "\n✓ Lambda as parameter examples completed\n" << endl;
+}
+
+// ============================================================================
+// Example 9: Lambda with Initialization Capture (C++14)
+// ============================================================================
+void example9_InitCapture() {
+    cout << "\n" << string(70, '=') << endl;
+    cout << "EXAMPLE 9: Initialization Capture [x = expr] (C++14)" << endl;
+    cout << string(70, '=') << endl;
+    
+    int x = 10;
+    
+    // Initialize capture: create new variable in lambda
+    auto lambda1 = [y = x * 2]() {
+        cout << "y (initialized as x*2) = " << y << endl;
+    };
+    
+    lambda1();
+    
+    // Move capture
+    string str = "Hello";
+    auto lambda2 = [moved_str = move(str)]() {
+        cout << "Moved string: " << moved_str << endl;
+    };
+    
+    lambda2();
+    cout << "Original string after move: \"" << str << "\" (empty)" << endl;
+    
+    // Unique pointer capture
+    auto lambda3 = [ptr = make_unique<int>(42)]() {
+        cout << "Captured unique_ptr value: " << *ptr << endl;
+    };
+    
+    lambda3();
+    
+    cout << "\n✓ Initialization capture examples completed\n" << endl;
 }
 
 // ============================================================================
@@ -442,6 +481,7 @@ int main() {
     example6_LambdaWithSTL();
     example7_LambdaInThreads();
     example8_LambdaAsParameter();
+    example9_InitCapture();
     example10_LambdaReturningLambda();
     example11_GenericLambda();
     

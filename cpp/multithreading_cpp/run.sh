@@ -1,1 +1,1 @@
-g++ -std=c++11 -pthread practice.cpp -o practice && ./practice
+g++ -std=c++17 -pthread practice.cpp -o practice && ./practice
