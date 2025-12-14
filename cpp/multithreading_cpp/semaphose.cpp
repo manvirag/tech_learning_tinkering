@@ -78,6 +78,33 @@ void example1_BinarySemaphore() {
 // ============================================================================
 // Example 2: Counting Semaphore - Resource Pool
 // ============================================================================
+
+// const int MAX_RESOURCES = 3;
+// counting_semaphore<10> sem(MAX_RESOURCES);
+// //                         ↑              ↑
+// //                         │              └─ Initial value = 3
+// //                         └──────────────── Max possible value = 10
+
+
+// counting_semaphore<10> sem(3);  // Start with 3 permits
+
+// sem.acquire();  // Counter: 3 → 2 (one thread can proceed)
+// sem.acquire();  // Counter: 2 → 1 (another thread can proceed)
+// sem.acquire();  // Counter: 1 → 0 (third thread can proceed)
+// sem.acquire();  // Counter: 0 → BLOCKS! (fourth thread waits)
+
+// sem.release();  // Counter: 0 → 1 (wakes up waiting thread)
+// sem.release();  // Counter: 1 → 2
+// // ... can release up to 10 total (the template limit)
+
+
+// // Database connection pool: max 10 connections, but only 3 available initially
+// counting_semaphore<10> dbPool(3);
+
+// // Later, you can add more connections dynamically:
+// dbPool.release();  // Now 4 available
+// dbPool.release();  // Now 5 available
+// // ... up to 10 total
 void example2_CountingSemaphore() {
     cout << "\n" << string(70, '=') << endl;
     cout << "EXAMPLE 2: Counting Semaphore - Resource Pool" << endl;
