@@ -50,6 +50,7 @@
         "unordered_map": "cpp",
         "xhash": "cpp",
         "xtree": "cpp",
-        "ratio": "cpp"
+        "ratio": "cpp",
+        "semaphore": "cpp"
     }
 }
