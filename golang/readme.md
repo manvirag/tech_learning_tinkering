@@ -38,14 +38,108 @@ Note: Slicing in array and slice is constant time , since it only change header.
 <br/>
 <br/>
 
-9. Cheat Sheet
+
+9. To update assigning as well we nned to pass via reference below exampe
+
+```
+
+
+package main
+
+import "fmt"
+
+// Struct example
+type Person struct {
+    Name string
+    Age  int
+}
+
+func modifyInt(x *int) {
+    *x = 42 // modifies original
+}
+
+func modifySlice(s *[]int) {
+    *s = append(*s, 99) // modifies original slice
+}
+
+func modifyArray(a *[3]int) {
+    (*a)[0] = 100 // modifies original array
+}
+
+func modifyMap(m *map[string]int) {
+    (*m)["newKey"] = 123 // modifies original map
+}
+
+func modifyChan(c *chan int) {
+    newChan := make(chan int, 1)
+    *c = newChan           // reassign the original channel
+    (*c) <- 777            // send value to new channel
+}
+
+func modifyStruct(p *Person) {
+    p.Name = "Alice"   // modify field
+    p.Age = 30
+}
+
+func modifyPointer(pp **int) {
+    newVal := 999
+    *pp = &newVal // reassign original pointer
+}
+
+func main() {
+    // Integer
+    a := 10
+    fmt.Println("Before int:", a)
+    modifyInt(&a)
+    fmt.Println("After int:", a)
+
+    // Slice
+    s := []int{1, 2, 3}
+    fmt.Println("\nBefore slice:", s)
+    modifySlice(&s)
+    fmt.Println("After slice:", s)
+
+    // Array
+    arr := [3]int{1, 2, 3}
+    fmt.Println("\nBefore array:", arr)
+    modifyArray(&arr)
+    fmt.Println("After array:", arr)
+
+    // Map
+    m := map[string]int{"a": 1}
+    fmt.Println("\nBefore map:", m)
+    modifyMap(&m)
+    fmt.Println("After map:", m)
+
+    // Channel
+    c := make(chan int, 1)
+    fmt.Println("\nBefore channel:", c)
+    modifyChan(&c)
+    fmt.Println("After channel, sending/receiving value:", <-c)
+
+    // Struct
+    p := Person{Name: "Bob", Age: 20}
+    fmt.Println("\nBefore struct:", p)
+    modifyStruct(&p)
+    fmt.Println("After struct:", p)
+
+    // Pointer
+    val := 5
+    ptr := &val
+    fmt.Println("\nBefore pointer:", *ptr)
+    modifyPointer(&ptr)
+    fmt.Println("After pointer:", *ptr)
+}
+
+```
+10. Cheat Sheet
  
 ![image](https://github.com/user-attachments/assets/8fb5d984-02bd-4d86-b643-24370ee96d08)
 
 <br/>
 <br/>
 
-10. STL
+11. STL
 
 <img width="601" alt="image" src="https://github.com/user-attachments/assets/a636e0c2-bf0e-4836-bf6b-dd41fd3d2124" />
 
