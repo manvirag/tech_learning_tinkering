@@ -48,3 +48,12 @@
 7. design patterns. 
 8. functor  
 
+9. keyword
+    - const
+    - virtual and pure virtual
+    - friend
+    - static
+    - public
+    - private
+    - protected 
+    - check how to use these in attribute, method, class, contructor, desctructor etc.
