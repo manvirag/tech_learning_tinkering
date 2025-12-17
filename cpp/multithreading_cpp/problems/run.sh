@@ -1,0 +1,1 @@
+g++ -std=c++20 web_crawler_multithreaded.cpp -o web_crawler_multithreaded && ./web_crawler_multithreaded

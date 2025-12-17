@@ -51,6 +51,7 @@
         "xhash": "cpp",
         "xtree": "cpp",
         "ratio": "cpp",
-        "semaphore": "cpp"
+        "semaphore": "cpp",
+        "__mutex_base": "cpp"
     }
 }
