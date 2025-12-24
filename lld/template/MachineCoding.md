@@ -1,12 +1,6 @@
-- Template:
-    - Understand requirements and doubt and scope out.
-    - make mental model about the types.
-    - Repo Structure: 
-        - controller -> usecase/service -> model -> modelrepo
-        - No need to create controller , write all these in main.go
-        - Usecase only when require, else simplify call the repo layer with main.go for demoing purpose. Only the actually or required thing can go to usecase.
-        - model and model repo can be put in same director to speed up and repo will have inmemory data.
-        - Now write Heading:  model , repo, usecase -> create the entities + attribute + methods.
-        - Now optimise or break it with design patterns and solid principles.
-        - Code up and run layer by layer -> like first complete -> user + usermodel +userrepo + userusecase + its main -> then other layers.
-- Please check the solved problem -> they are only solved by this and because of that failed in lld , because never need to made the class diagram and data modelingn in that case , but worked for the machine coding round
+1. Refer to escalidraw 
+
+
+2. References used: 
+    - https://medium.com/@techwithkp/machine-coding-round-what-is-it-how-to-crack-it-17d846d7161 ( take practice question from here )
+    - more problems: https://github.com/prasadgujar/low-level-design-primer/blob/master/solutions.md

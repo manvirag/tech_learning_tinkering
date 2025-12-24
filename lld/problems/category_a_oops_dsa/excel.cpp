@@ -21,8 +21,8 @@ class Cell {
       string key;
       string rawValue;
       long int calculatedValue;
-      set<pair<string, long int>> dependencies;
-      set<pair<string, long int>> dependents;
+      set<pair<string, long int> > dependencies;
+      set<pair<string, long int> > dependents;
       Cell() {
         rawValue = "";
         calculatedValue = 0;
@@ -141,7 +141,7 @@ class ExcelSheet {
       void updateDependent(string cell, long int coefficient, long int value) {
         long int initialValue = cells[cell].calculatedValue;
         cells[cell].calculatedValue += coefficient * value;
-        for(auto dependent : cells[cell].dependents) {
+        for( wauto dependent : cells[cell].dependents) {
             updateDependent(dependent.first, dependent.second, value - initialValue);
         }
       }     
