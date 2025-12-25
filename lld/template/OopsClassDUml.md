@@ -1,5 +1,7 @@
 check escalidraw 
     - Ref: https://medium.com/@himanshusingour7/how-i-cracked-a-real-lld-interview-367b8a17ea88
+    - https://medium.com/@shivali0087/how-id-prepare-for-an-lld-interview-in-7-days-if-i-had-to-start-from-scratch-87294ee08ff5
+    - https://medium.com/@shivali0087/how-to-actually-crack-lld-interviews-not-just-draw-boxes-and-arrows-1e3d6b52d272
 
 
 
@@ -8,7 +10,7 @@ check escalidraw
 Once we have relational modeling. We can take hint with it and draw the object oriented design.
 
 https://ujjwalbhardwaj.me/post/low-level-design-design-an-atm-system/
-Template
+Templateg
 - All class will map to that relational model.
 - Those which we are pointing as foreign key , instead of that we will have its object.
 - When ever we have different value for a particular column, we can use the interface. (rule condition).
