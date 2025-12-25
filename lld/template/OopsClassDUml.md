@@ -1,3 +1,10 @@
+check escalidraw 
+    - Ref: https://medium.com/@himanshusingour7/how-i-cracked-a-real-lld-interview-367b8a17ea88
+
+
+
+
+
 Once we have relational modeling. We can take hint with it and draw the object oriented design.
 
 https://ujjwalbhardwaj.me/post/low-level-design-design-an-atm-system/
