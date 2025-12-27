@@ -227,25 +227,58 @@ private:
 
 // Public inheritance (most common)
 class Derived1 : public Base {
-    // publicVar: public
-    // protectedVar: protected
-    // privateVar: not accessible
+public:
+    void testAccess() {
+        publicVar = 10;      // ✅ OK: publicVar is public in Derived1
+        protectedVar = 20;   // ✅ OK: protectedVar is protected in Derived1
+        // privateVar = 30;  // ❌ Error: privateVar not accessible
+    }
 };
+
+// Usage
+Derived1 d1;
+d1.publicVar = 10;        // ✅ OK: publicVar remains public
+// d1.protectedVar = 20;  // ❌ Error: protectedVar is protected (not accessible outside)
+// d1.privateVar = 30;    // ❌ Error: privateVar not accessible
 
 // Protected inheritance
 class Derived2 : protected Base {
-    // publicVar: protected
-    // protectedVar: protected
-    // privateVar: not accessible
+public:
+    void testAccess() {
+        publicVar = 10;      // ✅ OK: publicVar becomes protected in Derived2
+        protectedVar = 20;   // ✅ OK: protectedVar remains protected
+        // privateVar = 30;  // ❌ Error: privateVar not accessible
+    }
 };
+
+// Usage
+Derived2 d2;
+// d2.publicVar = 10;      // ❌ Error: publicVar is now protected (not accessible outside)
+// d2.protectedVar = 20;   // ❌ Error: protectedVar is protected
+// d2.privateVar = 30;     // ❌ Error: privateVar not accessible
 
 // Private inheritance
 class Derived3 : private Base {
-    // publicVar: private
-    // protectedVar: private
-    // privateVar: not accessible
+public:
+    void testAccess() {
+        publicVar = 10;      // ✅ OK: publicVar becomes private in Derived3
+        protectedVar = 20;   // ✅ OK: protectedVar becomes private in Derived3
+        // privateVar = 30;  // ❌ Error: privateVar not accessible
+    }
 };
+
+// Usage
+Derived3 d3;
+// d3.publicVar = 10;      // ❌ Error: publicVar is now private (not accessible outside)
+// d3.protectedVar = 20;   // ❌ Error: protectedVar is now private
+// d3.privateVar = 30;     // ❌ Error: privateVar not accessible
 ```
+
+**What This Means:**
+- **publicVar: public** → Can be accessed from outside Derived1 class
+- **protectedVar: protected** → Can be accessed in Derived1 and its derived classes, but not from outside
+- **privateVar: not accessible** → Cannot be accessed in Derived1 at all (only in Base)
+- Access mode in inheritance changes how base class members are accessible in derived class
 
 ### Calling Parent Constructor from Child
 **Concept**: Child class must initialize parent class - pass attributes to parent constructor
@@ -283,11 +316,50 @@ Student s("John", 20, 12345);
 // Student constructor: John, ID: 12345
 ```
 
+**Alternative Syntax for Calling Parent Constructor:**
+
+```cpp
+// Method 1: Initialization list (most common)
+Student(string n, int a, int id) : Person(n, a), studentId(id) {
+    // Parent constructor called via initialization list
+}
+
+// Method 2: If parent has default constructor, it's called automatically
+class Person {
+public:
+    Person() { }  // Default constructor
+    Person(string n, int a) : name(n), age(a) { }
+};
+
+class Student : public Person {
+public:
+    Student(int id) : studentId(id) {
+        // Person() default constructor called automatically
+        // Can then set parent members if they're protected/public
+        name = "Unknown";
+        age = 0;
+    }
+};
+
+// Method 3: Delegating constructor (C++11)
+class Student : public Person {
+public:
+    Student(string n, int a) : Person(n, a), studentId(0) { }
+    
+    Student(string n, int a, int id) : Student(n, a) {
+        // Delegates to other constructor, then modifies
+        studentId = id;
+    }
+};
+```
+
 **Key Points:**
 - Child constructor must call parent constructor (if parent has no default constructor)
-- Use initialization list: `: ParentClass(params)`
+- Use initialization list: `: ParentClass(params)` - most common and efficient
+- If parent has default constructor, it's called automatically (no need to specify)
 - Parent constructor called before child constructor body
 - Can pass child's parameters to parent constructor
+- Delegating constructor (C++11): Can call another constructor of same class
 
 ### Order of Constructor and Destructor in Inheritance
 **Concept**: Constructors called top-down (base to derived), Destructors called bottom-up (derived to base)
@@ -465,11 +537,58 @@ d.display();    // From Dog (overridden, calls parent's display)
 
 4. **Attribute Access:**
    ```cpp
-   // Protected members accessible in derived classes
-   // name, age (from Animal) - accessible in Mammal and Dog
-   // furColor (from Mammal) - accessible in Dog
-   // breed (from Dog) - only in Dog
+   class Animal {
+   protected:
+       string name;    // Protected - accessible in derived classes
+       int age;        // Protected - accessible in derived classes
+   };
+   
+   class Mammal : public Animal {
+   protected:
+       string furColor;  // Protected - accessible in derived classes
+   public:
+       void setAnimalInfo(string n, int a) {
+           name = n;      // ✅ OK: name from Animal is accessible
+           age = a;       // ✅ OK: age from Animal is accessible
+       }
+       void setFurColor(string color) {
+           furColor = color;  // ✅ OK: own member
+       }
+   };
+   
+   class Dog : public Mammal {
+   private:
+       string breed;  // Private - only in Dog
+   public:
+       void setAllInfo(string n, int a, string color, string b) {
+           name = n;         // ✅ OK: name from Animal (grandparent) accessible
+           age = a;          // ✅ OK: age from Animal (grandparent) accessible
+           furColor = color; // ✅ OK: furColor from Mammal (parent) accessible
+           breed = b;        // ✅ OK: own member
+       }
+       
+       void displayInfo() {
+           cout << "Name: " << name << endl;        // ✅ From Animal
+           cout << "Age: " << age << endl;          // ✅ From Animal
+           cout << "Color: " << furColor << endl;   // ✅ From Mammal
+           cout << "Breed: " << breed << endl;      // ✅ Own member
+       }
+   };
+   
+   // Usage
+   Dog d("Buddy", 3, "Brown", "Labrador");
+   // d.name = "Max";        // ❌ Error: name is protected, not accessible outside
+   // d.furColor = "Black"; // ❌ Error: furColor is protected, not accessible outside
+   // d.breed = "Poodle";   // ❌ Error: breed is private, not accessible outside
+   d.setAllInfo("Max", 4, "Black", "Poodle");  // ✅ OK: using public method
    ```
+   
+   **Attribute Access Summary:**
+   - **name, age (from Animal)**: Accessible in Mammal and Dog (protected members)
+   - **furColor (from Mammal)**: Accessible in Dog (protected member)
+   - **breed (from Dog)**: Only accessible in Dog (private member)
+   - Protected members flow down the inheritance chain
+   - Private members stay in their own class
 
 5. **Pointer/Reference Operations:**
    ```cpp
