@@ -730,7 +730,7 @@ delete ptr;  // ✅ Calls Derived destructor (if Base has virtual destructor)
 **Concept**: Hide implementation details, show only essential features
 
 ### Abstract Classes
-**Concept**: Class with at least one pure virtual function - cannot be instantiated
+**Concept**: Class with at least one pure virtual function - cannot be instantiated (cannot create objects)
 
 ```cpp
 // Abstract class
@@ -747,8 +747,9 @@ public:
     virtual ~Shape() {}
 };
 
-// Cannot create object
-// Shape s;  // ❌ Error: abstract class
+// ❌ Cannot create object of abstract class in C++
+// Shape s;  // Error: cannot declare variable 's' to be of abstract type 'Shape'
+// Shape* ptr = new Shape();  // Error: cannot instantiate abstract class
 
 // Derived class must implement pure virtual function
 class Circle : public Shape {
@@ -766,7 +767,7 @@ Circle c(5.0);  // ✅ OK
 ```
 
 ### Interface (Pure Abstract Class)
-**Concept**: All methods are pure virtual - defines contract
+**Concept**: All methods are pure virtual - defines contract. Cannot be instantiated (cannot create objects)
 
 ```cpp
 // Interface - all pure virtual functions
@@ -776,6 +777,10 @@ public:
     virtual void resize(int factor) = 0;
     virtual ~Drawable() {}
 };
+
+// ❌ Cannot create object of interface in C++
+// Drawable d;  // Error: cannot instantiate abstract class
+// Drawable* ptr = new Drawable();  // Error: cannot instantiate abstract class
 
 // Class implementing interface
 class Circle : public Drawable {
@@ -788,12 +793,17 @@ public:
         // Implementation
     }
 };
+
+// ✅ Can create object of implementing class
+Circle c;  // OK
 ```
 
 **Key Points:**
-- Abstract class: Cannot instantiate, defines interface
-- Pure virtual function: Must be implemented by derived class
-- Interface: Contract that classes must follow
+- **Abstract class**: Cannot instantiate (cannot create objects) in C++, defines interface
+- **Interface**: Cannot instantiate (cannot create objects) in C++, all methods pure virtual
+- **Pure virtual function**: Must be implemented by derived class
+- **Cannot create objects**: Both abstract classes and interfaces cannot be instantiated directly
+- **Can use pointers/references**: Can have pointers/references of abstract class/interface type
 - Enables design by contract
 
 ---
