@@ -156,22 +156,17 @@ shared_mutex smtx;
 
 // Multiple threads can read simultaneously
 void reader() {
-    shared_lock<shared_mutex> lock(smtx);  // Shared lock
+    shared_lock<shared_mutex> lock(smtx);  // Shared lock - multiple readers OK
     // Read data
-}
-
-// Only one thread can write
-void writer() {
-    unique_lock<shared_mutex> lock(smtx);  // Exclusive lock
-    // Write data
 }
 ```
 
 **Key Points:**
-- `lock_guard`: Simple, automatic, exception-safe
+- `lock_guard`: Simple, automatic, exception-safe (use 99% of time)
 - `unique_lock`: Flexible, needed for condition variables
-- `shared_lock`: For reader-writer scenarios
+- `shared_lock`: For reader-writer scenarios (multiple readers)
 - Always pass mutex by reference: `ref(mtx)`
+- **Note**: For writers with `shared_mutex`, use `unique_lock` (see Pattern 2 in Common Patterns section)
 
 ---
 
@@ -311,38 +306,183 @@ sem.try_acquire_for(duration);    // With timeout
 sem.try_acquire_until(time_point); // Until time point
 ```
 
-### Use Cases
+### Example 1: Resource Pool (Database Connections)
 ```cpp
-// 1. Resource Pool (limit concurrent connections)
-counting_semaphore<10> dbPool(5);  // Max 5 connections
+class ConnectionPool {
+private:
+    counting_semaphore<10> available(5);  // 5 connections available
+    mutex mtx;
+    queue<Connection*> pool;
+    
+public:
+    Connection* acquireConnection() {
+        available.acquire();  // Wait for available connection
+        
+        lock_guard<mutex> lock(mtx);
+        Connection* conn = pool.front();
+        pool.pop();
+        return conn;
+    }
+    
+    void releaseConnection(Connection* conn) {
+        {
+            lock_guard<mutex> lock(mtx);
+            pool.push(conn);
+        }
+        available.release();  // Signal connection available
+    }
+};
+```
 
-void useDatabase() {
-    dbPool.acquire();
-    // Use database connection
-    dbPool.release();
+### Example 2: Rate Limiting (API Calls)
+```cpp
+class RateLimiter {
+private:
+    counting_semaphore<100> limiter(10);  // Allow 10 concurrent requests
+    
+public:
+    void makeAPICall() {
+        limiter.acquire();  // Wait if 10 requests already in progress
+        
+        // Make API call
+        // ... API logic ...
+        
+        limiter.release();  // Free up slot
+    }
+};
+```
+
+### Example 3: Producer-Consumer with Bounded Buffer
+```cpp
+class BoundedBuffer {
+private:
+    queue<int> buffer;
+    int capacity;
+    mutex mtx;
+    counting_semaphore<100> emptySlots;  // Empty slots available
+    counting_semaphore<100> fullSlots;   // Items available
+    
+public:
+    BoundedBuffer(int cap) : capacity(cap), 
+                            emptySlots(cap),  // Initially all empty
+                            fullSlots(0) {}   // Initially no items
+    
+    void produce(int item) {
+        emptySlots.acquire();  // Wait for empty slot
+        
+        {
+            lock_guard<mutex> lock(mtx);
+            buffer.push(item);
+        }
+        
+        fullSlots.release();  // Signal item available
+    }
+    
+    int consume() {
+        fullSlots.acquire();  // Wait for item
+        
+        int item;
+        {
+            lock_guard<mutex> lock(mtx);
+            item = buffer.front();
+            buffer.pop();
+        }
+        
+        emptySlots.release();  // Signal slot empty
+        return item;
+    }
+};
+```
+
+### Example 4: Thread Pool (Limit Concurrent Workers)
+```cpp
+class ThreadPool {
+private:
+    counting_semaphore<50> workerSlots(5);  // Max 5 concurrent workers
+    
+public:
+    void executeTask(function<void()> task) {
+        thread([this, task]() {
+            workerSlots.acquire();  // Wait for worker slot
+            
+            task();  // Execute task
+            
+            workerSlots.release();  // Free worker slot
+        }).detach();
+    }
+};
+```
+
+### Example 5: Barrier with Semaphore
+```cpp
+class SemaphoreBarrier {
+private:
+    int count;
+    int waiting = 0;
+    mutex mtx;
+    counting_semaphore<100> barrier(0);  // Start at 0
+    
+public:
+    SemaphoreBarrier(int n) : count(n) {}
+    
+    void wait() {
+        mtx.lock();
+        waiting++;
+        bool last = (waiting == count);
+        mtx.unlock();
+        
+        if (last) {
+            // Last thread: release all waiting threads
+            for (int i = 0; i < count - 1; i++) {
+                barrier.release();
+            }
+        } else {
+            barrier.acquire();  // Wait for all threads
+        }
+    }
+};
+```
+
+### Example 6: Non-blocking Try Acquire
+```cpp
+void tryAccessResource() {
+    counting_semaphore<10> sem(2);  // 2 slots available
+    
+    if (sem.try_acquire()) {
+        // Got access! Do work
+        // ... critical section ...
+        sem.release();
+    } else {
+        // Resource busy, do something else
+        cout << "Resource busy, skipping..." << endl;
+    }
 }
+```
 
-// 2. Producer-Consumer
-counting_semaphore<10> emptySlots(5);  // 5 empty slots
-counting_semaphore<10> fullSlots(0);  // 0 items initially
-
-void producer() {
-    emptySlots.acquire();  // Wait for empty slot
-    // Add item to buffer
-    fullSlots.release();   // Signal item available
-}
-
-void consumer() {
-    fullSlots.acquire();   // Wait for item
-    // Remove item from buffer
-    emptySlots.release();  // Signal slot empty
+### Example 7: Timeout with Semaphore
+```cpp
+bool accessWithTimeout() {
+    counting_semaphore<10> sem(1);
+    
+    auto timeout = chrono::milliseconds(1000);
+    if (sem.try_acquire_for(timeout)) {
+        // Got access within timeout
+        // ... do work ...
+        sem.release();
+        return true;
+    } else {
+        // Timeout - couldn't acquire
+        return false;
+    }
 }
 ```
 
 **Key Points:**
 - C++20 feature (may not be available in older compilers)
-- Semaphore vs Mutex: Semaphore can be released by different thread
-- Use for resource pools, rate limiting, producer-consumer coordination
+- Semaphore vs Mutex: Semaphore can be released by different thread, allows N concurrent accesses
+- Use for: Resource pools, rate limiting, producer-consumer, thread coordination
+- `try_acquire()`: Non-blocking, returns immediately
+- `try_acquire_for()`: Blocking with timeout
 
 ---
 
@@ -631,6 +771,279 @@ timed_mutex        // Can try_lock_for/until
 - Mutex with `lock_guard` or `unique_lock`
 - Condition variables for coordination
 - Common patterns (producer-consumer, reader-writer)
+
+---
+
+## Go vs C++ Concurrency Comparison
+
+**Why Compare?** Go's concurrency model is simpler and can inspire better C++ code structure.
+
+### Thread Creation
+
+**C++:**
+```cpp
+#include <thread>
+
+void worker(int id) {
+    cout << "Worker " << id << endl;
+}
+
+thread t(worker, 1);
+t.join();
+```
+
+**Go:**
+```go
+go func(id int) {
+    fmt.Println("Worker", id)
+}(1)
+// No explicit join - goroutines managed by runtime
+```
+
+**Key Difference:**
+- **C++**: Explicit thread management, must `join()` or `detach()`
+- **Go**: Goroutines are lightweight, managed by runtime (like threads but cheaper)
+
+### Mutex/Locks
+
+**C++:**
+```cpp
+mutex mtx;
+int counter = 0;
+
+void increment() {
+    lock_guard<mutex> lock(mtx);
+    counter++;
+}
+```
+
+**Go:**
+```go
+var mtx sync.Mutex
+var counter int
+
+func increment() {
+    mtx.Lock()
+    defer mtx.Unlock()  // Auto-unlock (like lock_guard)
+    counter++
+}
+```
+
+**Key Difference:**
+- **C++**: RAII with `lock_guard` (automatic unlock)
+- **Go**: Manual `Lock()/Unlock()` but use `defer` for safety (similar to RAII)
+
+### Condition Variables
+
+**C++:**
+```cpp
+condition_variable cv;
+mutex mtx;
+bool ready = false;
+
+// Waiter
+unique_lock<mutex> lock(mtx);
+cv.wait(lock, [&]() { return ready; });
+
+// Notifier
+{
+    lock_guard<mutex> lock(mtx);
+    ready = true;
+}
+cv.notify_all();
+```
+
+**Go:**
+```go
+var cond = sync.NewCond(&mtx)
+var ready bool
+
+// Waiter
+mtx.Lock()
+for !ready {
+    cond.Wait()  // Automatically unlocks, waits, then locks again
+}
+mtx.Unlock()
+
+// Notifier
+mtx.Lock()
+ready = true
+cond.Broadcast()  // Like notify_all()
+mtx.Unlock()
+```
+
+**Key Difference:**
+- **C++**: Must use `unique_lock`, predicate in lambda
+- **Go**: `Wait()` automatically unlocks/locks, use `for` loop for predicate
+
+### Channels (Go) vs Condition Variables (C++)
+
+**Go Channels (Built-in):**
+```go
+ch := make(chan int, 5)  // Buffered channel
+
+// Producer
+ch <- 42  // Send (blocks if full)
+
+// Consumer
+value := <-ch  // Receive (blocks if empty)
+```
+
+**C++ Equivalent (Condition Variable):**
+```cpp
+class Channel {
+private:
+    queue<int> buffer;
+    int capacity;
+    mutex mtx;
+    condition_variable cv;
+    
+public:
+    void send(int value) {
+        unique_lock<mutex> lock(mtx);
+        cv.wait(lock, [&]() { return buffer.size() < capacity; });
+        buffer.push(value);
+        cv.notify_all();
+    }
+    
+    int receive() {
+        unique_lock<mutex> lock(mtx);
+        cv.wait(lock, [&]() { return !buffer.empty(); });
+        int value = buffer.front();
+        buffer.pop();
+        cv.notify_all();
+        return value;
+    }
+};
+```
+
+**Key Difference:**
+- **Go**: Channels are first-class, built-in, very simple
+- **C++**: Must implement with condition variables (more code, but more control)
+
+### WaitGroup (Go) vs Manual Thread Management (C++)
+
+**Go:**
+```go
+var wg sync.WaitGroup
+
+for i := 0; i < 10; i++ {
+    wg.Add(1)
+    go func(id int) {
+        defer wg.Done()  // Decrement counter
+        // Do work
+    }(i)
+}
+
+wg.Wait()  // Wait for all goroutines
+```
+
+**C++ Equivalent:**
+```cpp
+vector<thread> threads;
+
+for (int i = 0; i < 10; i++) {
+    threads.emplace_back([i]() {
+        // Do work
+    });
+}
+
+for (auto& t : threads) {
+    t.join();  // Wait for all threads
+}
+```
+
+**Key Difference:**
+- **Go**: `WaitGroup` is built-in, simple counter
+- **C++**: Must manually collect threads and `join()` each
+
+### Semaphores
+
+**C++ (C++20):**
+```cpp
+counting_semaphore<10> sem(5);
+sem.acquire();
+// Do work
+sem.release();
+```
+
+**Go:**
+```go
+// No built-in semaphore, but easy to implement with channel
+sem := make(chan struct{}, 5)  // Buffered channel = semaphore
+
+sem <- struct{}{}  // Acquire (blocks if full)
+// Do work
+<-sem  // Release
+```
+
+**Key Difference:**
+- **C++**: Built-in semaphore (C++20)
+- **Go**: Use buffered channel as semaphore (idiomatic Go)
+
+### Select Statement (Go) vs Condition Variables (C++)
+
+**Go Select (Multiple Channels):**
+```go
+select {
+case msg1 := <-ch1:
+    // Handle msg1
+case msg2 := <-ch2:
+    // Handle msg2
+case <-time.After(1 * time.Second):
+    // Timeout
+}
+```
+
+**C++ Equivalent:**
+```cpp
+// Must manually check conditions or use multiple condition variables
+// More complex, no built-in "select" equivalent
+```
+
+**Key Difference:**
+- **Go**: `select` is built-in, handles multiple channels elegantly
+- **C++**: No direct equivalent, must use condition variables or polling
+
+### Summary Table
+
+| Feature | C++ | Go |
+|---------|-----|-----|
+| **Concurrency Unit** | `std::thread` (OS thread) | `goroutine` (lightweight) |
+| **Thread Creation** | `thread t(func); t.join();` | `go func()` |
+| **Mutex** | `mutex` + `lock_guard` | `sync.Mutex` + `defer` |
+| **Condition Variable** | `condition_variable` + `unique_lock` | `sync.Cond` |
+| **Message Passing** | Manual (condition variable) | Built-in `channel` |
+| **Wait for All** | Manual `join()` loop | `sync.WaitGroup` |
+| **Select Multiple** | Not built-in | `select` statement |
+| **Semaphore** | `counting_semaphore` (C++20) | Buffered channel |
+| **Complexity** | More verbose, more control | Simpler, less control |
+
+### Key Takeaways
+
+**Go's Advantages:**
+- Simpler syntax (`go func()` vs `thread t(func); t.join()`)
+- Built-in channels (no need to implement)
+- Lightweight goroutines (cheaper than OS threads)
+- `select` statement for multiple channels
+- `WaitGroup` for synchronization
+
+**C++ Advantages:**
+- More control (explicit thread management)
+- RAII with `lock_guard` (automatic cleanup)
+- More flexible (can customize everything)
+- Better performance for CPU-bound tasks
+- Standard library mutexes, condition variables, semaphores
+
+**When to Use What:**
+- **Go**: I/O-bound tasks, simple concurrency, message passing
+- **C++**: CPU-bound tasks, fine-grained control, performance-critical
+
+**Inspiration for C++:**
+- Use RAII (`lock_guard`) like Go's `defer`
+- Keep critical sections small
+- Prefer condition variables over polling
+- Consider implementing channel-like abstractions for cleaner code
 
 ---
 
