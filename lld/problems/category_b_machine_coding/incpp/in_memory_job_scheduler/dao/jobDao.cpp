@@ -10,60 +10,57 @@ class JobDao {
     map<int, ScheduleJob > scheduleJobStore; 
     map<int, ExecutionJob  > executionJob; 
     
-        JobDao(){};
+    JobDao(){};
 
-        ImmediateJob createImmediateJob(ImmediateJob job, JobType type) {
-            job.setJobId(Counter::getCount());
-            this-> immediateJobStore[job.getJobId()] = job;
-            return job;
+    ImmediateJob createImmediateJob(ImmediateJob job, JobType type) {
+        job.setJobId(Counter::getCount());
+        this-> immediateJobStore[job.getJobId()] = job;
+        return job;
+    }
+    void createExecutionJob(ExecutionJob job) {
+        this-> executionJob[job.getJobId()] = job;
+    }
+    void createSchedule(ScheduleJob job) {
+        this-> scheduleJobStore[job.getJobId()] = job;
+    }
+    JobI* getJob(int id, JobType type) {
+        switch (type)
+        {
+        case JobType::RECURRING:
+            return &this-> scheduleJobStore[id];
+            break;
+        case JobType::NON_RECURRING:
+            return &this-> immediateJobStore[id];
+            break;
+        default:
+            break;
         }
-
-        void createExecutionJob(ExecutionJob job) {
-            this-> executionJob[job.getJobId()] = job;
-        }
-        void createSchedule(ScheduleJob job) {
-            this-> scheduleJobStore[job.getJobId()] = job;
-        }
-        JobI* getJob(int id, JobType type) {
-            switch (type)
-            {
-            case JobType::RECURRING:
-                return &this-> scheduleJobStore[id];
-                break;
-            case JobType::NON_RECURRING:
-                return &this-> immediateJobStore[id];
-                break;
-            default:
-                break;
+        
+    }
+    vector<ExecutionJob> getExJobRange(chrono::steady_clock::time_point st , chrono::steady_clock::time_point et) {
+        vector<ExecutionJob> jobs; 
+        for(auto ej : this -> executionJob) {
+            if(ej.second.status == JobStatus::CREATED && ej.second.ts >= st && ej.second.ts <= et) {
+                    jobs.push_back(ej.second);
             }
-            
         }
-        vector<ExecutionJob> getExJobRange(chrono::steady_clock::time_point st , chrono::steady_clock::time_point et) {
-            vector<ExecutionJob> jobs; 
-            for(auto ej : this -> executionJob) {
-                if(ej.second.status == JobStatus::CREATED && ej.second.ts >= st && ej.second.ts <= et) {
-                        jobs.push_back(ej.second);
-                }
+        return jobs;
+    }
+    vector<ScheduleJob> getScJobRange(chrono::steady_clock::time_point st , chrono::steady_clock::time_point et) {
+        vector<ScheduleJob> jobs; 
+        for(auto ej : this -> scheduleJobStore) {
+            if( ej.second.nextTs >= st && ej.second.nextTs <= et) {
+                    jobs.push_back(ej.second);
             }
-            return jobs;
         }
-
-        vector<ScheduleJob> getScJobRange(chrono::steady_clock::time_point st , chrono::steady_clock::time_point et) {
-            vector<ScheduleJob> jobs; 
-            for(auto ej : this -> scheduleJobStore) {
-                if( ej.second.nextTs >= st && ej.second.nextTs <= et) {
-                        jobs.push_back(ej.second);
-                }
-            }
-            cout<<jobs.size()<<endl;
-            return jobs;
-        }
-
-        void updateExJob(ExecutionJob ej) {
-            this -> executionJob[ej.id] = ej;
-        }
-        void updateScJob(ScheduleJob sj) {
-            this -> scheduleJobStore[sj.id] = sj;
-        }
+        cout<<jobs.size()<<endl;
+        return jobs;
+    }
+    void updateExJob(ExecutionJob ej) {
+        this -> executionJob[ej.id] = ej;
+    }
+    void updateScJob(ScheduleJob sj) {
+        this -> scheduleJobStore[sj.id] = sj;
+    }
 };
 

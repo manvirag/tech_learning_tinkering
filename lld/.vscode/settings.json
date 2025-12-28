@@ -4,6 +4,20 @@
         "set": "cpp",
         "utility": "cpp",
         "bitset": "cpp",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "chrono": "cpp",
+        "__mutex_base": "cpp",
+        "__threading_support": "cpp",
+        "atomic": "cpp",
+        "mutex": "cpp",
+        "version": "cpp",
+        "__bit_reference": "cpp",
+        "map": "cpp",
+        "unordered_map": "cpp",
+        "unordered_set": "cpp",
+        "__locale": "cpp",
+        "locale": "cpp",
+        "thread": "cpp",
+        "ostream": "cpp"
     }
 }

@@ -609,6 +609,260 @@ d.display();    // From Dog (overridden, calls parent's display)
 - Destructor chain: Bottom to top
 - Protected members accessible down the chain
 
+### Can Base Class Object/Pointer Call Child Class Methods?
+
+**Concept**: Base class pointer/reference can only call methods that exist in the base class. If a method only exists in the child class, you cannot call it through a base pointer/reference.
+
+#### Case 1: Normal Inheritance
+
+```cpp
+class Animal {
+public:
+    void eat() {
+        cout << "Animal is eating" << endl;
+    }
+    
+    virtual void makeSound() {
+        cout << "Animal makes sound" << endl;
+    }
+};
+
+class Dog : public Animal {
+public:
+    void makeSound() override {
+        cout << "Dog barks" << endl;
+    }
+    
+    // Method only in Dog (not in Animal)
+    void fetch() {
+        cout << "Dog fetches ball" << endl;
+    }
+};
+
+// Usage
+Dog d;
+Animal* aPtr = &d;        // Base pointer to derived object
+Animal& aRef = d;         // Base reference to derived object
+
+// ✅ Can call methods that exist in base class
+aPtr->eat();              // ✅ OK: eat() exists in Animal
+aPtr->makeSound();        // ✅ OK: makeSound() exists in Animal (calls Dog::makeSound() if virtual)
+
+// ❌ Cannot call methods that only exist in child class
+// aPtr->fetch();         // ❌ Error: 'class Animal' has no member named 'fetch'
+// aRef.fetch();          // ❌ Error: 'class Animal' has no member named 'fetch'
+
+// ✅ Solution: Cast to derived type
+Dog* dPtr = dynamic_cast<Dog*>(aPtr);
+if (dPtr != nullptr) {
+    dPtr->fetch();        // ✅ OK: Now can call fetch()
+}
+
+// Or use static_cast if you're sure about the type
+static_cast<Dog*>(aPtr)->fetch();  // ✅ OK: But unsafe if not actually Dog
+```
+
+**Key Points:**
+- Base pointer/reference can only see methods declared in base class
+- Cannot call methods that only exist in derived class
+- Must cast to derived type to call derived-only methods
+- Virtual methods can be called through base pointer (polymorphism works)
+
+#### Case 2: Abstract Class
+
+```cpp
+// Abstract class (has pure virtual function)
+class Shape {
+public:
+    // Pure virtual function - must be implemented by derived
+    virtual double area() = 0;
+    
+    // Virtual function with implementation
+    virtual void draw() {
+        cout << "Drawing shape" << endl;
+    }
+    
+    // Regular function
+    void printInfo() {
+        cout << "This is a shape" << endl;
+    }
+    
+    virtual ~Shape() {}
+};
+
+class Circle : public Shape {
+private:
+    double radius;
+    
+public:
+    Circle(double r) : radius(r) {}
+    
+    // Must implement pure virtual function
+    double area() override {
+        return 3.14159 * radius * radius;
+    }
+    
+    // Override virtual function
+    void draw() override {
+        cout << "Drawing circle" << endl;
+    }
+    
+    // Method only in Circle (not in Shape)
+    void setRadius(double r) {
+        radius = r;
+    }
+    
+    double getRadius() {
+        return radius;
+    }
+};
+
+// Usage
+Circle c(5.0);
+Shape* sPtr = &c;         // Base pointer to derived object
+Shape& sRef = c;          // Base reference to derived object
+
+// ✅ Can call methods that exist in base class
+sPtr->area();             // ✅ OK: area() exists in Shape (calls Circle::area())
+sPtr->draw();             // ✅ OK: draw() exists in Shape (calls Circle::draw())
+sPtr->printInfo();        // ✅ OK: printInfo() exists in Shape
+
+// ❌ Cannot call methods that only exist in child class
+// sPtr->setRadius(10);   // ❌ Error: 'class Shape' has no member named 'setRadius'
+// sPtr->getRadius();     // ❌ Error: 'class Shape' has no member named 'getRadius'
+// sRef.setRadius(10);    // ❌ Error: 'class Shape' has no member named 'setRadius'
+
+// ✅ Solution: Cast to derived type
+Circle* cPtr = dynamic_cast<Circle*>(sPtr);
+if (cPtr != nullptr) {
+    cPtr->setRadius(10);  // ✅ OK: Now can call setRadius()
+    cout << cPtr->getRadius() << endl;  // ✅ OK
+}
+```
+
+**Key Points:**
+- Same rule applies: base pointer can only call methods in base class
+- Even though Shape is abstract, pointer still follows same rules
+- Must cast to Circle to call Circle-specific methods
+
+#### Case 3: Interface (Pure Abstract Class)
+
+```cpp
+// Interface - all pure virtual functions
+class Drawable {
+public:
+    virtual void draw() = 0;
+    virtual void resize(int factor) = 0;
+    virtual ~Drawable() {}
+};
+
+class Rectangle : public Drawable {
+private:
+    int width, height;
+    
+public:
+    Rectangle(int w, int h) : width(w), height(h) {}
+    
+    // Must implement interface methods
+    void draw() override {
+        cout << "Drawing rectangle: " << width << "x" << height << endl;
+    }
+    
+    void resize(int factor) override {
+        width *= factor;
+        height *= factor;
+    }
+    
+    // Methods only in Rectangle (not in Drawable interface)
+    void setWidth(int w) {
+        width = w;
+    }
+    
+    void setHeight(int h) {
+        height = h;
+    }
+    
+    int getArea() {
+        return width * height;
+    }
+};
+
+// Usage
+Rectangle r(10, 20);
+Drawable* dPtr = &r;      // Interface pointer to implementing object
+Drawable& dRef = r;       // Interface reference to implementing object
+
+// ✅ Can call methods that exist in interface
+dPtr->draw();             // ✅ OK: draw() exists in Drawable (calls Rectangle::draw())
+dPtr->resize(2);          // ✅ OK: resize() exists in Drawable (calls Rectangle::resize())
+
+// ❌ Cannot call methods that only exist in implementing class
+// dPtr->setWidth(15);    // ❌ Error: 'class Drawable' has no member named 'setWidth'
+// dPtr->setHeight(25);   // ❌ Error: 'class Drawable' has no member named 'setHeight'
+// dPtr->getArea();       // ❌ Error: 'class Drawable' has no member named 'getArea'
+// dRef.setWidth(15);     // ❌ Error: 'class Drawable' has no member named 'setWidth'
+
+// ✅ Solution: Cast to implementing type
+Rectangle* rPtr = dynamic_cast<Rectangle*>(dPtr);
+if (rPtr != nullptr) {
+    rPtr->setWidth(15);   // ✅ OK: Now can call setWidth()
+    rPtr->setHeight(25);  // ✅ OK
+    cout << rPtr->getArea() << endl;  // ✅ OK
+}
+```
+
+**Key Points:**
+- Same rule applies to interfaces
+- Interface pointer can only call methods declared in interface
+- Cannot call methods that only exist in implementing class
+- Must cast to implementing type to call class-specific methods
+
+#### Summary Table
+
+| Scenario | Can Base Pointer Call Child Method? | Example |
+|----------|-------------------------------------|---------|
+| **Method exists in base (virtual)** | ✅ Yes (polymorphism) | `basePtr->virtualFunc()` calls derived version |
+| **Method exists in base (non-virtual)** | ✅ Yes (calls base version) | `basePtr->nonVirtualFunc()` calls base version |
+| **Method only in child** | ❌ No (compile error) | `basePtr->childOnlyFunc()` → Error |
+| **Solution: Cast to child** | ✅ Yes (after cast) | `static_cast<Child*>(basePtr)->childOnlyFunc()` |
+
+#### Why This Restriction Exists?
+
+```cpp
+class Animal {
+public:
+    void eat() { }
+};
+
+class Dog : public Animal {
+public:
+    void fetch() { }
+};
+
+class Cat : public Animal {
+public:
+    void meow() { }
+};
+
+// If base pointer could call child methods, this would be possible:
+Animal* ptr = new Dog();
+ptr->fetch();  // ✅ Works if Dog
+
+ptr = new Cat();  // Now points to Cat
+ptr->fetch();     // ❌ CRASH! Cat doesn't have fetch()
+
+// Compiler prevents this by only allowing base class methods
+// You must explicitly cast to show you know the actual type
+```
+
+**Key Rules:**
+1. **Base pointer/reference can only call methods declared in base class**
+2. **Virtual methods**: Calls derived version if overridden (polymorphism)
+3. **Non-virtual methods**: Calls base version (no polymorphism)
+4. **Child-only methods**: Cannot be called through base pointer/reference
+5. **Solution**: Cast to derived type using `dynamic_cast` or `static_cast`
+6. **Same rules apply**: Normal inheritance, abstract class, interface - all follow same rules
+
 **Key Points:**
 - Inheritance enables code reuse
 - Derived class "is-a" base class
