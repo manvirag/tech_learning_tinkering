@@ -18,6 +18,7 @@
         "__locale": "cpp",
         "locale": "cpp",
         "thread": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "queue": "cpp"
     }
 }

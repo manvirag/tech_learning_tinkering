@@ -1,0 +1,1 @@
+g++ -std=c++20 -pthread ./pub_sub_uber.cpp -o main && ./main

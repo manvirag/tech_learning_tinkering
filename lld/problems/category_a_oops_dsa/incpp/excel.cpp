@@ -141,7 +141,7 @@ class ExcelSheet {
       void updateDependent(string cell, long int coefficient, long int value) {
         long int initialValue = cells[cell].calculatedValue;
         cells[cell].calculatedValue += coefficient * value;
-        for( wauto dependent : cells[cell].dependents) {
+        for( auto dependent : cells[cell].dependents) {
             updateDependent(dependent.first, dependent.second, value - initialValue);
         }
       }     
