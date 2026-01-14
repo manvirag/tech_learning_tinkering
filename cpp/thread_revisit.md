@@ -16,7 +16,7 @@ Concise reference for concurrent programming in machine coding interviews.
 - **Need to protect shared data?** → Use `mutex` + `lock_guard`
 - **Need to wait for something?** → Use `condition_variable`
 - **Need to limit concurrent access?** → Use `semaphore`
-- **Multiple readers, one writer?** → Use `shared_mutex`
+- **Multiple readers, one writer?** → Use `shared_mutex` ( c++17 )
 
 **The Golden Rule:**
 - Always use `lock_guard` or `unique_lock` (never manual `lock()/unlock()`)
