@@ -32,6 +32,22 @@ pubsubstore
 - list<publishser> 
 
 ...
+
+
+
+-> pub-sub 
+
+Write code to create a publisher-consumer model where multiple producers publish messages to a queue, and multiple consumers can consume messages from the queue. System can have multiple such queues.
+
+**Solution**: I created all required entities and had PublisherQueueSubscription and ConsumerQueueSubscription stored as a HashMap/List in a subscription repository. My design followed a synchronous approach where the message was deleted from the queue once all consumers received it by getting he front message. I also proposed an asynchronous solution, where each consumer would have its own local queue to poll messages (similar to how Amazon SQS/SNS works).
+
+**Verdict**: Rejected
+
+Reason:
+
+- Managerial Round: I was told that I could not provide more complex answers.
+- LLD Round: I overcomplicated my solution and was not able to write running code at the end due to some syntax issues.
+- Design an inmemory pull based queue library where multiple publishers and consumers can publish/read the messages from the shared queue. And each message can have optional TTL .
 */
 
 #include<iostream> 
