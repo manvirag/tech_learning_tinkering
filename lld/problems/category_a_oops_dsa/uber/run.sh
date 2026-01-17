@@ -1,2 +1,2 @@
-g++ -std=c++11 -pthread train_platform.cpp -o output && ./output
+g++ -std=c++11 -pthread random_set.cpp -o output && ./output
 
