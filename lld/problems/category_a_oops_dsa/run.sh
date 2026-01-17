@@ -1,1 +1,1 @@
-g++ -std=c++20 -pthread ./generate_object_coinbase.cpp -o main && ./main
+g++ -std=c++20 -pthread ./vending_machine.cpp -o main && ./main

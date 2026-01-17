@@ -1,0 +1,1 @@
+g++ -O2 -std=c++20 -pthread car_reservation.cpp -o output && ./output

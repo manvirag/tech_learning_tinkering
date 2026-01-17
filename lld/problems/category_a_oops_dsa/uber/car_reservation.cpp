@@ -28,13 +28,59 @@ If no car is available for a request, the request must be rejected.
 
 // assumption request time are in sorted order (start,end)
 
+// #include<iostream> 
+// #include<set> 
+// using namespace std; 
+
+// class CarReservationSystem {
+//     public: 
+//         int car;
+//         int totalServedReq;
+//         int availableCarCount;
+//         set<pair<int,int>> pastRequestsEndTime;
+//         int totalRequestCount;
+//     CarReservationSystem(int carCount): car(carCount), totalServedReq(0), availableCarCount(carCount),totalRequestCount(0) {}
+
+//     void serveRequest(int start, int end) {
+
+//         while(!this->pastRequestsEndTime.empty() && this->pastRequestsEndTime.begin()->first <= start) {
+//             this->pastRequestsEndTime.erase(this->pastRequestsEndTime.begin());
+//             this->availableCarCount++;
+//         }
+//         if(this->availableCarCount == 0) {
+//             cout<<"no car is available "<<start<<" "<<end<<endl;
+//             return ; 
+//         }
+//         this->availableCarCount--;
+//         this->pastRequestsEndTime.insert({end, ++(this->totalRequestCount)});
+//         this->totalServedReq++;
+
+//     }
+//     int getTotalServedRequest() {
+//         return  this -> totalServedReq; 
+//     }
+// };
+// int main() {
+//     CarReservationSystem cs = CarReservationSystem(2);
+//     cs.serveRequest(1,2);
+//     cs.serveRequest(2,2);
+//     cs.serveRequest(1,5);
+//     cout<<cs.getTotalServedRequest()<<endl;
+//     return 0;
+// }
+
+
 #include<iostream> 
 #include<set> 
+#include<shared_mutex>
+#include<thread> 
 using namespace std; 
+
 
 class CarReservationSystem {
     public: 
         int car;
+        shared_mutex mu; 
         int totalServedReq;
         int availableCarCount;
         set<pair<int,int>> pastRequestsEndTime;
@@ -42,29 +88,51 @@ class CarReservationSystem {
     CarReservationSystem(int carCount): car(carCount), totalServedReq(0), availableCarCount(carCount),totalRequestCount(0) {}
 
     void serveRequest(int start, int end) {
-
-        while(!this->pastRequestsEndTime.empty() && this->pastRequestsEndTime.begin()->first <= start) {
-            this->pastRequestsEndTime.erase(this->pastRequestsEndTime.begin());
-            this->availableCarCount++;
+        unique_lock<shared_mutex> lock(mu);
+        while(!pastRequestsEndTime.empty() && pastRequestsEndTime.begin()->first <= start) {
+            pastRequestsEndTime.erase(pastRequestsEndTime.begin());
+            availableCarCount++;
         }
-        if(this->availableCarCount == 0) {
+        if(availableCarCount == 0) {
             cout<<"no car is available "<<start<<" "<<end<<endl;
             return ; 
         }
-        this->availableCarCount--;
-        this->pastRequestsEndTime.insert({end, ++(this->totalRequestCount)});
-        this->totalServedReq++;
+        availableCarCount--;
+        pastRequestsEndTime.insert({end, ++(totalRequestCount)});
+        totalServedReq++;
 
     }
     int getTotalServedRequest() {
+        shared_lock<shared_mutex> lock(mu);
         return  this -> totalServedReq; 
     }
 };
 int main() {
     CarReservationSystem cs = CarReservationSystem(2);
-    cs.serveRequest(1,2);
-    cs.serveRequest(2,2);
-    cs.serveRequest(1,5);
-    cout<<cs.getTotalServedRequest()<<endl;
+    vector<thread> tts;
+    tts.emplace_back([&](){
+        cs.serveRequest(1,2);
+    });
+
+    tts.emplace_back([&](){
+        cs.serveRequest(2,2);
+    });
+
+    tts.emplace_back([&](){
+        cs.serveRequest(1,5);
+    });
+    
+    
+    tts.emplace_back([&](){
+        cout<<cs.getTotalServedRequest()<<endl;
+    });
+
+    for(auto &t: tts) {
+        if(t.joinable())
+         t.join();
+    }
+
+    
+    
     return 0;
 }

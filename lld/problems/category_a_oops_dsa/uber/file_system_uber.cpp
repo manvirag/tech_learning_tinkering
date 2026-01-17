@@ -41,7 +41,7 @@ Examples
 text
 fs.mkdir("/a/b/c");
 fs.mkdir("/a/b/d");
-fs.cd("a/b.*");     // → /a/b
+fs.cd("a/b*");     // → /a/b
 fs.pwd();           // "/a/b"
 fs.cd("te?t");      // Matches nothing → error
 Follow-ups (10 mins)
@@ -80,5 +80,22 @@ First match wins: Return first directory whose name matches regex
 
 No match → throw exception
 
+path
+absolution -> /x/x 
+relative -> ./../  , ../../s/f -> can start with . -> after that list of string, .. 
+
+string -> can be regex 
+cd only changes current path. 
+
+
+
+.... 
+
+
+
 
 */
+
+
+
+

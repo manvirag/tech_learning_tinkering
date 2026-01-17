@@ -1,0 +1,26 @@
+it seems support c++17 , mean no semaphore -> it showing error but code worked not sure why
+
+
+#include <mutex>
+#include <condition_variable>
+
+class Semaphore {
+    std::mutex m;
+    std::condition_variable cv;
+    int count;
+
+public:
+    explicit Semaphore(int initial) : count(initial) {}
+
+    void acquire() {
+        std::unique_lock<std::mutex> lock(m);
+        cv.wait(lock, [&] { return count > 0; });
+        --count;
+    }
+
+    void release() {
+        std::unique_lock<std::mutex> lock(m);
+        ++count;
+        cv.notify_one();
+    }
+};
