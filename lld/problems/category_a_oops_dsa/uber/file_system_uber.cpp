@@ -277,14 +277,14 @@ int main() {
     // fs.cd("/c/da/f???????.*");
     // cout<<fs.pwd()<<endl;
 
-    // fs.mkdir("/a/b1/c");
-    // fs.mkdir("/a/batch/d");  
-    // fs.mkdir("/x/test");
+    fs.mkdir("/a/b1/c");
+    fs.mkdir("/a/batch/d");  
+    fs.mkdir("/x/test");
 
-    // fs.cd("a/b.*");    // Regex matches "b1" or "batch" → cd to /a/b1 (first match)
-    // cout<<fs.pwd()<<endl;          // Returns "/a/b1"
+    fs.cd("a/b.*");    // Regex matches "b1" or "batch" → cd to /a/b1 (first match)
+    cout<<fs.pwd()<<endl;          // Returns "/a/b1"
 
-    cout<<isMatching("batch","b.*h")<<endl;
+    // cout<<isMatching("batch","b.*h")<<endl;
         
 
     return 0; 
@@ -299,6 +299,150 @@ review by gpt:
 2. memory leak in directory. 
 3. do dfs search consider -> it is in problem 2 description
 
+
+
+#include <bits/stdc++.h>
+#include <regex>
+#include <mutex>
+
+using namespace std;
+
+
+class Directory {
+    public:
+        string name;
+        Directory* parent;
+        unordered_map<string, Directory*> children;
+        mutable mutex mtx;
+    
+        Directory(string name, Directory* parent = nullptr)
+            : name(name), parent(parent) {}
+    };
+    
+    
+    class FileSystem {
+    private:
+        Directory* root;
+        Directory* current;
+    
+    
+        vector<string> tokenize(const string& path) {
+            vector<string> tokens;
+            string token;
+            stringstream ss(path);
+            while (getline(ss, token, '/')) {
+                if (!token.empty())
+                    tokens.push_back(token);
+            }
+            return tokens;
+        }
+    
+        Directory* getStartDir(const string& path) {
+            return (!path.empty() && path[0] == '/') ? root : current;
+        }
+    
+        Directory* dfsRegexMatch(Directory* node, const regex& pattern) {
+            for (auto& [name, child] : node->children) {
+                if (regex_match(child->name, pattern))
+                    return child;
+            }
+            for (auto& [name, child] : node->children) {
+                Directory* res = dfsRegexMatch(child, pattern);
+                if (res) return res;
+            }
+            return nullptr;
+        }
+    
+    public:
+        FileSystem() {
+            root = new Directory("/");
+            current = root;
+        }
+    
+        
+    
+        void mkdir(const string& path) {
+            Directory* node = getStartDir(path);
+            auto tokens = tokenize(path);
+    
+            for (const string& part : tokens) {
+                if (part == "." || part == "..") continue;
+    
+                lock_guard<mutex> lock(node->mtx);
+                if (!node->children.count(part)) {
+                    node->children[part] = new Directory(part, node);
+                }
+                node = node->children[part];
+            }
+        }
+    
+        
+    
+        void cd(const string& path) {
+            Directory* node = getStartDir(path);
+            auto tokens = tokenize(path);
+    
+            for (const string& part : tokens) {
+                if (part == ".") continue;
+    
+                if (part == "..") {
+                    if (!node->parent)
+                        throw runtime_error("Already at root");
+                    node = node->parent;
+                } else {
+                    regex pattern(part);
+                    Directory* match = dfsRegexMatch(node, pattern);
+                    if (!match)
+                        throw runtime_error("Directory not found: " + part);
+                    node = match;
+                }
+            }
+            current = node;
+        }
+    
+        
+    
+        string pwd() {
+            vector<string> path;
+            Directory* node = current;
+    
+            while (node && node != root) {
+                path.push_back(node->name);
+                node = node->parent;
+            }
+    
+            reverse(path.begin(), path.end());
+    
+            string result = "/";
+            for (int i = 0; i < path.size(); i++) {
+                result += path[i];
+                if (i + 1 < path.size()) result += "/";
+            }
+            return result;
+        }
+    };
+    
+
+    
+    int main() {
+        FileSystem fs;
+    
+        fs.mkdir("/a/b1/c");
+        fs.mkdir("/a/batch/d");
+        fs.mkdir("/x/test");
+    
+        fs.cd("a/b.*");
+        cout << fs.pwd() << endl;   // /a/b1
+    
+        fs.cd("te?t");
+        cout << fs.pwd() << endl;   // /x/test
+    
+        fs.cd("../b.*");
+        cout << fs.pwd() << endl;   // /a/b1
+    
+        return 0;
+    }
+    
 */
 
 
