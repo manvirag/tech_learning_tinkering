@@ -164,7 +164,8 @@ int main() {
 /*
 
 review 
-- unbounded queue
+- unbounded queue -> user deque -> keep oldestoffset -> likst capacity 10, 15 alreayd remove -> olderst -> 16 -> first
+    of current dequeu
 - not threads
 - no batch consumer 
 - better to have topic level data store. -> updated
@@ -197,7 +198,7 @@ class TopicStore{ // as of now asume infinite retention
         mutex topicMu;
         string name;
         vector<Message> messages;
-        unordered_map<int,Consumer> consumers ;
+        unordered_map<int, Consumer> consumers;
         unordered_map<int, int> consumerVsOffset;
         TopicStore(){}
         TopicStore(string name): name(name){}
