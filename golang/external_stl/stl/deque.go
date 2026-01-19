@@ -125,25 +125,24 @@ func Deque() {
 	fmt.Println("\n=== Example: Basic Deque Operations ===")
 
 	dq2 := []int{}
-	
+
 	// Push operations
-	dq2 = append(dq2, 10)           // push_back
-	dq2 = append([]int{5}, dq2...)  // push_front
-	dq2 = append(dq2, 15)           // push_back
-	dq2 = append([]int{0}, dq2...)  // push_front
+	dq2 = append(dq2, 10)          // push_back
+	dq2 = append([]int{5}, dq2...) // push_front
+	dq2 = append(dq2, 15)          // push_back
+	dq2 = append([]int{0}, dq2...) // push_front
 
 	fmt.Println("Deque:", dq2) // [0 5 10 15]
 
 	// Access operations
-	fmt.Println("Front:", dq2[0])                    // 0
-	fmt.Println("Back:", dq2[len(dq2)-1])           // 15
-	fmt.Println("Middle element:", dq2[2])          // 10
+	fmt.Println("Front:", dq2[0])          // 0
+	fmt.Println("Back:", dq2[len(dq2)-1])  // 15
+	fmt.Println("Middle element:", dq2[2]) // 10
 
 	// Pop operations
-	dq2 = dq2[1:]                    // pop_front
+	dq2 = dq2[1:]                        // pop_front
 	fmt.Println("After pop_front:", dq2) // [5 10 15]
 
-	dq2 = dq2[:len(dq2)-1]           // pop_back
-	fmt.Println("After pop_back:", dq2)  // [5 10]
+	dq2 = dq2[:len(dq2)-1]              // pop_back
+	fmt.Println("After pop_back:", dq2) // [5 10]
 }
-

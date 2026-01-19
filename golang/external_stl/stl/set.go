@@ -83,6 +83,10 @@ func Set() {
 		X, Y int
 	}
 
+	//Return Value,Meaning,Logic
+	//1 (Positive),Greater Than,a should come after b.
+	//-1 (Negative),Less Than,a should come before b.
+	//0,Equal,a and b are considered equivalent in rank.
 	// Create set with custom comparator
 	pointSet := treeset.NewWith(func(a, b interface{}) int {
 		p1 := a.(Point)

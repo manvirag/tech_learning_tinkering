@@ -105,6 +105,252 @@ func Vector() {
 	}
 
 	// ========================================================================
+	// STRUCTS IN VECTOR - COMPREHENSIVE GUIDE
+	// ========================================================================
+	fmt.Println("\n=== STRUCTS IN VECTOR ===")
+
+	// Define a more complex struct
+	type Person struct {
+		ID    int
+		Name  string
+		Age   int
+		Score float64
+	}
+
+	// Create slice of structs
+	var people []Person
+	people = append(people, Person{1, "Alice", 25, 85.5})
+	people = append(people, Person{2, "Bob", 30, 92.0})
+	people = append(people, Person{3, "Charlie", 22, 78.5})
+	people = append(people, Person{4, "David", 28, 90.0})
+
+	// Access struct fields
+	fmt.Println("First person:", people[0].Name, people[0].Age)
+
+	// Modify struct in slice
+	people[0].Score = 88.0
+	fmt.Println("Updated score:", people[0].Score)
+
+	// Iterate over structs
+	for i, p := range people {
+		fmt.Printf("  [%d] %s (Age: %d, Score: %.1f)\n", i, p.Name, p.Age, p.Score)
+	}
+
+	// ========================================================================
+	// SORTING STRUCTS - Multiple Criteria
+	// ========================================================================
+	fmt.Println("\n=== SORTING STRUCTS ===")
+
+	// Sort by Age (ascending)
+	people = []Person{
+		{1, "Alice", 25, 85.5},
+		{2, "Bob", 30, 92.0},
+		{3, "Charlie", 22, 78.5},
+		{4, "David", 28, 90.0},
+	}
+	sort.Slice(people, func(i, j int) bool {
+		return people[i].Age < people[j].Age
+	})
+	fmt.Println("Sorted by Age:")
+	for _, p := range people {
+		fmt.Printf("  %s: %d\n", p.Name, p.Age)
+	}
+
+	// Sort by Score (descending)
+	people = []Person{
+		{1, "Alice", 25, 85.5},
+		{2, "Bob", 30, 92.0},
+		{3, "Charlie", 22, 78.5},
+		{4, "David", 28, 90.0},
+	}
+	sort.Slice(people, func(i, j int) bool {
+		return people[i].Score > people[j].Score
+	})
+	fmt.Println("Sorted by Score (desc):")
+	for _, p := range people {
+		fmt.Printf("  %s: %.1f\n", p.Name, p.Score)
+	}
+
+	// Sort by multiple fields: Age first, then Score
+	people = []Person{
+		{1, "Alice", 25, 85.5},
+		{2, "Bob", 30, 92.0},
+		{3, "Charlie", 25, 78.5}, // Same age as Alice
+		{4, "David", 28, 90.0},
+	}
+	sort.Slice(people, func(i, j int) bool {
+		if people[i].Age != people[j].Age {
+			return people[i].Age < people[j].Age
+		}
+		return people[i].Score > people[j].Score // If same age, higher score first
+	})
+	fmt.Println("Sorted by Age, then Score:")
+	for _, p := range people {
+		fmt.Printf("  %s: Age=%d, Score=%.1f\n", p.Name, p.Age, p.Score)
+	}
+
+	// ========================================================================
+	// SEARCHING STRUCTS
+	// ========================================================================
+	fmt.Println("\n=== SEARCHING STRUCTS ===")
+
+	// Linear search by field
+	targetName := "Bob"
+	foundPersonBool := false
+	var foundPersonData Person
+	for _, p := range people {
+		if p.Name == targetName {
+			foundPersonBool = true
+			foundPersonData = p
+			break
+		}
+	}
+	if foundPersonBool {
+		fmt.Printf("Found: %s (Age: %d)\n", foundPersonData.Name, foundPersonData.Age)
+	}
+
+	// Search by ID
+	targetID := 3
+	personIndex := -1
+	for i, p := range people {
+		if p.ID == targetID {
+			personIndex = i
+			break
+		}
+	}
+	if personIndex != -1 {
+		fmt.Printf("Person with ID %d found at index %d: %s\n", targetID, personIndex, people[personIndex].Name)
+	}
+
+	// Binary search on sorted structs (by Age)
+	sort.Slice(people, func(i, j int) bool {
+		return people[i].Age < people[j].Age
+	})
+	targetAge := 25
+	personIdx := sort.Search(len(people), func(i int) bool {
+		return people[i].Age >= targetAge
+	})
+	if personIdx < len(people) && people[personIdx].Age == targetAge {
+		fmt.Printf("Binary search: Found age %d at index %d: %s\n", targetAge, personIdx, people[personIdx].Name)
+	}
+
+	// ========================================================================
+	// MIN/MAX WITH STRUCTS
+	// ========================================================================
+	fmt.Println("\n=== MIN/MAX WITH STRUCTS ===")
+
+	// Find person with minimum age
+	if len(people) > 0 {
+		minAgePerson := people[0]
+		for _, p := range people {
+			if p.Age < minAgePerson.Age {
+				minAgePerson = p
+			}
+		}
+		fmt.Printf("Youngest: %s (Age: %d)\n", minAgePerson.Name, minAgePerson.Age)
+	}
+
+	// Find person with maximum score
+	if len(people) > 0 {
+		maxScorePerson := people[0]
+		for _, p := range people {
+			if p.Score > maxScorePerson.Score {
+				maxScorePerson = p
+			}
+		}
+		fmt.Printf("Highest score: %s (Score: %.1f)\n", maxScorePerson.Name, maxScorePerson.Score)
+	}
+
+	// ========================================================================
+	// COUNT/FILTER WITH STRUCTS
+	// ========================================================================
+	fmt.Println("\n=== COUNT/FILTER WITH STRUCTS ===")
+
+	// Count people above certain age
+	thresholdAge := 25
+	personCount := 0
+	for _, p := range people {
+		if p.Age > thresholdAge {
+			personCount++
+		}
+	}
+	fmt.Printf("People above age %d: %d\n", thresholdAge, personCount)
+
+	// Filter structs (create new slice with condition)
+	highScorers := []Person{}
+	for _, p := range people {
+		if p.Score >= 85.0 {
+			highScorers = append(highScorers, p)
+		}
+	}
+	fmt.Println("High scorers (>=85):")
+	for _, p := range highScorers {
+		fmt.Printf("  %s: %.1f\n", p.Name, p.Score)
+	}
+
+	// ========================================================================
+	// USING sort.Sort WITH STRUCTS (Alternative to sort.Slice)
+	// ========================================================================
+	fmt.Println("\n=== sort.Sort INTERFACE ===")
+
+	// Define custom type and implement sort.Interface
+	type ByAge []Person
+
+	// Note: These methods need to be defined outside the function or use a helper
+	// For demonstration, we'll use sort.Slice which is more common
+	peopleByAge := []Person{
+		{1, "Alice", 25, 85.5},
+		{2, "Bob", 30, 92.0},
+		{3, "Charlie", 22, 78.5},
+	}
+	sort.Slice(peopleByAge, func(i, j int) bool {
+		return peopleByAge[i].Age < peopleByAge[j].Age
+	})
+	fmt.Println("Sorted using sort.Slice (by Age):")
+	for _, p := range peopleByAge {
+		fmt.Printf("  %s: %d\n", p.Name, p.Age)
+	}
+
+	// ========================================================================
+	// COMPARING STRUCTS
+	// ========================================================================
+	fmt.Println("\n=== COMPARING STRUCTS ===")
+
+	p1 := Person{1, "Alice", 25, 85.5}
+	p2 := Person{1, "Alice", 25, 85.5}
+	p3 := Person{2, "Bob", 30, 92.0}
+
+	// Compare by value (all fields)
+	equal := p1.ID == p2.ID && p1.Name == p2.Name && p1.Age == p2.Age && p1.Score == p2.Score
+	fmt.Printf("p1 == p2 (by value): %v\n", equal)
+
+	// Compare specific fields
+	sameAge := p1.Age == p3.Age
+	fmt.Printf("p1 and p3 same age: %v\n", sameAge)
+
+	// ========================================================================
+	// REVERSE STRUCT SLICE
+	// ========================================================================
+	fmt.Println("\n=== REVERSE STRUCT SLICE ===")
+
+	people = []Person{
+		{1, "Alice", 25, 85.5},
+		{2, "Bob", 30, 92.0},
+		{3, "Charlie", 22, 78.5},
+	}
+	fmt.Println("Before reverse:")
+	for _, p := range people {
+		fmt.Printf("  %s\n", p.Name)
+	}
+	for i, j := 0, len(people)-1; i < j; i, j = i+1, j-1 {
+		people[i], people[j] = people[j], people[i]
+	}
+	fmt.Println("After reverse:")
+	for _, p := range people {
+		fmt.Printf("  %s\n", p.Name)
+	}
+
+	// ========================================================================
 	// SORTING & ALGORITHMS
 	// ========================================================================
 	fmt.Println("\n=== SORTING & ALGORITHMS ===")
@@ -152,23 +398,23 @@ func Vector() {
 	// ========================================================================
 	vec = []int{3, 1, 4, 1, 5, 9, 2, 6}
 	target := 5
-	found := false
-	index := -1
+	foundInt := false
+	indexInt := -1
 	for i, v := range vec {
 		if v == target {
-			found = true
-			index = i
+			foundInt = true
+			indexInt = i
 			break
 		}
 	}
-	fmt.Printf("\nFind %d: found=%v, index=%d\n", target, found, index)
+	fmt.Printf("\nFind %d: found=%v, index=%d\n", target, foundInt, indexInt)
 
 	// Binary search (for sorted array)
 	vec = []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
 	target = 5
-	idx := sort.SearchInts(vec, target)
-	if idx < len(vec) && vec[idx] == target {
-		fmt.Printf("Binary search %d: found at index %d\n", target, idx)
+	idxInt := sort.SearchInts(vec, target)
+	if idxInt < len(vec) && vec[idxInt] == target {
+		fmt.Printf("Binary search %d: found at index %d\n", target, idxInt)
 	} else {
 		fmt.Printf("Binary search %d: not found\n", target)
 	}
@@ -195,13 +441,13 @@ func Vector() {
 	// Go:   loop and count
 	// ========================================================================
 	vec = []int{1, 2, 2, 3, 2, 4, 2}
-	count := 0
+	countInt := 0
 	for _, v := range vec {
 		if v == 2 {
-			count++
+			countInt++
 		}
 	}
-	fmt.Printf("Count of 2: %d\n", count)
+	fmt.Printf("Count of 2: %d\n", countInt)
 
 	// ========================================================================
 	// C++: fill(vec.begin(), vec.end(), value)
