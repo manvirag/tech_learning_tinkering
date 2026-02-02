@@ -29,3 +29,7 @@ Your code should cover all the mandatory functionalities explained above.
 Your code should be executable and clean.
 Your code should be properly refactored, and exceptions should be gracefully handled.
 
+
+
+
+1. https://docs.google.com/document/d/1qkNia4yFRolM02Egcbx9aMfB4sQ9r7cY9taiuxlY0_0/edit?tab=t.0
