@@ -120,6 +120,8 @@ GET api/v1/shortUrl, https
     - read query -> already exist or not on shortId, ( long url, created by )
     - we can go with sql as well -> since read heavy, not join so can be sharded easily. 
     - we can shard the database with created by. 
+    - also not very schema chaning , we  have structured schema.
+    - but we need transaction like unique short url etc. , contraints. ( dynamodb doesn't have constraints by gpt except pk and sk)
     - we can have indexes on shorturlid, createdby, long url etc. 
     - to improve we can have hash of long url -> for searching improvement. 
     - we can use caching for alias.  
