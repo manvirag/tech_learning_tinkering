@@ -5,35 +5,90 @@ With Redis atomic counter: https://www.hellointerview.com/learn/system-design/pr
 
 1.URL shortening: given a long URL => return a much shorter URL
 2.URL redirecting: given a shorter URL => redirect to the original URL
-3.High availability, scalability, and fault tolerance considerations
+3. Handle alias also , Part 2. 
+- Can we have 1 long url to multiple alias ?  => yes
+- it should be unique across all alias right ? => yes as of now, but if we are giving this feature at user later by auth is must, then we can do at user level as well. 
+
+
+### Non-functional requirements: 
+1. High availability.
+2. Highly scalability for growing users
+3. Url should be unique. 
+4. alerts, monitoringa and logging. 
+5. fault tolerance considerations
+6. Rate limiting ?? 
 
 ### Capacity Estimation:
 1. Write operation: 100 million URLs are generated per day.
-2. Write operation per second: 100 million / 24 /3600 = 1160
-3. Read operation: Assuming ratio of read operation to write operation is 10:1, read operation per second: 1160 * 10 = 11,600
+2. Write operation per second: 100 million , ~1k / s. Peak 5k/second write. 
+3. Read operation: Assuming ratio of read operation to write operation is 10:1, read operation per second: 1160 * 10 = 10k/s -> peak 50k/s
 4. Assuming the URL shortener service will run for 10 years, this means we must support 100 million * 365 * 10 = 365 billion records.
 5. Assume average URL length is 100.
 6. Storage requirement over 10 years: 365 billion * 100 bytes * 10 years = 365 TB
 
+### Doubts: 
+1. what is alias ? 
+2. let say url given : https://www.someverylongwebsite.com/products/2026/summer/collection?id=12345
+3. Now our system will return as auto generate:  https://tinyurl.com/4h7k9x2p
+4. Now this looks bad, i'll pass the alias now. 
+5. let say i passed above long url and alias with value "summer-sale" , assuming this is possible and unique 
+6. then your short url will be, https://tinyurl.com/summer-sale
+
+7. what if someone try to end same request ? -> if user is not logged in it will be driven by cookie -> same cookie same output. else different. 
+
+8. incase of loggedin user -> generate same.
+
+### Assumptions: 
+1. Not considering authorisation and authentication right now. 
+
 ### Designing
+
+#### Entites: 
+1. UrlRecord. 
+2. RateLimiting. 
+3. Used aliases
+
 
 #### Apis
 
-POST api/v1/data/shorten
-- request parameter: {longUrl: longURLString}
+POST api/v1/data/shorten , https
+- request parameter: {longUrl: longURLString, alias: {optional}}
 - return shortURL
+- status code: 2xx, 4xx, 5xx. 
 
-GET api/v1/shortUrl
-- Return longURL for HTTP redirection
+GET api/v1/shortUrl, https
+- redirect 302 ( temporary redirect ) with long url. 
+- http.Redirect(w, r, targetURL, http.StatusFound) // 302
 
-#### Url redirection
+#### Database Schema: 
 ![alt_text](./images/img_1.png)
+![alt_text](./images/img_3.png) 
+```
+1. User: 
+    - Id  (PK)
+    - username 
+    - email 
+    - name
+2. Url
+    - Id 
+    - longUrl  
+    - shortUrlId 
+    - creationTime
+    - createdBy // either user id or session-id 
+    - status
 
-#### Url shortening 
-![alt_text](./images/img_2.png)
+// For a session we'll return same short url. 
+// for alias we can search for shortUrlId , is there any equal to that -> if so return error.
 
-#### Data model
-![alt_text](./images/img_3.png)
+```
+
+#### Solutions: 
+
+- We will be generating hash for each long url , it will be unique and we'll save  that in our database. 
+- it can be like www.tinyurl.com/{uniqueId} -> will be redirected to long url.
+- But generally hash famous hash function have ~256 bits, do we really need that much ? 
+
+
 
 #### Hash optimisation
 - Since in short url according to our estimations , We don't require very long hashed string and here we can save our storage.
@@ -46,6 +101,7 @@ GET api/v1/shortUrl
 
 1. Hash + collision resolution:
    Inshort get the long hashed value from function and take only first 7 letter. This might cause collision. So start adding letter one by one more and check if its not already exist. Cons: Call db every time or cache . Not much efficient. Optimisation use bloom filter.
+   ![alt_text](./images/img_2.png)
 2. Base 64 conversion:
    ![alt_text](./images/img_5.png)
    ![alt_text](./images/img_6.png)
@@ -54,8 +110,34 @@ GET api/v1/shortUrl
 ![alt_text](./images/img.png)
 
 
+#### Database choise ?? 
+- Pattern:
+    - Read Heavy, also has good load of write as well. 
+    - no join problem. 
+    - high scalable. 
+    - simple query. 
+    - write query -> insert
+    - read query -> already exist or not on shortId, ( long url, created by )
+    - we can go with sql as well -> since read heavy, not join so can be sharded easily. 
+    - we can shard the database with created by. 
+    - we can have indexes on shorturlid, createdby, long url etc. 
+    - to improve we can have hash of long url -> for searching improvement. 
+    - we can use caching for alias.  
+    ```
+        2. Url
+        - Id  // pk
+        - longUrl  
+        - longUrlHash // for fast lookup  
+        - shortUrlId  // unique globally
+        - creationTime 
+        - createdBy // either user id or sessionid 
+        - status // active or deactive -> we can delete permanently as well. 
 
-### Token based zookeeper approach
+    ```
+
+### How to generate unique id ? 
+
+#### Token based zookeeper approach
 
 Put the ranges in zookeeper before hand, zookeeper cluster setup
 script to insert the ranges in zookeeper
@@ -220,7 +302,7 @@ func ensurePath(zkConn *zk.Conn, path string) {
 
 
 
-With Redis counter
+#### With Redis counter
 
 ```
 
