@@ -3,8 +3,8 @@ With Redis atomic counter: https://www.hellointerview.com/learn/system-design/pr
 
 ### Requirements:
 
-1.URL shortening: given a long URL => return a much shorter URL
-2.URL redirecting: given a shorter URL => redirect to the original URL
+1. URL shortening: given a long URL => return a much shorter URL
+2. URL redirecting: given a shorter URL => redirect to the original URL
 3. Handle alias also , Part 2. 
 - Can we have 1 long url to multiple alias ?  => yes
 - it should be unique across all alias right ? => yes as of now, but if we are giving this feature at user later by auth is must, then we can do at user level as well. 
