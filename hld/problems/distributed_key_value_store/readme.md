@@ -96,3 +96,15 @@ How git use this ? →
 ![Screenshot_20231113-225448_Brave.jpg](./images/Screenshot_20231113-225448_Brave.jpg)
 
 https://youtu.be/ADpI6zrR-3M?si=DfmNleY65Cxj3GQ-
+
+
+
+
+### Design
+
+![](./kvstore.png)
+
+### References
+
+- SSTables: https://pratyusv.github.io/blog/2022/sstable/ 
+- LSM Tree: https://rowjee.com/blog/lsmtrees
